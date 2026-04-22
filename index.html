@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Alongside AI — Technology, on your terms.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --sage:#7B9E87;
+    --sage-light:#A8C5B2;
+    --sage-pale:#E8F0EB;
+    --gold:#D4A853;
+    --gold-light:#F2E6C9;
+    --charcoal:#2C3330;
+    --charcoal-soft:#4A5550;
+    --cream:#FAF6F1;
+    --white:#FFFFFF;
+    --gray:#8A8780;
+
+    --serif:"DM Serif Display", Georgia, serif;
+    --sans:"Nunito", system-ui, Arial, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+
+    --maxw: 1240px;
+    --gutter: 40px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--cream);
+    color:var(--charcoal);
+    font-family:var(--sans);
+    font-size:18px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  img,svg{display:block; max-width:100%}
+  a{color:inherit}
+  h1,h2,h3,h4{margin:0; font-weight:400}
+  p{margin:0}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--gutter)}
+  @media (max-width:720px){ :root{ --gutter:22px } }
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in oklab, var(--cream) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+  }
+  .nav-inner{
+    display:flex; align-items:center;
+    height:82px;
+    gap:32px;
+  }
+  .nav-spacer{flex:1}
+  .brand{display:flex; align-items:center; gap:14px; text-decoration:none; color:var(--charcoal)}
+  .brand-mark{width:34px; height:40px; flex-shrink:0}
+  .brand-lockup{display:inline-flex; align-items:baseline; gap:12px; white-space:nowrap}
+  .brand-word{font-family:var(--serif); font-size:28px; letter-spacing:-.01em; line-height:1}
+  .brand-ai{font-family:var(--sans); font-weight:700; font-size:15px; letter-spacing:.24em; color:var(--sage); line-height:1; text-transform:uppercase}
+  .nav-links{display:flex; gap:28px; align-items:center}
+  .nav-links a{white-space:nowrap; font-size:15px}
+  .nav-links a{
+    text-decoration:none; font-size:15px; color:var(--charcoal-soft);
+    font-weight:500;
+  }
+  .nav-links a:hover{color:var(--charcoal)}
+  .nav-cta{
+    font-size:15px; font-weight:600;
+    padding:11px 20px; border-radius:999px;
+    background:var(--charcoal); color:var(--cream);
+    text-decoration:none;
+    transition:transform .2s ease;
+  }
+  .nav-cta:hover{transform:translateY(-1px)}
+  @media (max-width:820px){ .nav-links a:not(.nav-cta){display:none} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding: 88px 0 96px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 72px;
+    align-items:center;
+  }
+  @media (max-width:960px){
+    .hero-grid{grid-template-columns:1fr; gap:48px}
+    .hero{padding:56px 0 64px}
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin-bottom:28px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .eyebrow::before{
+    content:""; width:28px; height:1px; background:var(--sage);
+    display:inline-block;
+  }
+  .hero h1{
+    font-family:var(--serif);
+    font-size: clamp(44px, 6vw, 80px);
+    line-height: 1.02;
+    letter-spacing:-.015em;
+    color:var(--charcoal);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--sage);
+    font-weight:400;
+  }
+  .hero-lede{
+    margin-top:28px;
+    max-width: 540px;
+    font-size: 20px;
+    line-height:1.55;
+    color:var(--charcoal-soft);
+  }
+  .hero-cta-row{
+    margin-top:40px;
+    display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+  }
+  .btn{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:16px;
+    padding:16px 26px;
+    border-radius:999px;
+    text-decoration:none;
+    display:inline-flex; align-items:center; gap:10px;
+    transition: transform .2s ease, background .2s ease;
+    cursor:pointer; border:none;
+  }
+  .btn-primary{background:var(--charcoal); color:var(--cream)}
+  .btn-primary:hover{transform:translateY(-1px); background:#1e2320}
+  .btn-ghost{background:transparent; color:var(--charcoal); padding-left:6px}
+  .btn-ghost .arrow{
+    display:inline-block; width:28px; height:28px; border-radius:999px;
+    border:1px solid var(--charcoal); display:grid; place-items:center;
+    transition:transform .2s ease;
+  }
+  .btn-ghost:hover .arrow{transform:translateX(3px)}
+
+  .hero-meta{
+    margin-top:48px;
+    display:flex; gap:36px; flex-wrap:wrap;
+    color:var(--charcoal-soft);
+    font-size:14px;
+  }
+  .hero-meta strong{
+    display:block;
+    font-family:var(--serif); font-size:32px; color:var(--charcoal);
+    line-height:1;
+    margin-bottom:6px;
+    font-weight:400;
+  }
+
+  /* hero art — calm editorial composition */
+  .hero-art{
+    position:relative;
+    aspect-ratio: 4/5;
+    width:100%;
+    max-width: 460px;
+    margin-left:auto;
+  }
+  @media (max-width:960px){
+    .hero-art{max-width:460px; margin:0 auto}
+  }
+  .hero-art .card{
+    position:absolute; inset:0;
+    background:var(--sage-pale);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .hero-art .card-stripes{
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(135deg,
+      transparent 0 14px,
+      color-mix(in oklab, var(--sage) 12%, transparent) 14px 15px);
+  }
+  .hero-art .tag{
+    position:absolute; left:18px; top:18px;
+    font-family:var(--mono); font-size:11px; color:var(--sage);
+    letter-spacing:.14em; text-transform:uppercase;
+  }
+  .hero-art .quote-card{
+    position:absolute;
+    right:-32px; bottom:48px;
+    width: 78%;
+    background:var(--white);
+    border-radius:12px;
+    padding:26px 28px 24px;
+    box-shadow: 0 30px 60px -30px rgba(44,51,48,.25), 0 1px 0 rgba(44,51,48,.04);
+  }
+  .hero-art .quote-card p{
+    font-family:var(--serif);
+    font-size:22px;
+    line-height:1.3;
+    color:var(--charcoal);
+  }
+  .hero-art .quote-card .attrib{
+    margin-top:18px;
+    font-size:13px; color:var(--gray);
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--sans);
+  }
+  .avatar-dot{
+    width:28px; height:28px; border-radius:999px;
+    background:var(--gold-light);
+    border:1px solid color-mix(in oklab, var(--gold) 40%, transparent);
+  }
+  .hero-art .chip{
+    position:absolute; left:-18px; top:56px;
+    background:var(--white);
+    border-radius:999px;
+    padding:10px 16px;
+    display:flex; align-items:center; gap:10px;
+    box-shadow:0 20px 40px -24px rgba(44,51,48,.2);
+    font-size:14px; font-weight:600; color:var(--charcoal);
+  }
+  .chip-dot{
+    width:10px; height:10px; border-radius:999px; background:var(--sage);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--sage) 20%, transparent);
+  }
+
+  /* ---------- marquee band ---------- */
+  .trust{
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+    padding: 28px 0;
+    background: var(--cream);
+  }
+  .trust-row{
+    display:flex; align-items:center; gap:48px; flex-wrap:wrap;
+    justify-content:space-between;
+    color:var(--charcoal-soft);
+    font-size:14px;
+  }
+  .trust-label{
+    font-family:var(--mono);
+    font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--gray);
+  }
+  .trust-items{display:flex; gap:44px; flex-wrap:wrap; align-items:center}
+  .trust-items span{
+    font-family:var(--serif); font-size:20px; color:var(--charcoal); letter-spacing:-.005em;
+  }
+  .trust-sep{width:4px; height:4px; border-radius:999px; background:var(--gold)}
+
+  /* ---------- section base ---------- */
+  section.block{padding: 120px 0}
+  @media (max-width:720px){ section.block{padding:72px 0} }
+  .section-kicker{
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--sage);
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:22px;
+  }
+  .section-kicker::before{
+    content:""; width:28px; height:1px; background:var(--sage);
+  }
+  .section-title{
+    font-family:var(--serif);
+    font-size: clamp(34px, 4.4vw, 56px);
+    line-height:1.06;
+    letter-spacing:-.015em;
+    color:var(--charcoal);
+    max-width: 820px;
+  }
+  .section-title em{font-style:italic; color:var(--sage); font-weight:400}
+  .section-lede{
+    margin-top:20px;
+    max-width:640px;
+    font-size:18px;
+    color:var(--charcoal-soft);
+  }
+
+  /* ---------- "How it works" — numbered editorial list ---------- */
+  .how{background:var(--white)}
+  .how-grid{
+    margin-top: 72px;
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+    padding-top: 48px;
+  }
+  @media (max-width:960px){ .how-grid{grid-template-columns: repeat(2, 1fr)} }
+  @media (max-width:520px){ .how-grid{grid-template-columns: 1fr} }
+  .how-item .num{
+    font-family:var(--serif);
+    font-size:48px;
+    color:var(--sage);
+    line-height:1;
+    letter-spacing:-.02em;
+  }
+  .how-item .num .slash{color:var(--gray); font-size:22px; margin-left:4px; vertical-align:12px; font-family:var(--mono)}
+  .how-item h3{
+    font-family:var(--serif);
+    font-size:26px;
+    color:var(--charcoal);
+    margin:20px 0 10px;
+    letter-spacing:-.01em;
+    line-height:1.15;
+  }
+  .how-item p{color:var(--charcoal-soft); font-size:16px}
+  .how-item .meta{
+    margin-top:16px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--gray);
+  }
+
+  /* ---------- what we set up ---------- */
+  .tools{
+    background:var(--cream);
+  }
+  .tools-grid{
+    margin-top: 72px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width:860px){ .tools-grid{grid-template-columns:1fr} }
+  .tool-card{
+    background:var(--white);
+    border:1px solid color-mix(in oklab, var(--charcoal) 7%, transparent);
+    border-radius:16px;
+    padding:34px 34px 30px;
+    position:relative;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .tool-card:hover{
+    transform:translateY(-3px);
+    box-shadow: 0 30px 60px -40px rgba(44,51,48,.25);
+  }
+  .tool-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:10px}
+  .tool-name{font-family:var(--serif); font-size:28px; letter-spacing:-.01em; color:var(--charcoal)}
+  .tool-cost{font-family:var(--mono); font-size:12px; color:var(--gray); letter-spacing:.1em}
+  .tool-kind{
+    display:inline-block;
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--sage);
+    padding:5px 10px;
+    background:var(--sage-pale);
+    border-radius:999px;
+    margin-bottom:18px;
+  }
+  .tool-kind.gold{color:#8b6f28; background:var(--gold-light)}
+  .tool-what, .tool-why{font-size:16px}
+  .tool-what{color:var(--charcoal); margin-bottom:10px}
+  .tool-why{color:var(--charcoal-soft)}
+  .tool-card .rule{height:1px; background:color-mix(in oklab, var(--charcoal) 8%, transparent); margin:20px 0}
+
+  /* ---------- pricing ---------- */
+  .pricing{background:var(--charcoal); color:var(--cream)}
+  .pricing .section-title{color:var(--cream)}
+  .pricing .section-kicker{color:var(--sage-light)}
+  .pricing .section-kicker::before{background:var(--sage-light)}
+  .pricing .section-lede{color:color-mix(in oklab, var(--cream) 75%, transparent)}
+
+  .tiers{
+    margin-top:72px;
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:22px;
+  }
+  @media (max-width:860px){ .tiers{grid-template-columns:1fr} }
+  .tier{
+    background: color-mix(in oklab, var(--cream) 6%, transparent);
+    border:1px solid color-mix(in oklab, var(--cream) 14%, transparent);
+    border-radius:16px;
+    padding:36px 32px 34px;
+    display:flex; flex-direction:column; gap:20px;
+    position:relative;
+  }
+  .tier.featured{
+    background:var(--cream);
+    color:var(--charcoal);
+    border-color:var(--cream);
+  }
+  .tier .tier-name{
+    font-family:var(--serif); font-size:28px; letter-spacing:-.01em;
+  }
+  .tier .tier-price{
+    font-family:var(--serif); font-size:44px; line-height:1;
+    letter-spacing:-.02em;
+  }
+  .tier .tier-price .unit{font-family:var(--mono); font-size:12px; letter-spacing:.14em; color:var(--gray); margin-left:8px; vertical-align:16px}
+  .tier.featured .tier-price .unit{color:var(--gray)}
+  .tier ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
+  .tier li{
+    font-size:15px;
+    padding-left:22px; position:relative;
+    color: color-mix(in oklab, var(--cream) 82%, transparent);
+  }
+  .tier.featured li{color:var(--charcoal-soft)}
+  .tier li::before{
+    content:""; position:absolute; left:0; top:10px;
+    width:10px; height:1px;
+    background: var(--gold);
+  }
+  .tier .tag{
+    position:absolute; top:-12px; right:24px;
+    background:var(--gold); color:var(--charcoal);
+    font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+    padding:6px 12px; border-radius:999px;
+    font-family:var(--sans);
+  }
+
+  /* ---------- voices / testimonials ---------- */
+  .voices{background:var(--sage-pale)}
+  .voice-grid{
+    margin-top:64px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  @media (max-width:960px){ .voice-grid{grid-template-columns:1fr} }
+  .voice{
+    background:var(--cream);
+    border-radius:16px;
+    padding:32px 30px 28px;
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .voice blockquote{
+    margin:0;
+    font-family:var(--serif);
+    font-size:22px;
+    line-height:1.3;
+    letter-spacing:-.005em;
+    color:var(--charcoal);
+  }
+  .voice .who{font-size:14px; color:var(--gray)}
+  .voice .who strong{color:var(--charcoal); display:block; font-weight:600; margin-bottom:2px}
+
+  /* ---------- FAQ ---------- */
+  .faq-list{margin-top:56px; border-top:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent)}
+  details{
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+    padding: 26px 0;
+  }
+  summary{
+    list-style:none;
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    cursor:pointer;
+    font-family:var(--serif);
+    font-size:24px;
+    color:var(--charcoal);
+    letter-spacing:-.005em;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary .plus{
+    width:32px; height:32px; border-radius:999px;
+    border:1px solid color-mix(in oklab, var(--charcoal) 20%, transparent);
+    display:grid; place-items:center;
+    font-family:var(--sans); font-weight:400; font-size:20px; line-height:1;
+    color:var(--charcoal-soft);
+    transition:transform .25s ease, background .25s ease, color .25s ease;
+    flex-shrink:0;
+  }
+  details[open] summary .plus{
+    transform:rotate(45deg);
+    background:var(--charcoal); color:var(--cream); border-color:var(--charcoal);
+  }
+  details p{
+    margin-top:16px;
+    color:var(--charcoal-soft);
+    font-size:17px;
+    max-width: 780px;
+  }
+
+  /* ---------- CTA banner ---------- */
+  .cta-banner{
+    background:var(--sage);
+    color:var(--cream);
+    position:relative;
+    overflow:hidden;
+  }
+  .cta-inner{
+    padding: 110px 0;
+    display:grid; grid-template-columns: 1.2fr 1fr; gap:56px; align-items:center;
+  }
+  @media (max-width:860px){
+    .cta-inner{grid-template-columns:1fr; padding:72px 0}
+  }
+  .cta-inner h2{
+    font-family:var(--serif);
+    font-size: clamp(36px, 4.5vw, 60px);
+    line-height:1.05; letter-spacing:-.015em;
+    color:var(--cream);
+  }
+  .cta-inner h2 em{font-style:italic; color:var(--gold-light)}
+  .cta-inner p{margin-top:20px; max-width:520px; color:color-mix(in oklab, var(--cream) 88%, transparent); font-size:18px}
+  .cta-btn{
+    margin-top:36px;
+    background:var(--cream); color:var(--charcoal);
+    padding:18px 28px; border-radius:999px;
+    font-weight:600; font-size:16px; text-decoration:none;
+    display:inline-flex; align-items:center; gap:12px;
+  }
+  .cta-aside{
+    background: color-mix(in oklab, var(--cream) 14%, transparent);
+    border:1px solid color-mix(in oklab, var(--cream) 28%, transparent);
+    border-radius:16px;
+    padding:30px 32px;
+  }
+  .cta-aside .k{font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-light); margin-bottom:18px}
+  .cta-aside ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px}
+  .cta-aside li{font-size:15px; color:color-mix(in oklab, var(--cream) 88%, transparent); display:flex; gap:12px}
+  .cta-aside li::before{content:"—"; color:var(--gold-light)}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--charcoal); color:var(--cream); padding: 72px 0 36px}
+  .foot-grid{
+    display:grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap:40px;
+    padding-bottom:56px;
+    border-bottom:1px solid color-mix(in oklab, var(--cream) 14%, transparent);
+  }
+  @media (max-width:860px){ .foot-grid{grid-template-columns: 1fr 1fr} }
+  footer .fbrand{display:flex; align-items:center; gap:14px; margin-bottom:18px}
+  footer .flockup{display:inline-flex; align-items:baseline; gap:12px; white-space:nowrap}
+  footer .fword{font-family:var(--serif); font-size:28px; color:var(--cream); line-height:1}
+  footer .fword-ai{font-family:var(--sans); font-weight:700; font-size:15px; letter-spacing:.24em; color:var(--sage-light); line-height:1; text-transform:uppercase}
+  footer p.foot-blurb{max-width:360px; color: color-mix(in oklab, var(--cream) 70%, transparent); font-size:15px}
+  footer h4{font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-light); margin-bottom:18px; font-weight:500}
+  footer ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
+  footer ul a{color: color-mix(in oklab, var(--cream) 80%, transparent); text-decoration:none; font-size:15px}
+  footer ul a:hover{color:var(--cream)}
+  .foot-bottom{
+    display:flex; justify-content:space-between; align-items:center;
+    padding-top:28px;
+    font-size:13px; color: color-mix(in oklab, var(--cream) 60%, transparent);
+    gap:16px; flex-wrap:wrap;
+  }
+  .foot-bottom a{color:inherit; text-decoration:none}
+  .tagline-foot{font-family:var(--serif); font-style:italic; font-size:16px; color:var(--gold-light)}
+
+  /* ---------- tweaks panel ---------- */
+  #tweaks{
+    position:fixed; right:22px; bottom:22px;
+    width:300px; background:var(--cream);
+    border:1px solid color-mix(in oklab, var(--charcoal) 14%, transparent);
+    border-radius:14px;
+    padding:18px 18px 16px;
+    box-shadow: 0 30px 60px -24px rgba(44,51,48,.35);
+    font-family:var(--sans); font-size:14px;
+    z-index:50;
+    display:none;
+  }
+  #tweaks.open{display:block}
+  #tweaks h5{margin:0 0 12px; font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--gray); font-weight:500}
+  #tweaks label{display:block; margin-bottom:14px}
+  #tweaks .lab{display:block; font-size:12px; color:var(--charcoal-soft); margin-bottom:6px; text-transform:uppercase; letter-spacing:.14em; font-family:var(--mono)}
+  #tweaks select, #tweaks input[type=range]{width:100%; font-family:var(--sans); font-size:14px; padding:8px 10px; border-radius:8px; border:1px solid color-mix(in oklab, var(--charcoal) 16%, transparent); background:var(--white); color:var(--charcoal)}
+  #tweaks .row{display:flex; gap:10px}
+  #tweaks .row > *{flex:1}
+
+  /* hero variants */
+  body[data-hero="editorial"] .hero-art-editorial{display:block}
+  body[data-hero="editorial"] .hero-art-bigtype{display:none}
+
+  body[data-hero="bigtype"] .hero-grid{grid-template-columns:1fr; text-align:left}
+  body[data-hero="bigtype"] .hero h1{font-size: clamp(56px, 9vw, 144px); max-width:none}
+  body[data-hero="bigtype"] .hero-lede{max-width:720px}
+  body[data-hero="bigtype"] .hero-art-editorial{display:none}
+  body[data-hero="bigtype"] .hero-art-bigtype{display:block; max-width:none; margin-top:48px; aspect-ratio:auto}
+
+  /* accent intensity */
+  body[data-accent="bold"] .eyebrow, body[data-accent="bold"] .section-kicker{color:var(--gold)}
+  body[data-accent="bold"] .eyebrow::before, body[data-accent="bold"] .section-kicker::before{background:var(--gold)}
+  body[data-accent="bold"] .hero h1 em, body[data-accent="bold"] .section-title em{color:var(--gold)}
+</style>
+</head>
+<body data-hero="editorial" data-accent="soft">
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="brand" aria-label="Alongside AI">
+      <img class="brand-mark" src="assets/logo-mark.svg" alt=""/>
+      <span class="brand-lockup"><span class="brand-word">alongside</span><span class="brand-ai">AI</span></span>
+    </a>
+    <div class="nav-spacer"></div>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#outcomes">What changes</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">Questions</a>
+      <a href="/questionnaire/" class="nav-cta">Get your plan</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">Technology, on your terms</div>
+      <h1>You don't need to learn AI. You just need <em>someone to set it up for you</em>.</h1>
+      <p class="hero-lede">
+        AI can do remarkable things, but getting started is overwhelming — too many tools, too
+        much jargon, too many strangers trying to sell you something. Alongside AI is different.
+        Answer a few questions about how you work, and we'll send back a plain-English plan,
+        customized for you. No phone call required. No commitment.
+      </p>
+      <div class="hero-cta-row">
+        <a class="btn btn-primary" href="/questionnaire/">Get your custom plan</a>
+        <a class="btn btn-ghost" href="#how">
+          See how it works
+          <span class="arrow" aria-hidden="true">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+      </div>
+      <div class="hero-meta">
+        <div><strong>10 minutes</strong>to answer the questions</div>
+        <div><strong>2 days</strong>until your plan arrives</div>
+        <div><strong>No cost</strong>and no obligation</div>
+      </div>
+    </div>
+
+    <!-- hero art: editorial -->
+    <div class="hero-art hero-art-editorial" aria-hidden="true">
+      <div class="card">
+        <div class="card-stripes"></div>
+        <div class="tag">PORTRAIT / AT YOUR DESK</div>
+      </div>
+      <div class="chip">
+        <span class="chip-dot"></span>
+        Available this week
+      </div>
+      <div class="quote-card">
+        <p>“I didn't want to learn another app. I just wanted someone to handle it.”</p>
+        <div class="attrib">
+          <span class="avatar-dot"></span>
+          Scott — commercial real estate, Pasadena
+        </div>
+      </div>
+    </div>
+
+    <!-- hero art: big type variant -->
+    <div class="hero-art-bigtype" aria-hidden="true" style="display:none">
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; font-family:var(--mono); font-size:12px; color:var(--gray); text-transform:uppercase; letter-spacing:.16em">
+        <div style="aspect-ratio:4/5; background:var(--sage-pale); border-radius:10px; padding:14px; position:relative; overflow:hidden">
+          <div style="position:absolute; inset:0; background-image:repeating-linear-gradient(135deg,transparent 0 12px,color-mix(in oklab,var(--sage) 14%,transparent) 12px 13px)"></div>
+          <span style="position:relative">Portrait</span>
+        </div>
+        <div style="aspect-ratio:4/5; background:var(--gold-light); border-radius:10px; padding:14px; position:relative; overflow:hidden">
+          <div style="position:absolute; inset:0; background-image:repeating-linear-gradient(135deg,transparent 0 12px,color-mix(in oklab,var(--gold) 22%,transparent) 12px 13px)"></div>
+          <span style="position:relative; color:#8b6f28">Devices</span>
+        </div>
+        <div style="aspect-ratio:4/5; background:var(--white); border:1px solid color-mix(in oklab,var(--charcoal) 10%,transparent); border-radius:10px; padding:14px">Notes</div>
+        <div style="aspect-ratio:4/5; background:var(--sage-pale); border-radius:10px; padding:14px; position:relative; overflow:hidden">
+          <div style="position:absolute; inset:0; background-image:repeating-linear-gradient(135deg,transparent 0 12px,color-mix(in oklab,var(--sage) 14%,transparent) 12px 13px)"></div>
+          <span style="position:relative">Check-in</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRUST STRIP (reassurance) ============ -->
+<div class="trust">
+  <div class="wrap trust-row">
+    <span class="trust-label">What you'll never hear from us</span>
+    <div class="trust-items">
+      <span>Jargon</span>
+      <span class="trust-sep"></span>
+      <span>Hype</span>
+      <span class="trust-sep"></span>
+      <span>“You need to learn…”</span>
+      <span class="trust-sep"></span>
+      <span>Pressure</span>
+      <span class="trust-sep"></span>
+      <span>Subscriptions you don't need</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="block how" id="how">
+  <div class="wrap">
+    <div class="section-kicker">How Alongside AI works</div>
+    <h2 class="section-title">No classes. No videos. Just <em>a person sitting next to you</em> until it's working.</h2>
+    <p class="section-lede">We do this in four steps over about a week. You can stop at any point — we'll only continue if the next phase will actually help.</p>
+
+    <div class="how-grid">
+      <article class="how-item">
+        <div class="num">01<span class="slash">/04</span></div>
+        <h3>Answer a few questions</h3>
+        <p>Ten minutes at your kitchen table. Plain-English questions about how you work. No jargon, no account to create.</p>
+        <div class="meta">10 minutes · On your schedule</div>
+      </article>
+      <article class="how-item">
+        <div class="num">02<span class="slash">/04</span></div>
+        <h3>Get your custom plan</h3>
+        <p>Within two business days, we send back a plain-English plan — what we'd do, what it would cost, and what changes for you. Yours to keep either way.</p>
+        <div class="meta">Arrives by email · No obligation</div>
+      </article>
+      <article class="how-item">
+        <div class="num">03<span class="slash">/04</span></div>
+        <h3>We sit down and set it up</h3>
+        <p>If the plan sounds right, we come to you (or hop on a video call) and handle everything. On your devices, with your real work. You learn by doing — not by watching videos.</p>
+        <div class="meta">~1 week · A few short sessions</div>
+      </article>
+      <article class="how-item">
+        <div class="num">04<span class="slash">/04</span></div>
+        <h3>30-day check-in</h3>
+        <p>We come back a month later. What stuck? What didn't? We fix issues, reinforce habits, and answer the new questions that always come up.</p>
+        <div class="meta">30–45 minutes · Included</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHAT CHANGES ============ -->
+<section class="block tools" id="outcomes">
+  <div class="wrap">
+    <div class="section-kicker">What actually changes</div>
+    <h2 class="section-title">We don't sell software. <em>We give you back your afternoons.</em></h2>
+    <p class="section-lede">Forget about tool names. Here's what our clients tell us feels different a month after we're done. Your plan will say exactly which of these apply to you — and which don't.</p>
+
+    <div class="tools-grid">
+      <div class="tool-card">
+        <span class="tool-kind">The pile shrinks</span>
+        <p class="tool-what">Paper bills, receipts, and documents stop accumulating on your desk and kitchen counter.</p>
+        <div class="rule"></div>
+        <p class="tool-why">Everything flows into one place. You approve from your phone in seconds. Your accountant stops asking for things you can't find.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-kind">Writing gets faster</span>
+        <p class="tool-what">The emails, letters, and notes you used to dread suddenly take a fraction of the time.</p>
+        <div class="rule"></div>
+        <p class="tool-why">You talk, it types. You ask, it drafts. It sounds like you — because it's learning from you. Most clients say this is the part they didn't know they needed.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-kind">Nothing falls through</span>
+        <p class="tool-what">Important dates, emails, and follow-ups stop slipping your mind.</p>
+        <div class="rule"></div>
+        <p class="tool-why">A quiet assistant watches your calendar and inbox. Lease ending in 60 days? You'll know. Email that actually needs a reply today? It won't get buried.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-kind gold">You can work from anywhere</span>
+        <p class="tool-what">The “I need to go to the office for that” feeling goes away.</p>
+        <div class="rule"></div>
+        <p class="tool-why">Your files, your books, your documents — all on any device, automatically. Travel more. Play golf Tuesday afternoon. The business keeps running.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-kind">Questions get answered</span>
+        <p class="tool-what">You have a patient, always-available thinking partner for the things you used to Google.</p>
+        <div class="rule"></div>
+        <p class="tool-why">Summarize a long document. Explain a confusing letter. Draft a response. Research something you've been wondering about. No ten-tab rabbit holes.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-kind">The monthly bill goes down</span>
+        <p class="tool-what">Most clients find they were paying for things they didn't need.</p>
+        <div class="rule"></div>
+        <p class="tool-why">We look at what you already have first. Duplicate subscriptions, forgotten services, software you already own but don't use. Often the savings cover part of our fee.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="block pricing" id="pricing">
+  <div class="wrap">
+    <div class="section-kicker">What it costs</div>
+    <h2 class="section-title">Fixed engagement prices. <em>No subscriptions to us.</em></h2>
+    <p class="section-lede">You pay us once to get set up. After that, you own the tools. If you want us on speed dial, there's an optional monthly retainer — but most people don't need it.</p>
+
+    <div class="tiers">
+      <div class="tier">
+        <div class="tier-name">Personal Basics</div>
+        <div class="tier-price">$500<span class="unit">to $750</span></div>
+        <ul>
+          <li>1–2 tools installed on phone or tablet</li>
+          <li>Hands-on training with your real tasks</li>
+          <li>One-page reference guides</li>
+          <li>30-day check-in included</li>
+        </ul>
+      </div>
+      <div class="tier featured">
+        <span class="tag">Most common</span>
+        <div class="tier-name">Personal Plus</div>
+        <div class="tier-price">$750<span class="unit">to $1,500</span></div>
+        <ul>
+          <li>3–5 tools across all your devices</li>
+          <li>Custom workflows for how you actually work</li>
+          <li>Voice-to-text, AI assistant, file sync</li>
+          <li>30-day check-in included</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="tier-name">Small Business</div>
+        <div class="tier-price">$1,500<span class="unit">to $3,500</span></div>
+        <ul>
+          <li>Full workflow audit</li>
+          <li>5+ tool setup on your stack</li>
+          <li>Team training &amp; one-page guides</li>
+          <li>30-day check-in included</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VOICES ============ -->
+<section class="block voices">
+  <div class="wrap">
+    <div class="section-kicker">In their words</div>
+    <h2 class="section-title">From the people we've sat next to.</h2>
+
+    <div class="voice-grid">
+      <div class="voice">
+        <blockquote>“He didn't try to change how I do things. He changed how long they take.”</blockquote>
+        <div class="who"><strong>Scott Y.</strong>Commercial real estate · La Crescenta</div>
+      </div>
+      <div class="voice">
+        <blockquote>“My son-in-law kept sending me articles about AI. This was the first time any of it actually clicked.”</blockquote>
+        <div class="who"><strong>Linda P.</strong>Retired teacher · Glendale</div>
+      </div>
+      <div class="voice">
+        <blockquote>“I stopped paying for three things we didn't need. That alone paid for the whole engagement.”</blockquote>
+        <div class="who"><strong>Ray &amp; Joan H.</strong>Family business · South Pasadena</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="block" id="faq">
+  <div class="wrap">
+    <div class="section-kicker">Questions</div>
+    <h2 class="section-title">Fair things to ask before saying yes.</h2>
+
+    <div class="faq-list">
+      <details open>
+        <summary>I don't know anything about AI. Is that okay? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>That's exactly who we're for. Most of our clients have heard of ChatGPT and not much else. You don't need to know anything going in. You don't need to learn jargon. You answer a few questions about how you work; we handle the rest.</p>
+      </details>
+      <details>
+        <summary>Why a questionnaire first, instead of a phone call? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>Because you shouldn't have to explain your life to a stranger on the phone to figure out if we can help. Answer the questions at your own pace, on your own time. We'll send back a plan. If it sounds right, then we talk. If it doesn't, you've lost nothing and you keep the plan.</p>
+      </details>
+      <details>
+        <summary>Will you try to sell me a bunch of software? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>No. We make nothing from software companies. We always check what you already pay for first — most people are surprised how much is already covered. When we do recommend something new, it's because the math works for you, not us.</p>
+      </details>
+      <details>
+        <summary>What if I get stuck after you leave? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>Every engagement includes a 30-day check-in where we come back and sort out whatever came up. After that, some clients stay on a small monthly retainer — your AI person on speed dial — and some don't. Either is fine.</p>
+      </details>
+      <details>
+        <summary>Is this only for business owners? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>Not at all. About half our clients are retirees or people nearing retirement who want to travel more, stay organized, or finally feel in control of their devices. The Personal tiers are built for exactly that.</p>
+      </details>
+      <details>
+        <summary>How long does the whole thing take? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>The questionnaire takes about 10 minutes. Your plan arrives within two business days. If you decide to continue, the setup-and-training portion is about a week, split across short sessions. Then we come back at day 30.</p>
+      </details>
+      <details>
+        <summary>Do you work in person or over video? <span class="plus" aria-hidden="true">+</span></summary>
+        <p>Both. In-person in the Greater Los Angeles area; over video anywhere else. Most clients do a mix — the first visit in person, training over video once we know each other.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA BANNER ============ -->
+<section class="cta-banner" id="start">
+  <div class="wrap cta-inner">
+    <div>
+      <h2>No call. No commitment. <em>Just a plan made for you.</em></h2>
+      <p>Answer ten minutes of plain-English questions about how you work. Within two business days, we'll send back a custom plan — yours to keep, whether you decide to continue or not.</p>
+      <a href="/questionnaire/" class="cta-btn">
+        Start the questionnaire
+        <svg width="14" height="14" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <aside class="cta-aside">
+      <div class="k">What you'll get back</div>
+      <ul>
+        <li>A plain-English summary of how you work today</li>
+        <li>Three to five things we'd change, and why</li>
+        <li>An honest estimate of time savings — and of cost</li>
+        <li>Zero obligation to continue</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="fbrand">
+          <img src="assets/logo-mark.svg" width="34" height="40" alt=""/>
+          <span class="flockup"><span class="fword">alongside</span><span class="fword-ai">AI</span></span>
+        </div>
+        <p class="foot-blurb">A done-for-you AI onboarding and technology concierge service for people who'd rather spend their time doing anything else. Based in Glendale, California; serving the Greater Los Angeles area and clients everywhere by video.</p>
+        <div class="tagline-foot" style="margin-top:24px">“Technology, on your terms.”</div>
+      </div>
+      <div>
+        <h4>Service</h4>
+        <ul>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#outcomes">What changes</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#start">Start the questionnaire</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Mark</a></li>
+          <li><a href="#">Writing</a></li>
+          <li><a href="#">Partners &amp; referrals</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <ul>
+          <li><a href="mailto:mark@alongsideai.ai">mark@alongsideai.ai</a></li>
+          <li><a href="#start">Get your plan</a></li>
+          <li><a href="#">Glendale, California</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© 2026 Alongside AI LLC · California</div>
+      <div><a href="/legal/#privacy">Privacy</a> &nbsp;·&nbsp; <a href="/legal/#terms">Terms</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ TWEAKS ============ -->
+<div id="tweaks" role="dialog" aria-label="Tweaks">
+  <h5>Tweaks</h5>
+  <label>
+    <span class="lab">Hero layout</span>
+    <select id="tw-hero">
+      <option value="editorial">Editorial — split w/ quote card</option>
+      <option value="bigtype">Big type — full-width headline</option>
+    </select>
+  </label>
+  <label>
+    <span class="lab">Accent color</span>
+    <select id="tw-accent">
+      <option value="soft">Soft — sage leads</option>
+      <option value="bold">Bold — gold leads</option>
+    </select>
+  </label>
+  <label>
+    <span class="lab">Body size (px)</span>
+    <input id="tw-size" type="range" min="16" max="20" step="1" value="18"/>
+  </label>
+</div>
+
+<script>
+  // Tweak defaults — merged + persisted by the host
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "hero": "editorial",
+    "accent": "soft",
+    "bodySize": 18
+  }/*EDITMODE-END*/;
+
+  const state = { ...TWEAK_DEFAULTS };
+  const body = document.body;
+  const panel = document.getElementById('tweaks');
+  const selHero = document.getElementById('tw-hero');
+  const selAccent = document.getElementById('tw-accent');
+  const sizeRange = document.getElementById('tw-size');
+
+  function apply(){
+    body.dataset.hero = state.hero;
+    body.dataset.accent = state.accent;
+    body.style.fontSize = state.bodySize + 'px';
+    selHero.value = state.hero;
+    selAccent.value = state.accent;
+    sizeRange.value = state.bodySize;
+  }
+  apply();
+
+  // Edit mode protocol
+  window.addEventListener('message', (e)=>{
+    const d = e.data || {};
+    if(d.type === '__activate_edit_mode'){ panel.classList.add('open') }
+    else if(d.type === '__deactivate_edit_mode'){ panel.classList.remove('open') }
+  });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*') }catch(e){}
+
+  function push(patch){
+    Object.assign(state, patch);
+    apply();
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits: patch}, '*') }catch(e){}
+  }
+  selHero.addEventListener('change', e => push({ hero: e.target.value }));
+  selAccent.addEventListener('change', e => push({ accent: e.target.value }));
+  sizeRange.addEventListener('input', e => push({ bodySize: parseInt(e.target.value,10) }));
+</script>
+</body>
+</html>

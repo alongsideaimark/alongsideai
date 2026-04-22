@@ -1,0 +1,17 @@
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Pretty URLs: /legal, /guides, /questionnaire all work with or without trailing slash
+[build.processing]
+  skip_processing = false
+
+[build.processing.html]
+  pretty_urls = true

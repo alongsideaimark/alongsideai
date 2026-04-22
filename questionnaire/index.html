@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Get your plan — Alongside AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --sage:#7B9E87;
+    --sage-light:#A8C5B2;
+    --sage-pale:#E8F0EB;
+    --gold:#D4A853;
+    --gold-light:#F2E6C9;
+    --charcoal:#2C3330;
+    --charcoal-soft:#4A5550;
+    --cream:#FAF6F1;
+    --white:#FFFFFF;
+    --gray:#8A8780;
+
+    --serif:"DM Serif Display", Georgia, serif;
+    --sans:"Nunito", system-ui, Arial, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--cream);
+    color:var(--charcoal);
+    font-family:var(--sans);
+    font-size:18px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex; flex-direction:column;
+  }
+  a{color:inherit}
+  h1,h2,h3{margin:0; font-weight:400}
+  p{margin:0}
+
+  /* ---------- top bar ---------- */
+  header.bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 40px;
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+    background:var(--cream);
+    position:sticky; top:0; z-index:5;
+  }
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--charcoal)}
+  .brand-mark{width:30px; height:36px}
+  .brand-lockup{display:inline-flex; align-items:baseline; gap:10px; white-space:nowrap}
+  .brand-word{font-family:var(--serif); font-size:24px; letter-spacing:-.01em; line-height:1}
+  .brand-ai{font-family:var(--sans); font-weight:700; font-size:13px; letter-spacing:.24em; color:var(--sage); line-height:1}
+  .exit{
+    font-size:14px; color:var(--charcoal-soft); text-decoration:none;
+    padding:10px 16px; border-radius:999px;
+    border:1px solid color-mix(in oklab, var(--charcoal) 14%, transparent);
+  }
+  .exit:hover{color:var(--charcoal); border-color:var(--charcoal)}
+
+  /* ---------- progress ---------- */
+  .progress-wrap{padding:24px 40px 0}
+  .progress-meta{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--gray); margin-bottom:12px;
+  }
+  .progress-bar{
+    height:4px; border-radius:999px;
+    background:color-mix(in oklab, var(--charcoal) 8%, transparent);
+    overflow:hidden; max-width:1100px; margin:0 auto;
+  }
+  .progress-fill{
+    height:100%; background:var(--sage);
+    transition:width .4s ease;
+    border-radius:999px;
+  }
+  .progress-meta-inner{max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; width:100%}
+
+  /* ---------- page wrap ---------- */
+  main{
+    flex:1;
+    display:flex; align-items:center; justify-content:center;
+    padding: 48px 40px 72px;
+  }
+  @media (max-width:720px){
+    header.bar{padding:16px 22px}
+    .progress-wrap{padding:20px 22px 0}
+    main{padding: 32px 22px 56px}
+  }
+
+  .card{
+    max-width: 760px; width:100%;
+    background:var(--white);
+    border:1px solid color-mix(in oklab, var(--charcoal) 7%, transparent);
+    border-radius:18px;
+    padding: 48px 52px 44px;
+    box-shadow: 0 30px 80px -50px rgba(44,51,48,.2);
+  }
+  @media (max-width:720px){ .card{padding:32px 26px 30px} }
+
+  .step-kicker{
+    font-family:var(--mono);
+    font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--sage);
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:18px;
+  }
+  .step-kicker::before{content:""; width:28px; height:1px; background:var(--sage)}
+
+  .q-title{
+    font-family:var(--serif);
+    font-size: clamp(30px, 4vw, 40px);
+    line-height:1.1;
+    letter-spacing:-.015em;
+    color:var(--charcoal);
+    text-wrap:pretty;
+  }
+  .q-help{
+    margin-top:14px;
+    color:var(--charcoal-soft);
+    font-size:17px;
+    max-width:560px;
+  }
+
+  /* ---------- form fields ---------- */
+  .field{margin-top:36px}
+  .field label.flab{
+    display:block;
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:10px;
+    color:var(--charcoal);
+  }
+  .field .hint{display:block; font-weight:400; font-size:14px; color:var(--gray); margin-top:2px}
+  .input, textarea.input{
+    width:100%;
+    font-family:var(--sans);
+    font-size:18px;
+    padding:16px 18px;
+    border:1px solid color-mix(in oklab, var(--charcoal) 16%, transparent);
+    border-radius:10px;
+    background:var(--cream);
+    color:var(--charcoal);
+    outline:none;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .input:focus, textarea.input:focus{
+    border-color:var(--sage);
+    background:var(--white);
+  }
+  textarea.input{resize:vertical; min-height:120px; line-height:1.5}
+
+  .choice-grid{
+    display:grid; gap:12px;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width:540px){ .choice-grid{grid-template-columns:1fr} }
+  .choice{
+    display:flex; align-items:flex-start; gap:14px;
+    padding:18px 20px;
+    border:1px solid color-mix(in oklab, var(--charcoal) 14%, transparent);
+    border-radius:12px;
+    background:var(--cream);
+    cursor:pointer;
+    transition: border-color .2s ease, background .2s ease, transform .15s ease;
+  }
+  .choice:hover{border-color:var(--sage); background:var(--white)}
+  .choice input{position:absolute; opacity:0; pointer-events:none}
+  .choice .check{
+    width:22px; height:22px; border-radius:999px;
+    border:1.5px solid color-mix(in oklab, var(--charcoal) 24%, transparent);
+    flex-shrink:0; margin-top:2px;
+    display:grid; place-items:center;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .choice .check.square{border-radius:5px}
+  .choice .check::after{
+    content:""; width:10px; height:10px; border-radius:999px;
+    background:var(--sage); transform:scale(0); transition:transform .2s ease;
+  }
+  .choice .check.square::after{border-radius:2px; width:12px; height:12px}
+  .choice:has(input:checked){
+    border-color:var(--sage); background:var(--sage-pale);
+  }
+  .choice:has(input:checked) .check{border-color:var(--sage); background:var(--white)}
+  .choice:has(input:checked) .check::after{transform:scale(1)}
+  .choice .body{font-size:16px; color:var(--charcoal); line-height:1.4}
+  .choice .body small{display:block; font-size:13px; color:var(--gray); margin-top:3px; font-weight:400}
+  .choice .body strong{font-weight:600}
+
+  /* horizontal choice row (for yes/no-ish) */
+  .choice-row{display:flex; gap:12px; flex-wrap:wrap}
+  .choice-row .choice{flex:1 1 auto; min-width:180px}
+
+  /* ---------- nav buttons ---------- */
+  .card-footer{
+    margin-top:44px;
+    padding-top:24px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+  }
+  .btn{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:16px;
+    padding:15px 26px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:10px;
+    transition: transform .2s ease, background .2s ease, color .2s ease;
+  }
+  .btn-primary{background:var(--charcoal); color:var(--cream)}
+  .btn-primary:hover{transform:translateY(-1px); background:#1e2320}
+  .btn-primary:disabled{opacity:.4; cursor:not-allowed; transform:none}
+  .btn-ghost{background:transparent; color:var(--charcoal-soft); padding-left:6px}
+  .btn-ghost:hover{color:var(--charcoal)}
+  .btn-ghost .arrow-l{transform:rotate(180deg); display:inline-block}
+
+  /* ---------- intro / outro states ---------- */
+  .intro-card, .done-card{
+    max-width:760px; width:100%;
+    text-align:left;
+  }
+  .intro-card .q-title, .done-card .q-title{font-size: clamp(36px, 5vw, 52px)}
+  .intro-bullets{
+    margin-top:32px;
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .intro-bullet{
+    display:flex; align-items:flex-start; gap:14px;
+    font-size:17px; color:var(--charcoal-soft);
+  }
+  .intro-bullet .n{
+    font-family:var(--serif); font-size:22px; color:var(--sage);
+    line-height:1; width:28px; flex-shrink:0;
+    letter-spacing:-.01em;
+  }
+  .intro-card .card-footer{margin-top:44px; border:none; padding:0; justify-content:flex-start}
+
+  .done-mark{
+    width:64px; height:64px; border-radius:999px;
+    background:var(--sage-pale);
+    display:grid; place-items:center;
+    margin-bottom:28px;
+  }
+  .done-mark svg{width:28px; height:28px; color:var(--sage)}
+  .done-detail{
+    margin-top:36px;
+    background:var(--sage-pale);
+    border-radius:14px;
+    padding:26px 28px;
+  }
+  .done-detail h4{font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--sage); font-weight:500; margin-bottom:14px}
+  .done-detail ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
+  .done-detail li{font-size:16px; color:var(--charcoal); padding-left:22px; position:relative}
+  .done-detail li::before{content:""; position:absolute; left:0; top:12px; width:10px; height:1px; background:var(--gold)}
+
+  /* ---------- anim ---------- */
+  .view{animation: slide-in .4s ease both}
+  @keyframes slide-in{
+    from{opacity:0; transform:translateY(8px)}
+    to{opacity:1; transform:none}
+  }
+
+  /* ---------- footer ---------- */
+  footer.foot{
+    padding:24px 40px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+    font-size:13px; color:var(--gray);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  }
+  footer.foot a{color:inherit; text-decoration:underline}
+</style>
+</head>
+<body>
+
+<!-- Hidden form for Netlify Forms detection (scanned at deploy time). Real submission happens via fetch() from the JS flow. -->
+<form name="questionnaire" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="bot-field" />
+  <input type="text" name="name" />
+  <input type="email" name="contact" />
+  <input type="text" name="comfort" />
+  <input type="text" name="situation" />
+  <textarea name="work"></textarea>
+  <textarea name="friction"></textarea>
+  <textarea name="wish"></textarea>
+  <input type="text" name="devices" />
+  <input type="text" name="tried_ai" />
+  <textarea name="nervous"></textarea>
+  <textarea name="subscriptions"></textarea>
+  <input type="text" name="urgency" />
+</form>
+
+<header class="bar">
+  <a href="/" class="brand" aria-label="Alongside AI home">
+    <img class="brand-mark" src="/assets/logo-mark.svg" alt=""/>
+    <span class="brand-lockup"><span class="brand-word">alongside</span><span class="brand-ai">AI</span></span>
+  </a>
+  <a href="/" class="exit">Save &amp; finish later</a>
+</header>
+
+<div class="progress-wrap" id="progress-wrap" style="display:none">
+  <div class="progress-meta-inner">
+    <span id="progress-label">Question 1 of 12</span>
+    <span id="progress-pct">8% done</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+</div>
+
+<main>
+  <div id="app"></div>
+</main>
+
+<footer class="foot">
+  <div>Your answers are private. We only use them to write your plan.</div>
+  <div>© 2026 Alongside AI LLC</div>
+</footer>
+
+<script>
+/* ---------- questions ---------- */
+const STEPS = [
+  { kind: "intro" },
+  {
+    id: "name",
+    title: "First, what should we call you?",
+    help: "Just a first name is fine. We'll use it on your plan.",
+    field: { kind: "text", placeholder: "First name", required: true, autofocus: true }
+  },
+  {
+    id: "contact",
+    title: "Where should we send your plan?",
+    help: "We'll email you within two business days. We won't add you to anything.",
+    field: { kind: "email", placeholder: "you@example.com", required: true }
+  },
+  {
+    id: "comfort",
+    title: "How do you feel about technology in general?",
+    help: "There are no wrong answers. This just helps us match our pace to yours.",
+    field: {
+      kind: "radio",
+      options: [
+        { value: "avoid", label: "I avoid it when I can", hint: "It's mostly frustrating to me." },
+        { value: "basics", label: "I can handle the basics", hint: "Email, texts, a few apps — but I get stuck." },
+        { value: "okay", label: "I'm okay, but I want to do more", hint: "I know there's more I could be doing." },
+        { value: "comfortable", label: "I'm pretty comfortable, just busy", hint: "I don't have the time to figure it out." }
+      ]
+    }
+  },
+  {
+    id: "situation",
+    title: "What best describes your situation?",
+    help: "Pick the closest one. You can tell us more in a minute.",
+    field: {
+      kind: "radio",
+      options: [
+        { value: "business", label: "I run a small business", hint: "Solo or with a small team." },
+        { value: "retired", label: "I'm retired or near it", hint: "Want to stay organized and enjoy life." },
+        { value: "professional", label: "I'm a busy professional", hint: "Not technical, and overwhelmed." },
+        { value: "helping", label: "I'm helping a family member", hint: "Parent, in-law, someone close." }
+      ]
+    }
+  },
+  {
+    id: "work",
+    title: "What do you do — or what did you do?",
+    help: "A sentence or two is plenty. We just want a sense of your world.",
+    field: { kind: "textarea", placeholder: "I own a few commercial properties in Pasadena, mostly handle everything myself…" }
+  },
+  {
+    id: "friction",
+    title: "What takes way longer than it should?",
+    help: "The tasks you dread. The thing you keep meaning to fix. Write whatever comes to mind.",
+    field: { kind: "textarea", placeholder: "Keeping track of lease expirations, bill pay, paper everywhere…" }
+  },
+  {
+    id: "wish",
+    title: "If a magic wand fixed one thing, what would it be?",
+    help: "Be greedy. We'll tell you honestly whether we can help.",
+    field: { kind: "textarea", placeholder: "I wish I could work from anywhere and not be tied to my office computer." }
+  },
+  {
+    id: "devices",
+    title: "What devices do you use?",
+    help: "Pick any that apply.",
+    field: {
+      kind: "checkbox",
+      options: [
+        { value: "iphone", label: "iPhone" },
+        { value: "android", label: "Android phone" },
+        { value: "ipad", label: "iPad or tablet" },
+        { value: "mac", label: "Mac laptop or desktop" },
+        { value: "pc", label: "Windows PC" },
+        { value: "none", label: "I mostly avoid computers" }
+      ]
+    }
+  },
+  {
+    id: "tried_ai",
+    title: "Have you tried any AI tools before?",
+    help: "ChatGPT, Siri, Alexa — anything counts.",
+    field: {
+      kind: "radio",
+      options: [
+        { value: "no", label: "No, not really", hint: "This would be my first time." },
+        { value: "little", label: "A little", hint: "Poked at it, didn't stick." },
+        { value: "regular", label: "Yes, regularly", hint: "I use one or more already." }
+      ]
+    }
+  },
+  {
+    id: "nervous",
+    title: "Is there anything about AI that makes you nervous?",
+    help: "Privacy, getting scammed, learning curve — whatever it is, we'd rather know.",
+    field: { kind: "textarea", placeholder: "I'm a little worried about putting my information into these things…", optional: true }
+  },
+  {
+    id: "subscriptions",
+    title: "Do you pay for any software or apps right now?",
+    help: "Don't worry about being exact — ballpark is fine. This helps us make sure we don't recommend anything you already own.",
+    field: {
+      kind: "checkbox",
+      options: [
+        { value: "m365", label: "Microsoft 365 or Office" },
+        { value: "google", label: "Google Workspace or Gmail for business" },
+        { value: "accounting", label: "QuickBooks, Xero, or other accounting software" },
+        { value: "storage", label: "Dropbox, iCloud, or Google Drive (paid)" },
+        { value: "ai", label: "ChatGPT, Claude, or another AI subscription" },
+        { value: "sign", label: "Something for signing documents (DocuSign, Adobe)" },
+        { value: "bills", label: "Something for paying bills online" },
+        { value: "unsure", label: "Honestly, I'm not sure what I pay for" }
+      ]
+    }
+  },
+  {
+    id: "urgency",
+    title: "How soon would you want to get started?",
+    help: "Last question. There are no wrong answers.",
+    field: {
+      kind: "radio",
+      options: [
+        { value: "asap", label: "As soon as possible", hint: "I've been meaning to do this for a while." },
+        { value: "month", label: "Within a month or so", hint: "Ready to start soon." },
+        { value: "exploring", label: "Just exploring for now", hint: "Curious what you'd recommend." }
+      ]
+    }
+  },
+  { kind: "done" }
+];
+
+const QUESTION_COUNT = STEPS.filter(s => !s.kind).length;
+
+/* ---------- state ---------- */
+const STORAGE = "alongside-ai-intake-v1";
+let state = { cur: 0, answers: {} };
+try{
+  const raw = localStorage.getItem(STORAGE);
+  if(raw) state = Object.assign(state, JSON.parse(raw));
+}catch(e){}
+
+function save(){
+  try{ localStorage.setItem(STORAGE, JSON.stringify(state)) }catch(e){}
+}
+function clearState(){
+  try{ localStorage.removeItem(STORAGE) }catch(e){}
+}
+
+/* ---------- render ---------- */
+const app = document.getElementById("app");
+const progressWrap = document.getElementById("progress-wrap");
+const progressFill = document.getElementById("progress-fill");
+const progressLabel = document.getElementById("progress-label");
+const progressPct = document.getElementById("progress-pct");
+
+function questionIndex(stepIdx){
+  let n = 0;
+  for(let i=0;i<=stepIdx;i++){
+    if(!STEPS[i].kind) n++;
+  }
+  return n;
+}
+
+function updateProgress(){
+  const step = STEPS[state.cur];
+  if(step.kind){
+    progressWrap.style.display = "none";
+    return;
+  }
+  progressWrap.style.display = "block";
+  const qn = questionIndex(state.cur);
+  const pct = Math.round((qn / QUESTION_COUNT) * 100);
+  progressFill.style.width = pct + "%";
+  progressLabel.textContent = `Question ${qn} of ${QUESTION_COUNT}`;
+  progressPct.textContent = `${pct}% done`;
+}
+
+function renderIntro(){
+  app.innerHTML = `
+    <div class="card intro-card view">
+      <div class="step-kicker">Before we begin</div>
+      <h1 class="q-title">Tell us a little about how you work. We'll write you a plan.</h1>
+      <p class="q-help">Twelve plain-English questions. About ten minutes. We'll save your place if you need to step away. When you're done, we'll email you a custom plan within two business days — no call required, no obligation.</p>
+      <div class="intro-bullets">
+        <div class="intro-bullet"><div class="n">—</div><div>No account to create. No password to remember.</div></div>
+        <div class="intro-bullet"><div class="n">—</div><div>Skip any question that doesn't feel right.</div></div>
+        <div class="intro-bullet"><div class="n">—</div><div>Your answers stay private. We use them only to write your plan.</div></div>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-primary" id="start-btn">
+          Let's begin
+          <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+  document.getElementById("start-btn").addEventListener("click", next);
+}
+
+function renderDone(){
+  const firstName = (state.answers.name || "").trim().split(/\s+/)[0] || "you";
+  app.innerHTML = `
+    <div class="card done-card view">
+      <div class="done-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>
+      </div>
+      <div class="step-kicker">All set</div>
+      <h1 class="q-title">Thank you, ${escapeHtml(firstName)}. Your plan is on the way.</h1>
+      <p class="q-help">We'll read through your answers carefully and send back a custom plan within two business days. It'll land in the inbox you gave us. If you have a question in the meantime, just reply to that email.</p>
+
+      <div class="done-detail">
+        <h4>What happens next</h4>
+        <ul>
+          <li>We write your plan by hand — no templates, no form letters.</li>
+          <li>You'll get a PDF you can keep, whether you decide to continue or not.</li>
+          <li>If the plan sounds right, there's a link at the end to book a short call.</li>
+          <li>If it isn't a fit, we'll say so — and tell you who might be a better match.</li>
+        </ul>
+      </div>
+
+      <div class="card-footer" style="margin-top:36px">
+        <a class="btn btn-ghost" href="/">
+          <span class="arrow-l">
+            <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Back to homepage
+        </a>
+        <button class="btn btn-primary" id="restart-btn">Start a new one</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("restart-btn").addEventListener("click", ()=>{
+    clearState();
+    state = { cur: 0, answers: {} };
+    render();
+  });
+}
+
+function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])) }
+
+function renderQuestion(step){
+  const val = state.answers[step.id];
+  const qn = questionIndex(state.cur);
+  app.innerHTML = `
+    <div class="card view">
+      <div class="step-kicker">Question ${qn} of ${QUESTION_COUNT}</div>
+      <h1 class="q-title">${escapeHtml(step.title)}</h1>
+      ${step.help ? `<p class="q-help">${escapeHtml(step.help)}</p>` : ""}
+      <div class="field" id="field-slot"></div>
+      <div class="card-footer">
+        <button class="btn btn-ghost" id="back-btn" ${state.cur <= 1 ? "style='visibility:hidden'" : ""}>
+          <span class="arrow-l">
+            <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Back
+        </button>
+        <button class="btn btn-primary" id="next-btn">
+          ${state.cur === STEPS.length - 2 ? "Send my answers" : "Continue"}
+          <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+  const slot = document.getElementById("field-slot");
+  const f = step.field;
+
+  if(f.kind === "text" || f.kind === "email"){
+    const inputType = f.kind === "email" ? "email" : "text";
+    slot.innerHTML = `<input class="input" type="${inputType}" id="f-input" placeholder="${escapeHtml(f.placeholder || "")}" value="${escapeHtml(val || "")}"/>`;
+    const input = document.getElementById("f-input");
+    input.addEventListener("input", e => { state.answers[step.id] = e.target.value; save(); refreshNextEnabled(step) });
+    input.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); tryNext() } });
+    if(f.autofocus) setTimeout(()=>input.focus(), 50);
+  }
+  else if(f.kind === "textarea"){
+    slot.innerHTML = `<textarea class="input" id="f-input" placeholder="${escapeHtml(f.placeholder || "")}">${escapeHtml(val || "")}</textarea>
+      ${f.optional ? `<div class="hint" style="margin-top:8px; color:var(--gray); font-size:14px">Feel free to skip this one if you'd rather.</div>` : ""}`;
+    const input = document.getElementById("f-input");
+    input.addEventListener("input", e => { state.answers[step.id] = e.target.value; save(); refreshNextEnabled(step) });
+  }
+  else if(f.kind === "radio" || f.kind === "checkbox"){
+    const isCheck = f.kind === "checkbox";
+    const current = isCheck ? (val || []) : val;
+    slot.innerHTML = `<div class="${f.options.length <= 3 ? "choice-row" : "choice-grid"}">
+      ${f.options.map(o => {
+        const checked = isCheck ? current.includes(o.value) : current === o.value;
+        return `<label class="choice">
+          <input type="${isCheck ? 'checkbox' : 'radio'}" name="${step.id}" value="${escapeHtml(o.value)}" ${checked ? "checked" : ""}/>
+          <span class="check ${isCheck ? 'square' : ''}"></span>
+          <span class="body"><strong>${escapeHtml(o.label)}</strong>${o.hint ? `<small>${escapeHtml(o.hint)}</small>` : ""}</span>
+        </label>`;
+      }).join("")}
+    </div>`;
+    slot.querySelectorAll("input").forEach(inp => {
+      inp.addEventListener("change", () => {
+        if(isCheck){
+          const boxes = [...slot.querySelectorAll("input:checked")].map(b => b.value);
+          state.answers[step.id] = boxes;
+        } else {
+          state.answers[step.id] = inp.value;
+        }
+        save();
+        refreshNextEnabled(step);
+      });
+    });
+  }
+
+  document.getElementById("back-btn").addEventListener("click", prev);
+  document.getElementById("next-btn").addEventListener("click", tryNext);
+  refreshNextEnabled(step);
+}
+
+function isAnswered(step){
+  const v = state.answers[step.id];
+  const f = step.field;
+  if(!f.required && !(f.kind === "radio" || f.kind === "checkbox")){
+    if(f.optional) return true;
+    return (typeof v === "string" && v.trim().length > 0) || (Array.isArray(v) && v.length > 0);
+  }
+  if(f.kind === "radio") return !!v;
+  if(f.kind === "checkbox") return Array.isArray(v) && v.length > 0;
+  if(f.kind === "email"){
+    return typeof v === "string" && /^\S+@\S+\.\S+$/.test(v.trim());
+  }
+  return typeof v === "string" && v.trim().length > 0;
+}
+function refreshNextEnabled(step){
+  const btn = document.getElementById("next-btn");
+  if(!btn) return;
+  btn.disabled = !isAnswered(step);
+}
+
+function tryNext(){
+  const step = STEPS[state.cur];
+  if(step.kind) { next(); return }
+  if(!isAnswered(step)) return;
+  // If this is the final question, submit before advancing to done.
+  if(state.cur === STEPS.length - 2){
+    submitToNetlify();
+    return;
+  }
+  next();
+}
+
+/* ---------- Netlify Forms submission ---------- */
+function submitToNetlify(){
+  const btn = document.getElementById("next-btn");
+  if(btn){ btn.disabled = true; btn.innerHTML = "Sending…"; }
+
+  // Build FormData — Netlify's recommended path for JS submission.
+  const fd = new FormData();
+  fd.append("form-name", "questionnaire");
+  Object.keys(state.answers).forEach(k => {
+    const v = state.answers[k];
+    fd.append(k, Array.isArray(v) ? v.join(", ") : (v == null ? "" : String(v)));
+  });
+
+  fetch("/", {
+    method: "POST",
+    body: fd
+  })
+  .then(res => {
+    console.log("[questionnaire] submit status:", res.status, res.statusText);
+    if(!res.ok) throw new Error("Submit failed: " + res.status);
+    clearState();
+    next();
+  })
+  .catch(err => {
+    console.error("[questionnaire] submit error:", err);
+    if(btn){
+      btn.disabled = false;
+      btn.innerHTML = `Try again <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    }
+    alert("Sorry — something went wrong sending your answers. Please try once more, and if it still won't go through, email mark@alongsideai.ai and we'll take it from there.");
+  });
+}
+function next(){
+  if(state.cur < STEPS.length - 1){
+    state.cur++;
+    save();
+    render();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+}
+function prev(){
+  if(state.cur > 0){
+    state.cur--;
+    save();
+    render();
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+}
+
+function render(){
+  const step = STEPS[state.cur];
+  if(step.kind === "intro") renderIntro();
+  else if(step.kind === "done") renderDone();
+  else renderQuestion(step);
+  updateProgress();
+}
+
+render();
+</script>
+</body>
+</html>

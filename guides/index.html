@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Reference Guides — Alongside AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --sage:#7B9E87; --sage-light:#A8C5B2; --sage-pale:#E8F0EB;
+    --gold:#D4A853; --gold-light:#F2E6C9;
+    --charcoal:#2C3330; --charcoal-soft:#4A5550;
+    --cream:#FAF6F1; --white:#FFFFFF; --gray:#8A8780;
+    --serif:"DM Serif Display", Georgia, serif;
+    --sans:"Nunito", system-ui, Arial, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0; background:#EFEBE4}
+  body{font-family:var(--sans); color:var(--charcoal); font-size:15px; line-height:1.55}
+  h1,h2,h3,h4{margin:0; font-weight:400}
+  p{margin:0 0 10px}
+  p:last-child{margin-bottom:0}
+
+  /* toolbar (screen only) */
+  .toolbar{
+    position:sticky; top:0; z-index:10;
+    background:var(--cream); color:var(--charcoal);
+    padding:12px 24px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:14px;
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+  }
+  .toolbar .brand-tl{display:flex; align-items:center; gap:10px}
+  .toolbar svg.mark{width:22px; height:26px; display:block}
+  .toolbar .word{font-family:var(--serif); font-size:20px; color:var(--charcoal)}
+  .toolbar .ai{font-family:var(--sans); font-weight:700; font-size:11px; letter-spacing:.22em; color:var(--sage); margin-left:6px}
+  .toolbar .meta{color:var(--gray); margin-left:18px}
+  .toolbar-right{display:flex; gap:10px; align-items:center}
+  .toolbar-right nav{display:flex; gap:4px}
+  .toolbar-right nav a{
+    font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--charcoal-soft); text-decoration:none;
+    padding:8px 12px; border-radius:999px;
+  }
+  .toolbar-right nav a:hover{background:var(--sage-pale); color:var(--charcoal)}
+  .toolbar button{
+    background:var(--charcoal); color:var(--cream);
+    border:none; padding:8px 16px; border-radius:999px;
+    font-weight:600; font-size:13px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+
+  /* page/sheet = 8.5x11 letter at ~96dpi */
+  .sheet{
+    width: 816px;
+    min-height: 1056px;
+    margin: 32px auto;
+    background:var(--white);
+    box-shadow: 0 30px 80px -40px rgba(44,51,48,.25);
+    padding: 56px 64px;
+    position:relative;
+    display:flex; flex-direction:column;
+  }
+  @media (max-width: 880px){
+    .sheet{width:auto; min-height:0; padding:40px 28px; margin:20px 16px}
+  }
+
+  /* page header (common) */
+  .sheet-head{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding-bottom:24px;
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+    margin-bottom:32px;
+  }
+  .sheet-head .h-brand{display:flex; align-items:center; gap:12px}
+  .sheet-head .h-brand svg{width:30px; height:35px}
+  .sheet-head .h-brand .hw{display:flex; flex-direction:column; line-height:1}
+  .sheet-head .h-brand .hw-word{font-family:var(--serif); font-size:20px; letter-spacing:-.005em}
+  .sheet-head .h-brand .hw-tag{font-family:var(--mono); font-size:10px; letter-spacing:.22em; color:var(--sage); text-transform:uppercase; margin-top:4px}
+  .sheet-head .kind{
+    font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gray);
+    text-align:right;
+  }
+  .sheet-head .kind strong{display:block; color:var(--charcoal); font-family:var(--sans); font-size:13px; letter-spacing:.06em; margin-top:4px; font-weight:600}
+
+  /* main title block */
+  .title-block{margin-bottom:28px}
+  .title-block .tool-row{display:flex; align-items:baseline; gap:16px; margin-bottom:8px; flex-wrap:wrap}
+  .title-block .tool-name{
+    font-family:var(--serif); font-size:48px; letter-spacing:-.02em; line-height:1;
+    color:var(--charcoal);
+  }
+  .title-block .tool-pronounce{
+    font-family:var(--mono); font-size:11px; letter-spacing:.15em; color:var(--gray); text-transform:uppercase;
+  }
+  .title-block .tagline{
+    font-family:var(--serif); font-style:italic; font-size:22px; color:var(--sage);
+    line-height:1.2; letter-spacing:-.005em;
+  }
+
+  /* two-column intro */
+  .intro-grid{
+    display:grid; grid-template-columns: 1.3fr 1fr; gap:36px;
+    padding:22px 24px;
+    background:var(--sage-pale);
+    border-radius:12px;
+    margin-bottom:32px;
+  }
+  @media (max-width:720px){ .intro-grid{grid-template-columns:1fr; gap:20px} }
+  .intro-grid .label{
+    font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--sage); margin-bottom:8px;
+  }
+  .intro-grid p{color:var(--charcoal); font-size:15px; line-height:1.55}
+  .intro-grid p strong{color:var(--charcoal); font-weight:600}
+
+  /* section headings inside guide */
+  .g-section{margin-bottom:28px}
+  .g-section h3{
+    font-family:var(--serif); font-size:22px; letter-spacing:-.005em; color:var(--charcoal);
+    margin-bottom:14px;
+    display:flex; align-items:baseline; gap:12px;
+  }
+  .g-section h3 .n{
+    font-family:var(--mono); font-size:11px; letter-spacing:.2em; color:var(--sage); text-transform:uppercase;
+    font-weight:500;
+  }
+
+  /* the three things */
+  .three{display:grid; gap:14px}
+  .three-item{
+    display:grid; grid-template-columns: 52px 1fr; gap:18px;
+    padding:18px 20px 18px 16px;
+    border:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+    border-radius:12px;
+    background:var(--cream);
+  }
+  .three-item .num{
+    font-family:var(--serif); font-size:36px; color:var(--gold);
+    line-height:1; letter-spacing:-.02em;
+    text-align:center; padding-top:2px;
+  }
+  .three-item h4{font-family:var(--serif); font-size:17px; letter-spacing:-.005em; color:var(--charcoal); margin-bottom:4px; line-height:1.2}
+  .three-item p{color:var(--charcoal-soft); font-size:14px; line-height:1.55; margin:0}
+  .three-item p+p{margin-top:6px}
+  .three-item .how{
+    margin-top:10px;
+    font-family:var(--mono); font-size:12px; letter-spacing:.02em; color:var(--charcoal);
+    background:var(--white);
+    padding:8px 12px; border-radius:8px;
+    border:1px dashed color-mix(in oklab, var(--charcoal) 15%, transparent);
+  }
+  .three-item .how .k{color:var(--sage); font-weight:500; margin-right:8px}
+
+  /* troubleshooting */
+  .trouble{
+    display:grid; grid-template-columns: 1fr; gap:8px;
+  }
+  .trouble-row{
+    display:grid; grid-template-columns: 1fr 1.6fr; gap:20px;
+    padding:12px 0;
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 7%, transparent);
+    align-items:start;
+  }
+  .trouble-row:last-child{border-bottom:none}
+  .trouble-row .if{
+    font-family:var(--serif); font-size:15px; color:var(--charcoal); font-style:italic;
+    line-height:1.35;
+  }
+  .trouble-row .then{font-size:14px; color:var(--charcoal-soft); line-height:1.55}
+
+  /* bottom: help strip */
+  .help-strip{
+    margin-top:auto; padding-top:28px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+    display:flex; justify-content:space-between; align-items:center;
+    gap:24px; flex-wrap:wrap;
+  }
+  .help-strip .promise{
+    font-family:var(--serif); font-size:18px; letter-spacing:-.005em;
+    color:var(--charcoal); line-height:1.2; max-width:360px;
+  }
+  .help-strip .promise em{font-style:italic; color:var(--sage); font-weight:400}
+  .help-strip .reach{
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--gray);
+    text-align:right;
+  }
+  .help-strip .reach strong{color:var(--charcoal); font-family:var(--sans); font-size:13px; letter-spacing:.04em; display:block; margin-top:4px; font-weight:600}
+
+  /* shared: callout chip */
+  .chip{
+    display:inline-block;
+    font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    padding:4px 10px; border-radius:999px;
+    background:var(--gold-light); color:#8b6f28;
+  }
+  .chip.sage{background:var(--sage-pale); color:var(--sage)}
+
+  /* footer of sheet */
+  .sheet-foot{
+    margin-top:24px;
+    display:flex; justify-content:space-between;
+    font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:var(--gray);
+    padding-top:18px;
+    border-top:1px dashed color-mix(in oklab, var(--charcoal) 12%, transparent);
+  }
+
+  /* print */
+  @media print{
+    body{background:white}
+    .toolbar{display:none}
+    .sheet{box-shadow:none; margin:0 auto; width:auto; min-height:0; padding:36px 44px; page-break-after: always}
+    .sheet:last-child{page-break-after: auto}
+    @page{size: letter; margin: 0.3in}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand-tl">
+    <svg class="mark" viewBox="0 0 120 140" aria-label="Alongside AI mark">
+      <rect x="0" y="0" width="120" height="140" rx="18" fill="#7B9E87"/>
+      <line x1="42" y1="34" x2="42" y2="112" stroke="#FAF6F1" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="42" cy="38" r="11" fill="#FAF6F1"/>
+      <line x1="78" y1="52" x2="78" y2="112" stroke="#D4A853" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="78" cy="56" r="11" fill="#D4A853"/>
+    </svg>
+    <span><span class="word">alongside</span><span class="ai">AI</span></span>
+    <span class="meta">Reference guides — one page each</span>
+  </div>
+  <div class="toolbar-right">
+    <nav>
+      <a href="#qbo">QBO</a>
+      <a href="#claude">Claude</a>
+      <a href="#wispr">Wispr Flow</a>
+      <a href="#billcom">Bill.com</a>
+    </nav>
+    <button onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- QuickBooks Online                                             -->
+<!-- ============================================================ -->
+<section class="sheet" id="qbo" data-screen-label="01 QBO">
+  <div class="sheet-head">
+    <div class="h-brand">
+      <svg viewBox="0 0 120 140" aria-label="Alongside AI mark">
+        <rect x="0" y="0" width="120" height="140" rx="18" fill="#7B9E87"/>
+        <line x1="42" y1="34" x2="42" y2="112" stroke="#FAF6F1" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="42" cy="38" r="11" fill="#FAF6F1"/>
+        <line x1="78" y1="52" x2="78" y2="112" stroke="#D4A853" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="78" cy="56" r="11" fill="#D4A853"/>
+      </svg>
+      <div class="hw">
+        <span class="hw-word">alongside<span style="font-family:var(--sans); font-weight:700; font-size:10px; letter-spacing:.22em; color:var(--sage); margin-left:4px; vertical-align:4px">AI</span></span>
+        <span class="hw-tag">Reference guide · 01</span>
+      </div>
+    </div>
+    <div class="kind">
+      Cloud accounting
+      <strong>QuickBooks Online</strong>
+    </div>
+  </div>
+
+  <div class="title-block">
+    <div class="tool-row">
+      <h1 class="tool-name">QuickBooks Online</h1>
+      <span class="tool-pronounce">a.k.a. QBO</span>
+    </div>
+    <div class="tagline">Your books, on every device — and up to date every week, not once a year.</div>
+  </div>
+
+  <div class="intro-grid">
+    <div>
+      <div class="label">What it is</div>
+      <p>The cloud version of the QuickBooks you already know. Same categories, same reports — but accessible from your phone, laptop, or office computer, with transactions flowing in automatically from your bank.</p>
+    </div>
+    <div>
+      <div class="label">Signing in</div>
+      <p><strong>qbo.intuit.com</strong><br/>Username: your email<br/>Password: saved in your browser's keychain.<br/><span class="chip sage">Bookmarked on your phone</span></p>
+    </div>
+  </div>
+
+  <div class="g-section">
+    <h3><span class="n">01</span> The three things you'll actually do</h3>
+    <div class="three">
+      <div class="three-item">
+        <div class="num">1</div>
+        <div>
+          <h4>Review last week's transactions</h4>
+          <p>Your bank feeds pull everything in. You just confirm categories — a rent deposit stays "Rental Income," a utility stays "Utilities." It's mostly tapping "Accept."</p>
+          <div class="how"><span class="k">WHERE</span> Left menu → Transactions → Banking</div>
+        </div>
+      </div>
+      <div class="three-item">
+        <div class="num">2</div>
+        <div>
+          <h4>Check the Profit &amp; Loss</h4>
+          <p>One page that shows what came in and what went out, grouped by category. Great for a Monday-morning glance from your phone.</p>
+          <div class="how"><span class="k">WHERE</span> Left menu → Reports → Profit &amp; Loss</div>
+        </div>
+      </div>
+      <div class="three-item">
+        <div class="num">3</div>
+        <div>
+          <h4>Look up a specific payment</h4>
+          <p>Type a vendor name or dollar amount into the search bar at the top. QBO finds it instantly, across every year.</p>
+          <div class="how"><span class="k">SEARCH</span> Magnifying glass icon, top right</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-section">
+    <h3><span class="n">02</span> If something looks off</h3>
+    <div class="trouble">
+      <div class="trouble-row">
+        <div class="if">"A transaction is categorized wrong."</div>
+        <div class="then">Click the transaction. Change the category from the dropdown. Hit save. That's it — it will remember for next time.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">"A deposit shows twice."</div>
+        <div class="then">Usually means Bill.com recorded it and the bank feed also pulled it in. Click one, choose "Match" — QBO merges them.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">"I don't see this month's rent."</div>
+        <div class="then">Banks sometimes delay a day or two. Check again tomorrow. If still missing, send us a note and we'll look together.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">"I got logged out."</div>
+        <div class="then">Sign in again at qbo.intuit.com. Your password is saved in Safari / Chrome — tap the key icon and it fills in.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="help-strip">
+    <div class="promise">Nothing here is forever. <em>If a step feels awkward,</em> that's our job to fix at the 30-day check-in.</div>
+    <div class="reach">
+      Alongside AI
+      <strong>mark@alongsideai.ai</strong>
+    </div>
+  </div>
+
+  <div class="sheet-foot">
+    <span>ALONGSIDE AI · REFERENCE GUIDE 01 OF 04</span>
+    <span>QUICKBOOKS ONLINE · v1.0 · APR 2026</span>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- Claude                                                        -->
+<!-- ============================================================ -->
+<section class="sheet" id="claude" data-screen-label="02 Claude">
+  <div class="sheet-head">
+    <div class="h-brand">
+      <svg viewBox="0 0 120 140" aria-label="Alongside AI mark">
+        <rect x="0" y="0" width="120" height="140" rx="18" fill="#7B9E87"/>
+        <line x1="42" y1="34" x2="42" y2="112" stroke="#FAF6F1" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="42" cy="38" r="11" fill="#FAF6F1"/>
+        <line x1="78" y1="52" x2="78" y2="112" stroke="#D4A853" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="78" cy="56" r="11" fill="#D4A853"/>
+      </svg>
+      <div class="hw">
+        <span class="hw-word">alongside<span style="font-family:var(--sans); font-weight:700; font-size:10px; letter-spacing:.22em; color:var(--sage); margin-left:4px; vertical-align:4px">AI</span></span>
+        <span class="hw-tag">Reference guide · 02</span>
+      </div>
+    </div>
+    <div class="kind">
+      AI assistant
+      <strong>Claude</strong>
+    </div>
+  </div>
+
+  <div class="title-block">
+    <div class="tool-row">
+      <h1 class="tool-name">Claude</h1>
+      <span class="tool-pronounce">claude.ai</span>
+    </div>
+    <div class="tagline">A sharp, patient assistant who has read what you give it — and answers in plain English.</div>
+  </div>
+
+  <div class="intro-grid">
+    <div>
+      <div class="label">What it is</div>
+      <p>Think of a very smart research assistant. You give it a document, an email, or a question — it reads, summarizes, drafts, or answers. You talk to it the way you'd talk to a capable colleague. No special commands.</p>
+    </div>
+    <div>
+      <div class="label">Signing in</div>
+      <p><strong>claude.ai</strong><br/>Signed in with your Google account.<br/>Also on your phone as the <strong>Claude app</strong>.<br/><span class="chip sage">Pinned on your home screen</span></p>
+    </div>
+  </div>
+
+  <div class="g-section">
+    <h3><span class="n">01</span> The three things you'll actually do</h3>
+    <div class="three">
+      <div class="three-item">
+        <div class="num">1</div>
+        <div>
+          <h4>Ask a lease a question</h4>
+          <p>Drag any PDF lease into the chat window. Then ask what you want to know — "when does this tenant's option to renew expire?" or "what's the CAM recovery structure?" You'll get an answer and a page reference.</p>
+          <div class="how"><span class="k">TIP</span> Be specific. "In plain English" works.</div>
+        </div>
+      </div>
+      <div class="three-item">
+        <div class="num">2</div>
+        <div>
+          <h4>Draft a letter or email</h4>
+          <p>Tell Claude what you want to say and who you're writing to. It'll draft something in your voice. You edit. Much faster than staring at a blank page.</p>
+          <div class="how"><span class="k">TRY</span> "Draft a firm but polite reminder to a tenant about a late rent."</div>
+        </div>
+      </div>
+      <div class="three-item">
+        <div class="num">3</div>
+        <div>
+          <h4>Do a little research</h4>
+          <p>Ask about comparable commercial rents in your market, recent commercial property tax changes, anything you'd normally Google and then piece together. Claude gives you the summary and links.</p>
+          <div class="how"><span class="k">NOTE</span> Always confirm dollar figures with a second source.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-section">
+    <h3><span class="n">02</span> Good habits</h3>
+    <div class="trouble">
+      <div class="trouble-row">
+        <div class="if">Talk to it like a person.</div>
+        <div class="then">"I need to write a nice letter to the Ace Hardware manager about…" works better than a keyword list. More context = better answer.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">Start fresh for a new topic.</div>
+        <div class="then">Click "New chat" (top-left) when switching subjects. Keeps things clean and prevents Claude from mixing contexts.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">Confidential is confidential.</div>
+        <div class="then">Claude won't share your docs with anyone. But use the same judgment you would with an email — don't paste what you wouldn't want on paper.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">If the answer seems off, say so.</div>
+        <div class="then">"That's not quite right — the clause I'm asking about is in section 4.2." It will correct itself. No need to start over.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="help-strip">
+    <div class="promise">The more you use it, the more useful it gets. <em>You're not going to break it.</em></div>
+    <div class="reach">
+      Alongside AI
+      <strong>mark@alongsideai.ai</strong>
+    </div>
+  </div>
+
+  <div class="sheet-foot">
+    <span>ALONGSIDE AI · REFERENCE GUIDE 02 OF 04</span>
+    <span>CLAUDE · v1.0 · APR 2026</span>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- Wispr Flow                                                    -->
+<!-- ============================================================ -->
+<section class="sheet" id="wispr" data-screen-label="03 Wispr Flow">
+  <div class="sheet-head">
+    <div class="h-brand">
+      <svg viewBox="0 0 120 140" aria-label="Alongside AI mark">
+        <rect x="0" y="0" width="120" height="140" rx="18" fill="#7B9E87"/>
+        <line x1="42" y1="34" x2="42" y2="112" stroke="#FAF6F1" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="42" cy="38" r="11" fill="#FAF6F1"/>
+        <line x1="78" y1="52" x2="78" y2="112" stroke="#D4A853" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="78" cy="56" r="11" fill="#D4A853"/>
+      </svg>
+      <div class="hw">
+        <span class="hw-word">alongside<span style="font-family:var(--sans); font-weight:700; font-size:10px; letter-spacing:.22em; color:var(--sage); margin-left:4px; vertical-align:4px">AI</span></span>
+        <span class="hw-tag">Reference guide · 03</span>
+      </div>
+    </div>
+    <div class="kind">
+      Voice to text
+      <strong>Wispr Flow</strong>
+    </div>
+  </div>
+
+  <div class="title-block">
+    <div class="tool-row">
+      <h1 class="tool-name">Wispr Flow</h1>
+      <span class="tool-pronounce">whisper · flow</span>
+    </div>
+    <div class="tagline">Talk instead of type — cleaned up, punctuated, in your voice, anywhere you'd normally write.</div>
+  </div>
+
+  <div class="intro-grid">
+    <div>
+      <div class="label">What it is</div>
+      <p>A small app that turns your voice into clean, written text in any app — email, texts, Word, search bars, anywhere. It's not basic dictation. It removes "ums," punctuates for you, and learns how you actually write.</p>
+    </div>
+    <div>
+      <div class="label">How to use it</div>
+      <p><strong>On your laptop:</strong> hold the <kbd style="font-family:var(--mono); background:var(--cream); padding:1px 6px; border-radius:4px; border:1px solid color-mix(in oklab, var(--charcoal) 15%, transparent); font-size:12px">Fn</kbd> key and talk.<br/><strong>On your iPhone:</strong> tap the Wispr icon on the keyboard and talk.<br/><span class="chip sage">Release the key to insert</span></p>
+    </div>
+  </div>
+
+  <div class="g-section">
+    <h3><span class="n">01</span> The three things you'll actually do</h3>
+    <div class="three">
+      <div class="three-item">
+        <div class="num">1</div>
+        <div>
+          <h4>Reply to emails by voice</h4>
+          <p>Tap the reply box. Hold Fn. Say what you want to say — complete with "comma," "new line," whatever comes out naturally. Wispr cleans it up.</p>
+          <div class="how"><span class="k">EXAMPLE</span> Hi Maria, thanks for the note — I'll confirm tomorrow after I check with my CPA.</div>
+        </div>
+      </div>
+      <div class="three-item">
+        <div class="num">2</div>
+        <div>
+          <h4>Capture a thought in the car</h4>
+          <p>Open Notes on your phone. Tap Wispr. Talk. You end up with a usable paragraph instead of an audio file you never listen to.</p>
+          <div class="how"><span class="k">GOOD FOR</span> Walk-through observations, to-dos, follow-up ideas</div>
+        </div>
+      </div>
+      <div class="three-item">
+        <div class="num">3</div>
+        <div>
+          <h4>Write a letter out loud</h4>
+          <p>Open Word or Google Docs. Hold Fn. Say the whole letter in one go, like you're dictating to an assistant. Edit the result — usually takes half the time of typing.</p>
+          <div class="how"><span class="k">TIP</span> Start with "Dear so-and-so" — gives Wispr the tone.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-section">
+    <h3><span class="n">02</span> If it isn't working</h3>
+    <div class="trouble">
+      <div class="trouble-row">
+        <div class="if">"Nothing happens when I hold Fn."</div>
+        <div class="then">Look for the small Wispr icon in the top menu bar (Mac) or taskbar (PC). If it's not there, launch Wispr Flow from Applications. It needs to be running in the background.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">"It's typing in the wrong spot."</div>
+        <div class="then">Click exactly where you want the text to go before you hold Fn. Wispr inserts at your cursor.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">"The text came out garbled."</div>
+        <div class="then">Usually background noise or holding the phone too far away. Speak at a normal volume, 6–12 inches from the mic. Try again.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">"It added 'uh' into my sentence."</div>
+        <div class="then">Let Wispr learn your voice. After two or three weeks of regular use, the filler-word cleanup gets noticeably better.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="help-strip">
+    <div class="promise">Most clients double their email speed in about a week. <em>Then they never go back.</em></div>
+    <div class="reach">
+      Alongside AI
+      <strong>mark@alongsideai.ai</strong>
+    </div>
+  </div>
+
+  <div class="sheet-foot">
+    <span>ALONGSIDE AI · REFERENCE GUIDE 03 OF 04</span>
+    <span>WISPR FLOW · v1.0 · APR 2026</span>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- Bill.com                                                      -->
+<!-- ============================================================ -->
+<section class="sheet" id="billcom" data-screen-label="04 Bill.com">
+  <div class="sheet-head">
+    <div class="h-brand">
+      <svg viewBox="0 0 120 140" aria-label="Alongside AI mark">
+        <rect x="0" y="0" width="120" height="140" rx="18" fill="#7B9E87"/>
+        <line x1="42" y1="34" x2="42" y2="112" stroke="#FAF6F1" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="42" cy="38" r="11" fill="#FAF6F1"/>
+        <line x1="78" y1="52" x2="78" y2="112" stroke="#D4A853" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="78" cy="56" r="11" fill="#D4A853"/>
+      </svg>
+      <div class="hw">
+        <span class="hw-word">alongside<span style="font-family:var(--sans); font-weight:700; font-size:10px; letter-spacing:.22em; color:var(--sage); margin-left:4px; vertical-align:4px">AI</span></span>
+        <span class="hw-tag">Reference guide · 04</span>
+      </div>
+    </div>
+    <div class="kind">
+      Automated bill pay
+      <strong>Bill.com</strong>
+    </div>
+  </div>
+
+  <div class="title-block">
+    <div class="tool-row">
+      <h1 class="tool-name">Bill.com</h1>
+      <span class="tool-pronounce">bill · dot · com</span>
+    </div>
+    <div class="tagline">Bills come in, you approve, they get paid — and your books update by themselves.</div>
+  </div>
+
+  <div class="intro-grid">
+    <div>
+      <div class="label">What it is</div>
+      <p>A service that receives your bills — utilities, property tax, vendors — holds them in a queue, and pays them when you say so. Every payment syncs into QuickBooks automatically, so your books stay clean without extra effort.</p>
+    </div>
+    <div>
+      <div class="label">Signing in</div>
+      <p><strong>bill.com</strong><br/>Username: your email<br/>Two-factor code comes to your phone.<br/><span class="chip sage">Also on your phone as the Bill app</span></p>
+    </div>
+  </div>
+
+  <div class="g-section">
+    <h3><span class="n">01</span> The three things you'll actually do</h3>
+    <div class="three">
+      <div class="three-item">
+        <div class="num">1</div>
+        <div>
+          <h4>Review &amp; approve new bills</h4>
+          <p>Once or twice a week, open Bill.com. Any new bills are sitting in the "Inbox." Click each one — check the amount, check the due date, hit "Approve." That's the whole job.</p>
+          <div class="how"><span class="k">WHERE</span> Top nav → Bills → Inbox</div>
+        </div>
+      </div>
+      <div class="three-item">
+        <div class="num">2</div>
+        <div>
+          <h4>Schedule the payment</h4>
+          <p>After approving, click "Pay." Choose the date you want it to leave your account. Bill.com handles the check or ACH. You don't lick a stamp, you don't write a check.</p>
+          <div class="how"><span class="k">TIP</span> Schedule it a day or two before the due date for safety.</div>
+        </div>
+      </div>
+      <div class="three-item">
+        <div class="num">3</div>
+        <div>
+          <h4>Forward a paper bill that came in the mail</h4>
+          <p>Take a photo with your phone and email it to your personal Bill.com inbox address. It shows up in your queue within a few minutes, ready to approve.</p>
+          <div class="how"><span class="k">YOUR INBOX</span> [saved in your contacts as "Bill.com inbox"]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g-section">
+    <h3><span class="n">02</span> If something looks off</h3>
+    <div class="trouble">
+      <div class="trouble-row">
+        <div class="if">"The amount looks wrong."</div>
+        <div class="then">Don't approve it. Click "Void" or just leave it in the inbox and email the vendor directly. Nothing moves until you approve.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">"A vendor says they didn't get paid."</div>
+        <div class="then">Click the bill → Payment history. You'll see the date it cleared. If it was a check, there's a tracking number to give the vendor.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">"I need to cancel a scheduled payment."</div>
+        <div class="then">Go to Bills → Scheduled. Click the payment. Hit "Cancel payment." Safe to do anytime before the process date.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="if">"It didn't sync to QuickBooks."</div>
+        <div class="then">Rare. Usually a momentary hiccup. Give it 15 minutes, refresh QBO. If still missing, send us a note.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="help-strip">
+    <div class="promise">The goal isn't to never see a bill. <em>It's to never make a trip to pay one.</em></div>
+    <div class="reach">
+      Alongside AI
+      <strong>mark@alongsideai.ai</strong>
+    </div>
+  </div>
+
+  <div class="sheet-foot">
+    <span>ALONGSIDE AI · REFERENCE GUIDE 04 OF 04</span>
+    <span>BILL.COM · v1.0 · APR 2026</span>
+  </div>
+</section>
+
+</body>
+</html>

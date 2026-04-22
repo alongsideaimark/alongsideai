@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" aria-label="Alongside AI mark">
+  <rect x="0" y="0" width="120" height="140" rx="18" fill="#FAF6F1"></rect>
+  <line x1="42" y1="34" x2="42" y2="112" stroke="#2C3330" stroke-width="7" stroke-linecap="round"></line>
+  <circle cx="42" cy="38" r="11" fill="#2C3330"></circle>
+  <line x1="78" y1="52" x2="78" y2="112" stroke="#D4A853" stroke-width="7" stroke-linecap="round"></line>
+  <circle cx="78" cy="56" r="11" fill="#D4A853"></circle>
+</svg>

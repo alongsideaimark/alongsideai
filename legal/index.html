@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Privacy & Terms — Alongside AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --sage:#7B9E87; --sage-light:#A8C5B2; --sage-pale:#E8F0EB;
+    --gold:#D4A853; --gold-light:#F2E6C9;
+    --charcoal:#2C3330; --charcoal-soft:#4A5550;
+    --cream:#FAF6F1; --white:#FFFFFF; --gray:#8A8780;
+    --serif:"DM Serif Display", Georgia, serif;
+    --sans:"Nunito", system-ui, Arial, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0; background:var(--cream)}
+  body{font-family:var(--sans); color:var(--charcoal); font-size:17px; line-height:1.65}
+  h1,h2,h3,h4{margin:0; font-weight:400}
+  a{color:var(--sage); text-decoration:none; border-bottom:1px solid color-mix(in oklab, var(--sage) 40%, transparent)}
+  a:hover{color:var(--charcoal); border-bottom-color:var(--charcoal)}
+
+  /* ------- top nav ------- */
+  .topnav{
+    position:sticky; top:0; z-index:20;
+    background: color-mix(in oklab, var(--cream) 94%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+  }
+  .topnav-inner{
+    max-width:1180px; margin:0 auto; padding:18px 40px;
+    display:flex; justify-content:space-between; align-items:center; gap:20px;
+  }
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; border:none; color:var(--charcoal)}
+  .brand svg{width:28px; height:32px}
+  .brand .w{font-family:var(--serif); font-size:22px; letter-spacing:-.005em}
+  .brand .w .ai{font-family:var(--sans); font-weight:700; font-size:11px; letter-spacing:.22em; color:var(--sage); margin-left:6px; vertical-align:4px}
+  .topnav nav{display:flex; gap:4px}
+  .topnav nav a{
+    font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    padding:10px 14px; border-radius:999px;
+    color:var(--charcoal-soft); border:none;
+  }
+  .topnav nav a:hover{background:var(--sage-pale); color:var(--charcoal)}
+  .topnav nav a.active{background:var(--charcoal); color:var(--cream)}
+  @media (max-width:820px){
+    .topnav-inner{padding:14px 20px; flex-wrap:wrap}
+    .topnav nav{flex-wrap:wrap}
+  }
+
+  /* ------- hero ------- */
+  .hero{
+    max-width:860px; margin:0 auto; padding:72px 40px 36px;
+  }
+  .hero .kicker{
+    font-family:var(--mono); font-size:11px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--sage); margin-bottom:18px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .hero .kicker::before{content:""; width:28px; height:1px; background:var(--sage)}
+  .hero h1{
+    font-family:var(--serif); font-size:clamp(38px, 6vw, 62px); line-height:1.05; letter-spacing:-.02em;
+    margin-bottom:20px; text-wrap:pretty;
+  }
+  .hero h1 em{font-style:italic; color:var(--sage); font-weight:400}
+  .hero .lede{color:var(--charcoal-soft); font-size:19px; max-width:680px; line-height:1.55}
+  .hero .meta{
+    margin-top:24px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--gray);
+    display:flex; gap:24px; flex-wrap:wrap;
+  }
+  .hero .meta strong{color:var(--charcoal); font-weight:600; margin-left:6px}
+  @media (max-width:820px){ .hero{padding:48px 24px 28px} }
+
+  /* ------- paper / doc body ------- */
+  .doc{
+    max-width:860px; margin:0 auto 80px; padding: 0 40px;
+  }
+  .paper{
+    background:var(--white);
+    border-radius:18px;
+    padding: 64px 64px;
+    box-shadow: 0 30px 80px -40px rgba(44,51,48,.25);
+  }
+  @media (max-width:820px){
+    .doc{padding:0 20px}
+    .paper{padding:40px 28px; border-radius:14px}
+  }
+
+  /* ------- disclaimer stripe ------- */
+  .disclaimer{
+    border:1px solid color-mix(in oklab, var(--gold) 40%, transparent);
+    background: color-mix(in oklab, var(--gold-light) 40%, var(--white));
+    padding: 22px 26px; border-radius:12px; margin-bottom:40px;
+    font-size:15px; color:var(--charcoal-soft); line-height:1.6;
+  }
+  .disclaimer strong{
+    display:block; font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:#8b6f28; margin-bottom:8px; font-weight:600;
+  }
+
+  /* ------- tab switcher ------- */
+  .tabs{
+    display:flex; gap:8px;
+    padding:6px;
+    background:var(--cream);
+    border-radius:999px;
+    width:fit-content;
+    margin:0 auto 40px;
+  }
+  .tabs button{
+    font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    padding:10px 20px; border-radius:999px; border:none; cursor:pointer;
+    background:transparent; color:var(--charcoal-soft);
+    transition: background .15s, color .15s;
+  }
+  .tabs button.active{background:var(--charcoal); color:var(--cream)}
+  .tabs button:hover:not(.active){color:var(--charcoal)}
+
+  /* ------- section rhythm ------- */
+  .panel{display:none}
+  .panel.active{display:block}
+
+  .sec{margin-bottom:44px}
+  .sec:last-child{margin-bottom:0}
+  .sec .n{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--sage); margin-bottom:10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .sec .n::before{content:""; width:22px; height:1px; background:var(--sage)}
+  .sec h2{
+    font-family:var(--serif); font-size:30px; line-height:1.15; letter-spacing:-.015em;
+    margin-bottom:18px; text-wrap:pretty;
+    color:var(--charcoal);
+  }
+  .sec h2 em{font-style:italic; color:var(--sage); font-weight:400}
+  .sec p{margin:0 0 14px; color:var(--charcoal-soft); font-size:17px}
+  .sec p:last-child{margin-bottom:0}
+  .sec p strong{color:var(--charcoal); font-weight:600}
+
+  .plain{
+    padding: 14px 18px;
+    background:var(--sage-pale);
+    border-radius:10px;
+    font-style:italic; color:var(--charcoal-soft);
+    font-family: Georgia, serif; font-size:16px;
+    margin: 4px 0 20px;
+    line-height:1.55;
+  }
+  .plain::before{
+    content:"In plain English —";
+    font-family:var(--mono); font-size:10px; font-style:normal;
+    color:var(--sage); letter-spacing:.2em; text-transform:uppercase;
+    margin-right:8px; font-weight:600;
+  }
+
+  .list{list-style:none; padding:0; margin:0 0 14px}
+  .list li{
+    position:relative; padding:8px 0 8px 24px;
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 6%, transparent);
+    font-size:16px; color:var(--charcoal-soft); line-height:1.55;
+  }
+  .list li:last-child{border-bottom:none}
+  .list li::before{
+    content:""; position:absolute; left:4px; top:18px; width:8px; height:8px; border-radius:999px;
+    background:var(--sage);
+  }
+  .list li strong{color:var(--charcoal); font-weight:600}
+
+  /* ------- contact footer inside paper ------- */
+  .contact{
+    margin-top:48px; padding-top:36px;
+    border-top:1px dashed color-mix(in oklab, var(--charcoal) 14%, transparent);
+    display:grid; grid-template-columns: 1fr 1fr; gap:24px;
+  }
+  @media (max-width:720px){ .contact{grid-template-columns:1fr} }
+  .contact .label{font-family:var(--mono); font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--sage); margin-bottom:8px}
+  .contact .v{font-family:var(--serif); font-size:22px; letter-spacing:-.005em; color:var(--charcoal); margin-bottom:4px}
+  .contact .v-sub{color:var(--charcoal-soft); font-size:14px}
+
+  /* ------- page footer ------- */
+  footer.site{
+    padding:48px 40px; text-align:center;
+    color:var(--gray); font-family:var(--mono); font-size:11px; letter-spacing:.14em;
+  }
+  footer.site a{color:var(--charcoal-soft); border:none}
+  footer.site a:hover{color:var(--charcoal)}
+
+  @media print{
+    .topnav, .tabs, footer.site{display:none}
+    .panel{display:block !important}
+    .paper{box-shadow:none; padding:40px}
+    .hero{padding:40px}
+    @page{size:letter; margin:.4in}
+  }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 120 140" aria-label="Alongside AI">
+        <rect x="0" y="0" width="120" height="140" rx="18" fill="#7B9E87"/>
+        <line x1="42" y1="34" x2="42" y2="112" stroke="#FAF6F1" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="42" cy="38" r="11" fill="#FAF6F1"/>
+        <line x1="78" y1="52" x2="78" y2="112" stroke="#D4A853" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="78" cy="56" r="11" fill="#D4A853"/>
+      </svg>
+      <span class="w">alongside<span class="ai">AI</span></span>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="#" class="active">Legal</a>
+      <a href="mailto:mark@alongsideai.ai">Contact</a>
+    </nav>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="kicker">Privacy &amp; Terms</div>
+  <h1>The rules of the road, <em>in the same plain English as the rest.</em></h1>
+  <p class="lede">Short, honest, and written to be actually read — not buried in legalese. Our promise is the same here as it is on a call: nothing hidden, nothing over-complicated, and our door is always open if anything feels unclear.</p>
+  <div class="meta">
+    <span>Effective <strong>April 22, 2026</strong></span>
+    <span>Last updated <strong>April 22, 2026</strong></span>
+    <span>Version <strong>1.0</strong></span>
+  </div>
+</div>
+
+<div class="doc">
+  <div class="paper">
+
+    <!-- disclaimer for reader -->
+    <div class="disclaimer">
+      <strong>A note before you read</strong>
+      These documents describe how Alongside AI works with its clients and handles their information. They're written in ordinary English rather than legal shorthand, and they're reviewed periodically by counsel. If anything here is unclear, please email <a href="mailto:mark@alongsideai.ai">mark@alongsideai.ai</a> and we'll explain — or revise the wording.
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="active" data-panel="privacy" role="tab">Privacy Policy</button>
+      <button data-panel="terms" role="tab">Terms of Service</button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- PRIVACY PANEL                                 -->
+    <!-- ============================================ -->
+    <div class="panel active" id="privacy" role="tabpanel">
+
+      <div class="sec">
+        <div class="n">01 — What this is</div>
+        <h2>A short explanation of <em>what we collect, why, and what we never do with it.</em></h2>
+        <p>Alongside AI is a small consultancy that helps people — mostly professionals in the second half of their careers — bring modern tools into how they work. To do that well, we need to know a little about you. This policy explains what we ask for, what we do with it, and how to tell us to delete it.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">02 — What we collect</div>
+        <h2>Only what we need to help you. <em>Nothing for advertising.</em></h2>
+        <div class="plain">We ask for your name, your email, and a few details about how you work today. We collect this directly from you — through our intake form, email, or during a call. That's it.</div>
+        <ul class="list">
+          <li><strong>Information you give us.</strong> Name, email, phone (if you share it), and answers to the intake questionnaire — your tools, goals, and concerns about adopting new technology.</li>
+          <li><strong>Things said during our calls.</strong> Notes we take for our own reference. We don't record calls unless you ask us to.</li>
+          <li><strong>Basic website analytics.</strong> We use a privacy-respecting analytics tool that counts page views without individual tracking. No cookies that identify you, no ad-tech.</li>
+          <li><strong>Nothing we don't need.</strong> We don't ask for Social Security numbers, bank credentials, or other sensitive identifiers. If we need access to a system to set it up for you, you grant it yourself.</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <div class="n">03 — Why we collect it</div>
+        <h2>To help, to follow up, and <em>nothing else.</em></h2>
+        <ul class="list">
+          <li><strong>To prepare for our conversation.</strong> Your intake answers let us come to the assessment having already done our homework.</li>
+          <li><strong>To write your plan.</strong> The plan document is personalized. It reflects what you told us.</li>
+          <li><strong>To stay in touch.</strong> If you become a client, we use your contact info to schedule, send materials, and check in at agreed-upon intervals.</li>
+          <li><strong>To improve our work.</strong> Patterns across many clients — not individual records — inform how we evolve the service.</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <div class="n">04 — Who sees your information</div>
+        <h2>A very short list. <em>Truly.</em></h2>
+        <div class="plain">Our small team sees everything. Nobody else — no marketers, no partners, no data brokers. Ever.</div>
+        <ul class="list">
+          <li><strong>Us.</strong> The principal of Alongside AI and, in the future, a small number of vetted team members under written confidentiality.</li>
+          <li><strong>The tools we use to run the business.</strong> Email (Google Workspace), scheduling (Calendly), calls (phone or Zoom), document storage (Google Drive). These are standard, reputable services with their own privacy protections. We don't hand them your data for any purpose other than running the work.</li>
+          <li><strong>Law enforcement, if legally required.</strong> We'd tell you if this ever happened, unless the law prohibits us from doing so.</li>
+          <li><strong>Nobody else.</strong> We don't sell, rent, or trade your information. Ever.</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <div class="n">05 — How long we keep it</div>
+        <h2>As long as it's useful to you — <em>not a minute past.</em></h2>
+        <p>For active clients, we keep your records while we work together and for three years afterward, in case you come back to us or we need to reference what we set up. For prospects who don't become clients, we keep the intake form for 12 months and then delete it.</p>
+        <p>You can tell us to delete your information sooner. See the next section.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">06 — Your rights</div>
+        <h2>You own your information. <em>Always.</em></h2>
+        <ul class="list">
+          <li><strong>Access.</strong> Ask us what we have on file and we'll send it to you within seven days.</li>
+          <li><strong>Correction.</strong> If something's wrong, tell us and we'll fix it.</li>
+          <li><strong>Deletion.</strong> Email us and we'll remove everything we're not required by law to keep.</li>
+          <li><strong>Unsubscribe.</strong> Every email we send has an unsubscribe link. One click, no questions.</li>
+        </ul>
+        <p>To exercise any of these, email <a href="mailto:mark@alongsideai.ai">mark@alongsideai.ai</a> with the request. No form to fill out.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">07 — How we protect it</div>
+        <h2>Reasonable care, <em>no theater.</em></h2>
+        <p>We store information in business-grade tools with two-factor authentication. We use strong passwords and keep our systems updated. We don't claim "bank-level" security because we aren't a bank — but we treat your information with the same discretion we'd want for our own.</p>
+        <p>If a data incident ever occurred that affected you, we'd tell you within 72 hours, explain what happened, and let you know what to do about it.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">08 — A note about AI tools</div>
+        <h2>We use them to serve you. <em>We don't train them on you.</em></h2>
+        <p>Part of our work involves AI tools like Claude. When we set these up for a client, we configure them so that your data is not used to train the underlying models — this is a standard business-tier setting, and we confirm it for every client engagement.</p>
+        <p>If you want more technical detail about how any specific tool handles your data, we'll walk you through it.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">09 — Changes to this policy</div>
+        <h2>We'll tell you. <em>Not bury it in an update.</em></h2>
+        <p>If we materially change this policy, we'll email active clients and anyone who's submitted an intake form in the past year. The "last updated" date at the top will also change.</p>
+      </div>
+
+      <div class="contact">
+        <div>
+          <div class="label">Questions about privacy</div>
+          <div class="v">mark@alongsideai.ai</div>
+          <div class="v-sub">Response within one business day.</div>
+        </div>
+        <div>
+          <div class="label">Mailing address</div>
+          <div class="v">Alongside AI</div>
+          <div class="v-sub">[Business address]</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- TERMS PANEL                                   -->
+    <!-- ============================================ -->
+    <div class="panel" id="terms" role="tabpanel">
+
+      <div class="sec">
+        <div class="n">01 — Who we are</div>
+        <h2>A small consultancy, <em>not a software company.</em></h2>
+        <p>Alongside AI ("we," "us," "our") is a consulting service. We help clients choose and set up modern software and AI tools that fit their actual work. This agreement describes the basic rules of working together.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">02 — What the service is</div>
+        <h2>Assessment, a written plan, and hands-on setup — <em>exactly what we tell you.</em></h2>
+        <div class="plain">If we don't write it down, it's not part of what you're paying for. Every engagement begins with a scope document that lists what's included, what it costs, and what's explicitly excluded.</div>
+        <ul class="list">
+          <li><strong>Discovery.</strong> A free 15-minute call to see if we're a fit.</li>
+          <li><strong>Assessment.</strong> An in-person or video visit, typically 90 minutes, for a flat fee disclosed in advance.</li>
+          <li><strong>Plan document.</strong> A personalized written scope covering what we'd set up, the investment, and a weekly timeline. Yours whether or not you hire us for the setup.</li>
+          <li><strong>Setup &amp; training.</strong> The hands-on work — configuring tools, importing data, sitting next to you until you're comfortable.</li>
+          <li><strong>Ongoing support.</strong> Monthly office hours, included for six months after any setup engagement at no additional cost.</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <div class="n">03 — What the service is not</div>
+        <h2>Important distinctions. <em>Please read this section.</em></h2>
+        <p><strong>We are not your attorney, accountant, CPA, tax preparer, financial advisor, or fiduciary.</strong> We help you use software that supports those functions — but the substance of legal, tax, and financial decisions remains with the licensed professionals you already work with (or should hire). We strongly recommend you involve them before making changes that affect money, taxes, or legal matters.</p>
+        <p><strong>We are not the maker of the tools we recommend.</strong> When we set up QuickBooks, Claude, Bill.com, or any other third-party product, we're configuring software we don't own. Those products have their own terms, pricing, and outages — which are not within our control.</p>
+        <p><strong>We don't guarantee specific outcomes.</strong> We'll tell you honestly what to expect. We won't promise you'll save a specific number of hours or dollars — anyone who does is guessing.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">04 — Pricing &amp; payment</div>
+        <h2>Flat fees, <em>no surprises.</em></h2>
+        <ul class="list">
+          <li><strong>Flat fees, quoted in writing.</strong> Every engagement has a price listed in the plan document. Ranges become fixed numbers before work begins.</li>
+          <li><strong>Half at the start, half on completion.</strong> Setup engagements are invoiced 50% to begin and 50% upon handoff. Assessments are invoiced at scheduling.</li>
+          <li><strong>Payment due in 14 days.</strong> Unless we've written something else. We accept bank transfer, check, or card.</li>
+          <li><strong>You pay the tool vendors directly.</strong> If a tool we recommend has a subscription, you sign up for it and pay the maker — never us. This keeps our advice honest.</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <div class="n">05 — The 30-day check-in &amp; refund</div>
+        <h2>Our promise, <em>in writing.</em></h2>
+        <div class="plain">Every setup engagement includes a 30-day follow-up. If, at that check-in, you tell us honestly that the work we set up didn't make your day better — we refund the setup fee. No forms, no debate.</div>
+        <p>The refund covers the Alongside AI fee. It does not cover third-party tool subscriptions you signed up for directly, or expenses paid to other vendors. To claim the refund, email us within 7 days of the 30-day check-in and let us know.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">06 — Ending the engagement</div>
+        <h2>Either side, any time, <em>no drama.</em></h2>
+        <ul class="list">
+          <li><strong>You can end it.</strong> Just tell us. You pay for work completed up to that point at the agreed rate.</li>
+          <li><strong>We can end it.</strong> If an engagement turns out to be outside what we can help with, we'll tell you, refund the unused portion of any deposit, and where possible refer you to someone who can.</li>
+          <li><strong>Either of us can pause.</strong> If life intervenes, we can put the engagement on hold for up to 90 days at no additional cost.</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <div class="n">07 — Confidentiality</div>
+        <h2>What you tell us stays with us. <em>Always.</em></h2>
+        <p>We treat everything you share — about your business, your finances, your family, your operations — as confidential. We don't discuss your situation with other clients, on social media, or in marketing, without your explicit, specific, written permission.</p>
+        <p>The reverse is also true: please don't share materials we give you (our plan documents, reference guides, frameworks) with people outside your business without asking first.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">08 — Intellectual property</div>
+        <h2>You keep your work. <em>We keep ours.</em></h2>
+        <ul class="list">
+          <li><strong>Your data is yours.</strong> The contents of your tools — documents, emails, transactions — belong to you. We don't claim any ownership of your work product.</li>
+          <li><strong>Our materials are ours.</strong> Our plan documents, reference guides, and methodology are licensed to you for your own internal use. Please don't redistribute or republish them without asking.</li>
+          <li><strong>Specific to your engagement.</strong> Anything we create specifically for you — a custom Claude project, a personalized workflow doc — is yours to keep and modify.</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <div class="n">09 — Limits on liability</div>
+        <h2>The legal part, <em>stated plainly.</em></h2>
+        <p>We do our work carefully. But software sometimes fails, services sometimes change their pricing or features, and third-party tools are outside our control. Because of this:</p>
+        <ul class="list">
+          <li>Our total liability for any claim arising from our work is limited to the fees you paid us in the 12 months before the claim.</li>
+          <li>We're not liable for indirect damages — things like lost profits, lost business opportunities, or loss of data caused by tools we didn't make.</li>
+          <li>You're responsible for maintaining your own backups of anything critical. We'll help you set backups up; you have to keep them going.</li>
+        </ul>
+        <p>None of this limits liability for anything the law doesn't allow us to limit — like intentional misconduct or fraud.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">10 — If we disagree</div>
+        <h2>Talk first. <em>Lawyers second.</em></h2>
+        <p>If something isn't working between us, please email <a href="mailto:mark@alongsideai.ai">mark@alongsideai.ai</a> and tell us. We'll get on the phone within three business days and try to resolve it directly. Most disagreements are misunderstandings that a 20-minute call can fix.</p>
+        <p>If we can't resolve it that way, any formal dispute will be handled in the courts of [Governing county, state], under [Governing state] law. We both agree to that venue before either of us needs it.</p>
+      </div>
+
+      <div class="sec">
+        <div class="n">11 — Changes to these terms</div>
+        <h2>We'll tell you before, <em>not after.</em></h2>
+        <p>If we materially change these terms, active clients will get an email at least 30 days before the changes take effect. If you don't like the changes, you can end the engagement under section 6 — no penalty.</p>
+      </div>
+
+      <div class="contact">
+        <div>
+          <div class="label">Questions about terms</div>
+          <div class="v">mark@alongsideai.ai</div>
+          <div class="v-sub">Response within one business day.</div>
+        </div>
+        <div>
+          <div class="label">Business name</div>
+          <div class="v">Alongside AI</div>
+          <div class="v-sub">[Business entity · address]</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site">
+  <p>© 2026 Alongside AI · <a href="mailto:mark@alongsideai.ai">mark@alongsideai.ai</a></p>
+</footer>
+
+<script>
+  // tab switching
+  const tabs = document.querySelectorAll('.tabs button');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.panel;
+      tabs.forEach(b => b.classList.toggle('active', b === btn));
+      panels.forEach(p => p.classList.toggle('active', p.id === target));
+      // persist
+      try{ localStorage.setItem('alongside.legal.tab', target); }catch(e){}
+      // scroll paper into view smoothly
+      document.querySelector('.paper').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+  // restore
+  try{
+    const saved = localStorage.getItem('alongside.legal.tab');
+    if(saved){
+      const btn = document.querySelector(`.tabs button[data-panel="${saved}"]`);
+      if(btn) btn.click();
+    }
+  }catch(e){}
+</script>
+
+</body>
+</html>
