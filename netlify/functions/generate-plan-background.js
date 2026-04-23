@@ -7,7 +7,7 @@
 // Netlify Forms — that's submission-created's job.
 
 const crypto = require("crypto");
-const { getStore } = require("@netlify/blobs");
+const { connectLambda, getStore } = require("@netlify/blobs");
 const { buildAiBriefing } = require("../lib/briefing");
 const { draftPlan } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
@@ -73,6 +73,11 @@ exports.handler = async (event) => {
     if (event.httpMethod !== "POST") {
       return { statusCode: 405, body: "method not allowed" };
     }
+
+    // Netlify doesn't auto-initialize the Blobs environment for background
+    // functions invoked programmatically via fetch (as opposed to direct HTTP
+    // requests from a browser). This call wires it up manually.
+    connectLambda(event);
 
     const payload = JSON.parse(event.body || "{}");
     const data = payload.data || {};
