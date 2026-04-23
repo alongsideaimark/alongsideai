@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Get your plan — Alongside AI</title>
-<meta name="description" content="Twelve plain-English questions. About ten minutes. We'll send back a plan customized for you within two business days — no call required, no commitment."/>
+<meta name="description" content="Seven short sections of plain-English questions — around 20 to 25 minutes. Skip any question you'd rather not answer. We'll send back a plan written for your specific situation within two business days — no call required, no commitment."/>
 <link rel="canonical" href="https://alongsideai.ai/questionnaire/"/>
 
 <link rel="icon" href="/favicon.ico" sizes="any"/>
@@ -15,7 +15,7 @@
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Alongside AI"/>
 <meta property="og:title" content="Get your custom AI plan — Alongside AI"/>
-<meta property="og:description" content="Twelve plain-English questions. About ten minutes. We'll send back a plan customized for you — no call required, no commitment."/>
+<meta property="og:description" content="Seven short sections of plain-English questions. Around 20 to 25 minutes. A custom plan written for your situation — no call required, no commitment."/>
 <meta property="og:url" content="https://alongsideai.ai/questionnaire/"/>
 <meta property="og:image" content="https://alongsideai.ai/assets/og-image.png"/>
 <meta property="og:image:width" content="1200"/>
@@ -23,7 +23,7 @@
 <meta property="og:image:alt" content="Alongside AI — You don't need to learn AI. You just need someone to set it up for you."/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Get your custom AI plan — Alongside AI"/>
-<meta name="twitter:description" content="Twelve plain-English questions. About ten minutes. A custom plan, no call required."/>
+<meta name="twitter:description" content="Seven short sections of plain-English questions. Around 20 to 25 minutes. A custom plan, no call required."/>
 <meta name="twitter:image" content="https://alongsideai.ai/assets/og-image.png"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -104,13 +104,13 @@
   /* ---------- page wrap ---------- */
   main{
     flex:1;
-    display:flex; align-items:center; justify-content:center;
-    padding: 48px 40px 72px;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding: 48px 40px 96px;
   }
   @media (max-width:720px){
     header.bar{padding:16px 22px}
     .progress-wrap{padding:20px 22px 0}
-    main{padding: 32px 22px 56px}
+    main{padding: 32px 22px 120px}
   }
 
   .card{
@@ -132,36 +132,60 @@
   }
   .step-kicker::before{content:""; width:28px; height:1px; background:var(--sage)}
 
-  .q-title{
+  .section-title{
     font-family:var(--serif);
     font-size: clamp(30px, 4vw, 40px);
     line-height:1.1;
     letter-spacing:-.015em;
     color:var(--charcoal);
     text-wrap:pretty;
+    margin-bottom:14px;
   }
-  .q-help{
-    margin-top:14px;
+  .section-intro{
     color:var(--charcoal-soft);
     font-size:17px;
-    max-width:560px;
+    max-width:620px;
+    margin-bottom:8px;
+  }
+
+  /* ---------- question block (inside a section) ---------- */
+  .question{
+    padding-top:34px;
+    margin-top:34px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 7%, transparent);
+  }
+  .question:first-of-type{ padding-top:34px; margin-top:34px }
+  .q-label{
+    display:block;
+    font-family:var(--serif);
+    font-size:22px;
+    line-height:1.25;
+    color:var(--charcoal);
+    margin-bottom:8px;
+    letter-spacing:-.005em;
+  }
+  .q-help{
+    display:block;
+    color:var(--charcoal-soft);
+    font-size:15px;
+    margin-bottom:16px;
+    max-width:580px;
+  }
+  .q-required{
+    color:var(--sage);
+    font-family:var(--mono); font-size:10px; letter-spacing:.18em;
+    text-transform:uppercase;
+    margin-left:8px;
+    font-weight:500;
+    vertical-align:1px;
   }
 
   /* ---------- form fields ---------- */
-  .field{margin-top:36px}
-  .field label.flab{
-    display:block;
-    font-size:15px;
-    font-weight:600;
-    margin-bottom:10px;
-    color:var(--charcoal);
-  }
-  .field .hint{display:block; font-weight:400; font-size:14px; color:var(--gray); margin-top:2px}
   .input, textarea.input{
     width:100%;
     font-family:var(--sans);
-    font-size:18px;
-    padding:16px 18px;
+    font-size:17px;
+    padding:14px 16px;
     border:1px solid color-mix(in oklab, var(--charcoal) 16%, transparent);
     border-radius:10px;
     background:var(--cream);
@@ -173,26 +197,28 @@
     border-color:var(--sage);
     background:var(--white);
   }
-  textarea.input{resize:vertical; min-height:120px; line-height:1.5}
+  textarea.input{resize:vertical; min-height:108px; line-height:1.5}
 
   .choice-grid{
     display:grid; gap:12px;
     grid-template-columns: 1fr 1fr;
   }
   @media (max-width:540px){ .choice-grid{grid-template-columns:1fr} }
+  .choice-grid.single{ grid-template-columns: 1fr }
+
   .choice{
     display:flex; align-items:flex-start; gap:14px;
-    padding:18px 20px;
+    padding:16px 18px;
     border:1px solid color-mix(in oklab, var(--charcoal) 14%, transparent);
     border-radius:12px;
     background:var(--cream);
     cursor:pointer;
-    transition: border-color .2s ease, background .2s ease, transform .15s ease;
+    transition: border-color .2s ease, background .2s ease;
   }
   .choice:hover{border-color:var(--sage); background:var(--white)}
   .choice input{position:absolute; opacity:0; pointer-events:none}
   .choice .check{
-    width:22px; height:22px; border-radius:999px;
+    width:20px; height:20px; border-radius:999px;
     border:1.5px solid color-mix(in oklab, var(--charcoal) 24%, transparent);
     flex-shrink:0; margin-top:2px;
     display:grid; place-items:center;
@@ -213,9 +239,12 @@
   .choice .body small{display:block; font-size:13px; color:var(--gray); margin-top:3px; font-weight:400}
   .choice .body strong{font-weight:600}
 
-  /* horizontal choice row (for yes/no-ish) */
-  .choice-row{display:flex; gap:12px; flex-wrap:wrap}
-  .choice-row .choice{flex:1 1 auto; min-width:180px}
+  .followup{
+    margin-top:14px;
+    display:none;
+  }
+  .followup.open{ display:block }
+  .followup .input{ margin-top:0 }
 
   /* ---------- nav buttons ---------- */
   .card-footer{
@@ -242,12 +271,19 @@
   .btn-ghost:hover{color:var(--charcoal)}
   .btn-ghost .arrow-l{transform:rotate(180deg); display:inline-block}
 
+  .skip-note{
+    margin-top:18px;
+    text-align:center;
+    font-size:13px; color:var(--gray);
+    font-style:italic;
+  }
+
   /* ---------- intro / outro states ---------- */
   .intro-card, .done-card{
     max-width:760px; width:100%;
     text-align:left;
   }
-  .intro-card .q-title, .done-card .q-title{font-size: clamp(36px, 5vw, 52px)}
+  .intro-card .section-title, .done-card .section-title{font-size: clamp(36px, 5vw, 52px); margin-bottom:18px}
   .intro-bullets{
     margin-top:32px;
     display:flex; flex-direction:column; gap:14px;
@@ -300,21 +336,44 @@
 </head>
 <body>
 
-<!-- Hidden form for Netlify Forms detection (scanned at deploy time). Real submission happens via fetch() from the JS flow. -->
+<!--
+  Hidden form for Netlify Forms detection.
+  Netlify scans at deploy time. Every field that will ever be submitted must exist here by name,
+  or it won't show up in the Forms dashboard. Real submission happens via fetch() from the JS flow below.
+-->
 <form name="questionnaire" netlify netlify-honeypot="bot-field" hidden>
   <input type="text" name="bot-field" />
   <input type="text" name="name" />
   <input type="email" name="contact" />
-  <input type="text" name="comfort" />
   <input type="text" name="situation" />
+  <input type="text" name="situation_other" />
+  <input type="text" name="comfort" />
   <textarea name="work"></textarea>
-  <textarea name="friction"></textarea>
-  <textarea name="wish"></textarea>
+  <input type="text" name="team" />
+  <textarea name="typical_week"></textarea>
+  <input type="text" name="location_today" />
+  <input type="text" name="location_wanted" />
   <input type="text" name="devices" />
+  <input type="text" name="subscriptions" />
+  <input type="text" name="subscriptions_other" />
+  <textarea name="data_lives"></textarea>
+  <input type="text" name="tool_hated" />
+  <textarea name="tool_hated_why"></textarea>
+  <textarea name="friction"></textarea>
+  <textarea name="manual_tasks"></textarea>
+  <textarea name="already_tried"></textarea>
+  <input type="text" name="inbox" />
+  <input type="text" name="inbox_note" />
+  <textarea name="wish"></textarea>
+  <textarea name="success_6mo"></textarea>
+  <input type="text" name="priority" />
   <input type="text" name="tried_ai" />
   <textarea name="nervous"></textarea>
-  <textarea name="subscriptions"></textarea>
+  <input type="text" name="cloud_comfort" />
+  <input type="text" name="cloud_comfort_note" />
   <input type="text" name="urgency" />
+  <input type="text" name="budget_posture" />
+  <textarea name="anything_else"></textarea>
 </form>
 
 <header class="bar">
@@ -327,8 +386,8 @@
 
 <div class="progress-wrap" id="progress-wrap" style="display:none">
   <div class="progress-meta-inner">
-    <span id="progress-label">Question 1 of 12</span>
-    <span id="progress-pct">8% done</span>
+    <span id="progress-label">Section 1 of 7</span>
+    <span id="progress-pct">0% done</span>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
 </div>
@@ -343,151 +402,399 @@
 </footer>
 
 <script>
-/* ---------- questions ---------- */
-const STEPS = [
+/* ---------- sections & questions ----------
+   Every question has a stable id (used as the Netlify form field name).
+   Required fields are rare: only `name` in S1 and `contact` in S7.
+   Everything else is skippable by design — that's the ethos.
+   Each radio/checkbox option has a `value` that's the id saved to the form,
+   and a `label` that's shown both in the UI and in the internal notification email.
+*/
+const SECTIONS = [
   { kind: "intro" },
+
   {
-    id: "name",
-    title: "First, what should we call you?",
-    help: "Just a first name is fine. We'll use it on your plan.",
-    field: { kind: "text", placeholder: "First name", required: true, autofocus: true }
+    id: "s1",
+    kicker: "Section 1 of 7",
+    title: "About you",
+    intro: "A few quick things so we know who we're writing for.",
+    questions: [
+      {
+        id: "name",
+        label: "First, what should we call you?",
+        help: "Just a first name is fine. We'll address the plan to you.",
+        required: true,
+        field: { kind: "text", placeholder: "First name", autofocus: true }
+      },
+      {
+        id: "situation",
+        label: "Which of these sounds most like you right now?",
+        help: "Pick the closest one. We'll get to the nuance in a minute.",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "business", label: "Running a small business", hint: "Solo or with a small team." },
+            { value: "semi_retired", label: "Semi-retired, or winding down", hint: "Still working, but slowing the pace." },
+            { value: "retired", label: "Fully retired, but active", hint: "Travel, family, projects, causes." },
+            { value: "professional", label: "A busy professional inside a bigger company", hint: "Not technical, and overwhelmed." },
+            { value: "helping", label: "Helping a parent or family member", hint: "You're the one figuring this out for them." },
+            { value: "other", label: "Something else", hint: "Tell us a little more.", reveal: "situation_other" }
+          ]
+        }
+      },
+      {
+        id: "situation_other",
+        hidden: true, // only shown when situation === "other"
+        revealIf: { field: "situation", equals: "other" },
+        label: "Tell us a bit more.",
+        help: "A line or two is plenty.",
+        field: { kind: "text", placeholder: "I run a nonprofit board…" }
+      },
+      {
+        id: "comfort",
+        label: "How do you feel about technology in general?",
+        help: "No wrong answers. This just helps us match our pace to yours.",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "avoid", label: "I avoid it when I can", hint: "Mostly frustrating." },
+            { value: "basics", label: "I can handle the basics", hint: "Email, texts, a few apps — but I get stuck." },
+            { value: "okay", label: "I'm okay, but I want to do more", hint: "I know there's more I could be doing." },
+            { value: "comfortable", label: "I'm pretty comfortable, just busy", hint: "I don't have the time to figure it out." }
+          ]
+        }
+      }
+    ]
   },
+
   {
-    id: "contact",
-    title: "Where should we send your plan?",
-    help: "We'll email you within two business days. We won't add you to anything.",
-    field: { kind: "email", placeholder: "you@example.com", required: true }
+    id: "s2",
+    kicker: "Section 2 of 7",
+    title: "Your world and how you work",
+    intro: "The shape of your week. Any good plan starts here.",
+    questions: [
+      {
+        id: "work",
+        label: "In a sentence or two, what do you do — or what did you do?",
+        help: "We just want a sense of your world.",
+        field: { kind: "textarea", placeholder: "I own a few commercial properties in Pasadena and handle most things myself…" }
+      },
+      {
+        id: "team",
+        label: "Who else is involved in the day-to-day?",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "solo", label: "Just me" },
+            { value: "partner", label: "Me and a spouse or partner" },
+            { value: "small", label: "Me and a small team (2 to 10 people)" },
+            { value: "larger", label: "A larger team or company" }
+          ]
+        }
+      },
+      {
+        id: "typical_week",
+        label: "Walk us through a typical week.",
+        help: "Where does most of your time go? What's Monday vs. Friday? If Tuesday morning is sacred because you do payroll, tell us that.",
+        field: { kind: "textarea", placeholder: "Mondays are pretty quiet. Tuesday and Wednesday I'm on job sites. Thursdays I catch up on paperwork…" }
+      },
+      {
+        id: "location_today",
+        label: "Where do you do most of your work from today?",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "office", label: "An office I drive to" },
+            { value: "home", label: "A home office" },
+            { value: "mix", label: "A mix of the two" },
+            { value: "anywhere", label: "Wherever I happen to be that day" }
+          ]
+        }
+      },
+      {
+        id: "location_wanted",
+        label: "And where would you like to be able to work from, if the tools supported it?",
+        help: "A coffee shop. A beach. A grandkid's living room. Be honest.",
+        field: { kind: "text", placeholder: "Anywhere with an internet connection, honestly…" }
+      }
+    ]
   },
+
   {
-    id: "comfort",
-    title: "How do you feel about technology in general?",
-    help: "There are no wrong answers. This just helps us match our pace to yours.",
-    field: {
-      kind: "radio",
-      options: [
-        { value: "avoid", label: "I avoid it when I can", hint: "It's mostly frustrating to me." },
-        { value: "basics", label: "I can handle the basics", hint: "Email, texts, a few apps — but I get stuck." },
-        { value: "okay", label: "I'm okay, but I want to do more", hint: "I know there's more I could be doing." },
-        { value: "comfortable", label: "I'm pretty comfortable, just busy", hint: "I don't have the time to figure it out." }
-      ]
-    }
+    id: "s3",
+    kicker: "Section 3 of 7",
+    title: "Your current setup",
+    intro: "Just so we don't recommend something you already own — and so we know what we're working with.",
+    questions: [
+      {
+        id: "devices",
+        label: "What devices do you actually use?",
+        help: "Pick any that apply.",
+        field: {
+          kind: "checkbox",
+          options: [
+            { value: "iphone", label: "iPhone" },
+            { value: "android", label: "Android phone" },
+            { value: "ipad", label: "iPad or tablet" },
+            { value: "mac", label: "Mac laptop or desktop" },
+            { value: "pc", label: "Windows PC" },
+            { value: "none", label: "I mostly avoid computers" }
+          ]
+        }
+      },
+      {
+        id: "subscriptions",
+        label: "What software or apps do you currently pay for?",
+        help: "Don't worry about being exact. This just helps us avoid recommending something you already own.",
+        field: {
+          kind: "checkbox",
+          options: [
+            { value: "m365", label: "Microsoft 365 or Office" },
+            { value: "google", label: "Google Workspace or business Gmail" },
+            { value: "accounting", label: "QuickBooks, Xero, or other accounting software" },
+            { value: "storage", label: "Dropbox, iCloud, or Google Drive (paid)" },
+            { value: "ai", label: "ChatGPT, Claude, or another AI subscription" },
+            { value: "sign", label: "Something for signing documents (DocuSign, Adobe)" },
+            { value: "bills", label: "Something for paying bills online" },
+            { value: "crm", label: "A CRM or contact manager" },
+            { value: "scheduling", label: "A scheduling tool (Calendly and similar)" },
+            { value: "invoicing", label: "Invoicing or billing software" },
+            { value: "passwords", label: "A password manager" },
+            { value: "email_marketing", label: "Email marketing (Mailchimp, Constant Contact)" },
+            { value: "project", label: "Project or task management (Asana, Trello, Notion)" },
+            { value: "industry", label: "Industry-specific software (tell us below)" },
+            { value: "unsure", label: "Honestly, I'm not sure what I pay for" }
+          ]
+        }
+      },
+      {
+        id: "subscriptions_other",
+        label: "Anything else worth mentioning?",
+        help: "Optional. Especially industry software or anything unusual.",
+        field: { kind: "text", placeholder: "AppFolio, Clio, Mindbody…" }
+      },
+      {
+        id: "data_lives",
+        label: "Where do your important files and data actually live?",
+        help: "Be honest about the real picture. Some people say 'a filing cabinet and a shoebox.' Others say 'Google Drive, QuickBooks, and my assistant's brain.' Both are useful answers.",
+        field: { kind: "textarea", placeholder: "Books in QuickBooks Desktop on the office computer. Leases in a filing cabinet. Contacts in my phone and in Outlook…" }
+      },
+      {
+        id: "tool_hated",
+        label: "Is there a tool you really don't like using — but can't seem to replace?",
+        help: "Software, a spreadsheet, a paper system, whatever.",
+        field: { kind: "text", placeholder: "QuickBooks Desktop, for example…" }
+      },
+      {
+        id: "tool_hated_why",
+        label: "What specifically frustrates you about it?",
+        help: "Skip if nothing comes to mind for the last one.",
+        field: { kind: "textarea", placeholder: "I can't access it from the road. Entering a bill takes fifteen clicks…" }
+      }
+    ]
   },
+
   {
-    id: "situation",
-    title: "What best describes your situation?",
-    help: "Pick the closest one. You can tell us more in a minute.",
-    field: {
-      kind: "radio",
-      options: [
-        { value: "business", label: "I run a small business", hint: "Solo or with a small team." },
-        { value: "retired", label: "I'm retired or near it", hint: "Want to stay organized and enjoy life." },
-        { value: "professional", label: "I'm a busy professional", hint: "Not technical, and overwhelmed." },
-        { value: "helping", label: "I'm helping a family member", hint: "Parent, in-law, someone close." }
-      ]
-    }
+    id: "s4",
+    kicker: "Section 4 of 7",
+    title: "Where your time actually goes",
+    intro: "This is the part we'll quote back to you in your plan. Be specific.",
+    questions: [
+      {
+        id: "friction",
+        label: "What takes way longer than it should?",
+        help: "The tasks you dread. The thing you keep meaning to fix. Write whatever comes to mind.",
+        field: { kind: "textarea", placeholder: "Keeping track of lease expirations, bill pay, paper everywhere…" }
+      },
+      {
+        id: "manual_tasks",
+        label: "Name two or three specific things you still do by hand that you suspect could be automated.",
+        help: "Examples: typing up meeting notes, sending the same five-line follow-up email, copying numbers between two spreadsheets, remembering to invoice on the 15th. Just list what you actually do.",
+        field: { kind: "textarea", placeholder: "1) Matching deposits to invoices in QuickBooks. 2) Sending the same intake email to every new tenant. 3) …" }
+      },
+      {
+        id: "already_tried",
+        label: "Have you tried to fix any of this before? What happened?",
+        help: "Hired someone? Bought software that didn't stick? Asked a kid or grandkid for help? We want to know so we don't suggest it again.",
+        field: { kind: "textarea", placeholder: "My daughter set me up with a Gmail filter once. It was great for a month, then…" }
+      },
+      {
+        id: "inbox",
+        label: "How would you describe your email inbox right now?",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "zero", label: "Inbox zero, mostly under control" },
+            { value: "manageable", label: "Manageable but noisy" },
+            { value: "overwhelmed", label: "Overwhelmed — I miss things" },
+            { value: "surrendered", label: "I've given up on it" }
+          ]
+        }
+      },
+      {
+        id: "inbox_note",
+        label: "Anything specific about email that drives you up the wall?",
+        help: "Optional. Something like: 'The same three people only respond when I follow up twice.'",
+        field: { kind: "text", placeholder: "I can never find the attachment from two weeks ago…" }
+      }
+    ]
   },
+
   {
-    id: "work",
-    title: "What do you do — or what did you do?",
-    help: "A sentence or two is plenty. We just want a sense of your world.",
-    field: { kind: "textarea", placeholder: "I own a few commercial properties in Pasadena, mostly handle everything myself…" }
+    id: "s5",
+    kicker: "Section 5 of 7",
+    title: "What you actually want",
+    intro: "The real goal, in your own words.",
+    questions: [
+      {
+        id: "wish",
+        label: "If a magic wand fixed one thing about how you work, what would it be?",
+        help: "Be greedy. We'll tell you honestly whether we can help.",
+        field: { kind: "textarea", placeholder: "I wish I could work from anywhere and not be tied to my office computer." }
+      },
+      {
+        id: "success_6mo",
+        label: "Six months from now, if this is working — what's different?",
+        help: "Be as specific as you can. 'I'm not working Saturdays anymore.' 'I can travel in March without dropping any balls.' 'The books close themselves.' Whatever it looks like to you.",
+        field: { kind: "textarea", placeholder: "I'm spending the winter somewhere warm. My assistant handles the inbox. I'm not opening QuickBooks every week…" }
+      },
+      {
+        id: "priority",
+        label: "If you had to pick one — would a good plan give you more time, more money, or more peace of mind?",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "time", label: "More time" },
+            { value: "money", label: "More money" },
+            { value: "peace", label: "More peace of mind" },
+            { value: "mix", label: "Honestly, some of each" }
+          ]
+        }
+      }
+    ]
   },
+
   {
-    id: "friction",
-    title: "What takes way longer than it should?",
-    help: "The tasks you dread. The thing you keep meaning to fix. Write whatever comes to mind.",
-    field: { kind: "textarea", placeholder: "Keeping track of lease expirations, bill pay, paper everywhere…" }
+    id: "s6",
+    kicker: "Section 6 of 7",
+    title: "AI and your data",
+    intro: "A few questions about what you're comfortable with. Honesty helps us rule tools in or out.",
+    questions: [
+      {
+        id: "tried_ai",
+        label: "Have you used any AI tools before?",
+        help: "ChatGPT, Siri, Alexa — anything counts.",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "no", label: "No, not really", hint: "This would be my first time." },
+            { value: "little", label: "A little", hint: "Poked at it, didn't stick." },
+            { value: "regular", label: "Yes, regularly", hint: "I use one or more already." }
+          ]
+        }
+      },
+      {
+        id: "nervous",
+        label: "Is there anything about AI that makes you nervous?",
+        help: "Privacy, getting scammed, hallucinations, learning curve — whatever it is, we'd rather know.",
+        field: { kind: "textarea", placeholder: "I'm worried about putting client information into these things…" }
+      },
+      {
+        id: "cloud_comfort",
+        label: "How do you feel about your data living in the cloud?",
+        help: "\"The cloud\" just means: stored on someone else's computer, accessed over the internet. Google Drive, iCloud, Dropbox — all cloud.",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "fine", label: "I'm fine with it — my stuff is probably already there" },
+            { value: "familiar", label: "Fine, if it's a name I've heard of" },
+            { value: "nervous", label: "Nervous, but open to it if you explain why" },
+            { value: "local", label: "I'd rather keep things on my own devices" }
+          ]
+        }
+      },
+      {
+        id: "cloud_comfort_note",
+        label: "Anything specific about data or privacy you want us to know?",
+        help: "Optional. Regulatory requirements, client confidentiality, a prior bad experience.",
+        field: { kind: "text", placeholder: "Some of my clients are attorneys, so…" }
+      }
+    ]
   },
+
   {
-    id: "wish",
-    title: "If a magic wand fixed one thing, what would it be?",
-    help: "Be greedy. We'll tell you honestly whether we can help.",
-    field: { kind: "textarea", placeholder: "I wish I could work from anywhere and not be tied to my office computer." }
+    id: "s7",
+    kicker: "Section 7 of 7",
+    title: "Getting started",
+    intro: "Almost done. A couple of logistics, and where to send your plan.",
+    questions: [
+      {
+        id: "urgency",
+        label: "How soon would you want to get started?",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "asap", label: "As soon as possible", hint: "I've been meaning to do this for a while." },
+            { value: "month", label: "Within a month or so", hint: "Ready to start soon." },
+            { value: "exploring", label: "Just exploring for now", hint: "Curious what you'd recommend." }
+          ]
+        }
+      },
+      {
+        id: "budget_posture",
+        label: "What kind of monthly budget are you thinking about for any new tools or subscriptions?",
+        help: "A rough ballpark, not a commitment. We'll always quote specifics before recommending anything — and we're as happy recommending free tools as paid ones when they do the job.",
+        field: {
+          kind: "radio",
+          options: [
+            { value: "under_50", label: "Under $50 a month", hint: "Keep it lean." },
+            { value: "50_100", label: "$50 to $100 a month" },
+            { value: "100_250", label: "$100 to $250 a month" },
+            { value: "250_500", label: "$250 to $500 a month" },
+            { value: "500_plus", label: "$500 or more a month", hint: "I'm ready to invest if it's the right tool." },
+            { value: "unsure", label: "Honestly, I'm not sure yet", hint: "Tell me what good looks like." }
+          ]
+        }
+      },
+      {
+        id: "anything_else",
+        label: "Anything else you want us to know before we write your plan?",
+        help: "The fifteenth thing that drives you crazy. A constraint we haven't asked about. A screenshot-worth-of-context you want to include. Optional.",
+        field: { kind: "textarea", placeholder: "Honestly, the part that keeps me up is…" }
+      },
+      {
+        id: "contact",
+        label: "Where should we send your plan?",
+        help: "We'll email you within two business days. We won't add you to anything, and we don't sell contact info.",
+        required: true,
+        field: { kind: "email", placeholder: "you@example.com" }
+      }
+    ]
   },
-  {
-    id: "devices",
-    title: "What devices do you use?",
-    help: "Pick any that apply.",
-    field: {
-      kind: "checkbox",
-      options: [
-        { value: "iphone", label: "iPhone" },
-        { value: "android", label: "Android phone" },
-        { value: "ipad", label: "iPad or tablet" },
-        { value: "mac", label: "Mac laptop or desktop" },
-        { value: "pc", label: "Windows PC" },
-        { value: "none", label: "I mostly avoid computers" }
-      ]
-    }
-  },
-  {
-    id: "tried_ai",
-    title: "Have you tried any AI tools before?",
-    help: "ChatGPT, Siri, Alexa — anything counts.",
-    field: {
-      kind: "radio",
-      options: [
-        { value: "no", label: "No, not really", hint: "This would be my first time." },
-        { value: "little", label: "A little", hint: "Poked at it, didn't stick." },
-        { value: "regular", label: "Yes, regularly", hint: "I use one or more already." }
-      ]
-    }
-  },
-  {
-    id: "nervous",
-    title: "Is there anything about AI that makes you nervous?",
-    help: "Privacy, getting scammed, learning curve — whatever it is, we'd rather know.",
-    field: { kind: "textarea", placeholder: "I'm a little worried about putting my information into these things…", optional: true }
-  },
-  {
-    id: "subscriptions",
-    title: "Do you pay for any software or apps right now?",
-    help: "Don't worry about being exact — ballpark is fine. This helps us make sure we don't recommend anything you already own.",
-    field: {
-      kind: "checkbox",
-      options: [
-        { value: "m365", label: "Microsoft 365 or Office" },
-        { value: "google", label: "Google Workspace or Gmail for business" },
-        { value: "accounting", label: "QuickBooks, Xero, or other accounting software" },
-        { value: "storage", label: "Dropbox, iCloud, or Google Drive (paid)" },
-        { value: "ai", label: "ChatGPT, Claude, or another AI subscription" },
-        { value: "sign", label: "Something for signing documents (DocuSign, Adobe)" },
-        { value: "bills", label: "Something for paying bills online" },
-        { value: "unsure", label: "Honestly, I'm not sure what I pay for" }
-      ]
-    }
-  },
-  {
-    id: "urgency",
-    title: "How soon would you want to get started?",
-    help: "Last question. There are no wrong answers.",
-    field: {
-      kind: "radio",
-      options: [
-        { value: "asap", label: "As soon as possible", hint: "I've been meaning to do this for a while." },
-        { value: "month", label: "Within a month or so", hint: "Ready to start soon." },
-        { value: "exploring", label: "Just exploring for now", hint: "Curious what you'd recommend." }
-      ]
-    }
-  },
+
   { kind: "done" }
 ];
 
-const QUESTION_COUNT = STEPS.filter(s => !s.kind).length;
+const SECTION_COUNT = SECTIONS.filter(s => !s.kind).length;
 
 /* ---------- state ---------- */
-const STORAGE = "alongside-ai-intake-v1";
+const STORAGE = "alongside-ai-intake-v2";
 let state = { cur: 0, answers: {} };
 try{
   const raw = localStorage.getItem(STORAGE);
-  if(raw) state = Object.assign(state, JSON.parse(raw));
+  if(raw){
+    const parsed = JSON.parse(raw);
+    if(parsed && typeof parsed === "object") state = Object.assign(state, parsed);
+  }
 }catch(e){}
 
+// Purge any stale v1 storage so the old form's data doesn't bleed in.
+try{ localStorage.removeItem("alongside-ai-intake-v1"); }catch(e){}
+
 function save(){
-  try{ localStorage.setItem(STORAGE, JSON.stringify(state)) }catch(e){}
+  try{ localStorage.setItem(STORAGE, JSON.stringify(state)); }catch(e){}
 }
 function clearState(){
-  try{ localStorage.removeItem(STORAGE) }catch(e){}
+  try{ localStorage.removeItem(STORAGE); }catch(e){}
 }
 
 /* ---------- render ---------- */
@@ -497,37 +804,44 @@ const progressFill = document.getElementById("progress-fill");
 const progressLabel = document.getElementById("progress-label");
 const progressPct = document.getElementById("progress-pct");
 
-function questionIndex(stepIdx){
+function sectionIndex(stepIdx){
+  // 1-based index of the current section among content sections (skips intro/done).
   let n = 0;
   for(let i=0;i<=stepIdx;i++){
-    if(!STEPS[i].kind) n++;
+    if(!SECTIONS[i].kind) n++;
   }
   return n;
 }
 
 function updateProgress(){
-  const step = STEPS[state.cur];
+  const step = SECTIONS[state.cur];
   if(step.kind){
     progressWrap.style.display = "none";
     return;
   }
   progressWrap.style.display = "block";
-  const qn = questionIndex(state.cur);
-  const pct = Math.round((qn / QUESTION_COUNT) * 100);
+  const sn = sectionIndex(state.cur);
+  const pct = Math.round((sn - 1) / SECTION_COUNT * 100);
   progressFill.style.width = pct + "%";
-  progressLabel.textContent = `Question ${qn} of ${QUESTION_COUNT}`;
-  progressPct.textContent = `${pct}% done`;
+  progressLabel.textContent = `Section ${sn} of ${SECTION_COUNT}`;
+  progressPct.textContent = sn === 1 ? "Just getting started" : `${pct}% through`;
+}
+
+function escapeHtml(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
 }
 
 function renderIntro(){
   app.innerHTML = `
     <div class="card intro-card view">
       <div class="step-kicker">Before we begin</div>
-      <h1 class="q-title">Tell us a little about how you work. We'll write you a plan.</h1>
-      <p class="q-help">Twelve plain-English questions. About ten minutes. We'll save your place if you need to step away. When you're done, we'll email you a custom plan within two business days — no call required, no obligation.</p>
+      <h1 class="section-title">Tell us about how you work. We'll write you a plan.</h1>
+      <p class="section-intro">Seven short sections of plain-English questions. Most people take about 20 to 25 minutes. You can skip any question that doesn't feel right, and we'll save your place if you need to step away. When you're done, we'll email you a plan written for your situation within two business days — no call required, no obligation.</p>
       <div class="intro-bullets">
         <div class="intro-bullet"><div class="n">—</div><div>No account to create. No password to remember.</div></div>
-        <div class="intro-bullet"><div class="n">—</div><div>Skip any question that doesn't feel right.</div></div>
+        <div class="intro-bullet"><div class="n">—</div><div>Skip anything that doesn't feel right. Only your first name and an email at the end are required.</div></div>
         <div class="intro-bullet"><div class="n">—</div><div>Your answers stay private. We use them only to write your plan.</div></div>
       </div>
       <div class="card-footer">
@@ -549,16 +863,16 @@ function renderDone(){
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4 12 5 5L20 6"/></svg>
       </div>
       <div class="step-kicker">All set</div>
-      <h1 class="q-title">Thank you, ${escapeHtml(firstName)}. Your plan is on the way.</h1>
-      <p class="q-help">We'll read through your answers carefully and send back a custom plan within two business days. It'll land in the inbox you gave us. If you have a question in the meantime, just reply to that email.</p>
+      <h1 class="section-title">Thank you, ${escapeHtml(firstName)}. Your plan is on the way.</h1>
+      <p class="section-intro">We'll read through your answers carefully and send back a plan written for your situation within two business days. It'll land in the inbox you gave us. If something pops into your head in the meantime — the fifteenth thing you forgot to mention — just reply to that email. It comes straight to us.</p>
 
       <div class="done-detail">
         <h4>What happens next</h4>
         <ul>
-          <li>We write your plan by hand — no templates, no form letters.</li>
-          <li>You'll get a PDF you can keep, whether you decide to continue or not.</li>
-          <li>If the plan sounds right, there's a link at the end to book a short call.</li>
-          <li>If it isn't a fit, we'll say so — and tell you who might be a better match.</li>
+          <li>We read every answer carefully, not just the checkboxes.</li>
+          <li>You'll get a plan you can keep, whether you decide to continue or not.</li>
+          <li>If you want help actually setting things up, there's a short call we can schedule — but only if you want one.</li>
+          <li>If your situation isn't one we can help with, we'll say so, and point you toward someone who can.</li>
         </ul>
       </div>
 
@@ -569,28 +883,63 @@ function renderDone(){
           </span>
           Back to homepage
         </a>
-        <button class="btn btn-primary" id="restart-btn">Start a new one</button>
       </div>
     </div>
   `;
-  document.getElementById("restart-btn").addEventListener("click", ()=>{
-    clearState();
-    state = { cur: 0, answers: {} };
-    render();
-  });
 }
 
-function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])) }
+function questionHTML(q){
+  const val = state.answers[q.id];
+  const f = q.field;
+  const required = q.required ? `<span class="q-required">Required</span>` : "";
+  const help = q.help ? `<span class="q-help">${escapeHtml(q.help)}</span>` : "";
 
-function renderQuestion(step){
-  const val = state.answers[step.id];
-  const qn = questionIndex(state.cur);
+  let fieldHTML = "";
+  if(f.kind === "text" || f.kind === "email"){
+    const inputType = f.kind === "email" ? "email" : "text";
+    fieldHTML = `<input class="input" type="${inputType}" data-qid="${q.id}" placeholder="${escapeHtml(f.placeholder || "")}" value="${escapeHtml(val || "")}" ${f.autofocus ? "data-autofocus" : ""}/>`;
+  }
+  else if(f.kind === "textarea"){
+    fieldHTML = `<textarea class="input" data-qid="${q.id}" placeholder="${escapeHtml(f.placeholder || "")}">${escapeHtml(val || "")}</textarea>`;
+  }
+  else if(f.kind === "radio" || f.kind === "checkbox"){
+    const isCheck = f.kind === "checkbox";
+    const current = isCheck ? (Array.isArray(val) ? val : []) : val;
+    const gridClass = f.options.length > 4 ? "choice-grid" : (f.options.length <= 2 ? "choice-grid single" : "choice-grid");
+    fieldHTML = `<div class="${gridClass}" data-qid="${q.id}">
+      ${f.options.map(o => {
+        const checked = isCheck ? current.includes(o.value) : current === o.value;
+        return `<label class="choice">
+          <input type="${isCheck ? "checkbox" : "radio"}" name="${q.id}" value="${escapeHtml(o.value)}" ${checked ? "checked" : ""}/>
+          <span class="check ${isCheck ? "square" : ""}"></span>
+          <span class="body"><strong>${escapeHtml(o.label)}</strong>${o.hint ? `<small>${escapeHtml(o.hint)}</small>` : ""}</span>
+        </label>`;
+      }).join("")}
+    </div>`;
+  }
+
+  const hiddenAttr = q.hidden ? "style=\"display:none\"" : "";
+  return `
+    <div class="question" data-question="${q.id}" ${hiddenAttr}>
+      <span class="q-label">${escapeHtml(q.label)}${required}</span>
+      ${help}
+      ${fieldHTML}
+    </div>
+  `;
+}
+
+function renderSection(step){
+  const sn = sectionIndex(state.cur);
+  const isLast = state.cur === SECTIONS.length - 2;
+
+  const questionsHTML = step.questions.map(questionHTML).join("");
+
   app.innerHTML = `
     <div class="card view">
-      <div class="step-kicker">Question ${qn} of ${QUESTION_COUNT}</div>
-      <h1 class="q-title">${escapeHtml(step.title)}</h1>
-      ${step.help ? `<p class="q-help">${escapeHtml(step.help)}</p>` : ""}
-      <div class="field" id="field-slot"></div>
+      <div class="step-kicker">${escapeHtml(step.kicker)}</div>
+      <h1 class="section-title">${escapeHtml(step.title)}</h1>
+      ${step.intro ? `<p class="section-intro">${escapeHtml(step.intro)}</p>` : ""}
+      ${questionsHTML}
       <div class="card-footer">
         <button class="btn btn-ghost" id="back-btn" ${state.cur <= 1 ? "style='visibility:hidden'" : ""}>
           <span class="arrow-l">
@@ -599,87 +948,109 @@ function renderQuestion(step){
           Back
         </button>
         <button class="btn btn-primary" id="next-btn">
-          ${state.cur === STEPS.length - 2 ? "Send my answers" : "Continue"}
+          ${isLast ? "Send my answers" : `Continue to section ${sn + 1}`}
           <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
+      <div class="skip-note">Skip any question that doesn't feel right.</div>
     </div>
   `;
-  const slot = document.getElementById("field-slot");
-  const f = step.field;
 
-  if(f.kind === "text" || f.kind === "email"){
-    const inputType = f.kind === "email" ? "email" : "text";
-    slot.innerHTML = `<input class="input" type="${inputType}" id="f-input" placeholder="${escapeHtml(f.placeholder || "")}" value="${escapeHtml(val || "")}"/>`;
-    const input = document.getElementById("f-input");
-    input.addEventListener("input", e => { state.answers[step.id] = e.target.value; save(); refreshNextEnabled(step) });
-    input.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); tryNext() } });
-    if(f.autofocus) setTimeout(()=>input.focus(), 50);
-  }
-  else if(f.kind === "textarea"){
-    slot.innerHTML = `<textarea class="input" id="f-input" placeholder="${escapeHtml(f.placeholder || "")}">${escapeHtml(val || "")}</textarea>
-      ${f.optional ? `<div class="hint" style="margin-top:8px; color:var(--gray); font-size:14px">Feel free to skip this one if you'd rather.</div>` : ""}`;
-    const input = document.getElementById("f-input");
-    input.addEventListener("input", e => { state.answers[step.id] = e.target.value; save(); refreshNextEnabled(step) });
-  }
-  else if(f.kind === "radio" || f.kind === "checkbox"){
-    const isCheck = f.kind === "checkbox";
-    const current = isCheck ? (val || []) : val;
-    slot.innerHTML = `<div class="${f.options.length <= 3 ? "choice-row" : "choice-grid"}">
-      ${f.options.map(o => {
-        const checked = isCheck ? current.includes(o.value) : current === o.value;
-        return `<label class="choice">
-          <input type="${isCheck ? 'checkbox' : 'radio'}" name="${step.id}" value="${escapeHtml(o.value)}" ${checked ? "checked" : ""}/>
-          <span class="check ${isCheck ? 'square' : ''}"></span>
-          <span class="body"><strong>${escapeHtml(o.label)}</strong>${o.hint ? `<small>${escapeHtml(o.hint)}</small>` : ""}</span>
-        </label>`;
-      }).join("")}
-    </div>`;
-    slot.querySelectorAll("input").forEach(inp => {
-      inp.addEventListener("change", () => {
-        if(isCheck){
-          const boxes = [...slot.querySelectorAll("input:checked")].map(b => b.value);
-          state.answers[step.id] = boxes;
-        } else {
-          state.answers[step.id] = inp.value;
-        }
+  // Wire field listeners
+  step.questions.forEach(q => {
+    const f = q.field;
+
+    if(f.kind === "text" || f.kind === "email" || f.kind === "textarea"){
+      const input = app.querySelector(`[data-qid="${q.id}"]`);
+      if(!input) return;
+      input.addEventListener("input", e => {
+        state.answers[q.id] = e.target.value;
         save();
+        refreshReveal(step);
         refreshNextEnabled(step);
       });
-    });
-  }
+      if(f.autofocus){ setTimeout(()=>input.focus(), 50); }
+    }
+    else if(f.kind === "radio"){
+      const container = app.querySelector(`[data-qid="${q.id}"]`);
+      if(!container) return;
+      container.querySelectorAll("input").forEach(inp => {
+        inp.addEventListener("change", () => {
+          state.answers[q.id] = inp.value;
+          save();
+          refreshReveal(step);
+          refreshNextEnabled(step);
+        });
+      });
+    }
+    else if(f.kind === "checkbox"){
+      const container = app.querySelector(`[data-qid="${q.id}"]`);
+      if(!container) return;
+      container.querySelectorAll("input").forEach(inp => {
+        inp.addEventListener("change", () => {
+          const boxes = [...container.querySelectorAll("input:checked")].map(b => b.value);
+          state.answers[q.id] = boxes;
+          save();
+          refreshReveal(step);
+          refreshNextEnabled(step);
+        });
+      });
+    }
+  });
 
   document.getElementById("back-btn").addEventListener("click", prev);
   document.getElementById("next-btn").addEventListener("click", tryNext);
+
+  refreshReveal(step);
   refreshNextEnabled(step);
+  scrollToTop();
 }
 
-function isAnswered(step){
-  const v = state.answers[step.id];
-  const f = step.field;
-  if(!f.required && !(f.kind === "radio" || f.kind === "checkbox")){
-    if(f.optional) return true;
-    return (typeof v === "string" && v.trim().length > 0) || (Array.isArray(v) && v.length > 0);
-  }
-  if(f.kind === "radio") return !!v;
-  if(f.kind === "checkbox") return Array.isArray(v) && v.length > 0;
-  if(f.kind === "email"){
-    return typeof v === "string" && /^\S+@\S+\.\S+$/.test(v.trim());
-  }
-  return typeof v === "string" && v.trim().length > 0;
+function refreshReveal(step){
+  // Show/hide questions that have a revealIf condition.
+  step.questions.forEach(q => {
+    if(!q.revealIf) return;
+    const ref = state.answers[q.revealIf.field];
+    const show = Array.isArray(ref)
+      ? ref.includes(q.revealIf.equals)
+      : ref === q.revealIf.equals;
+    const el = app.querySelector(`[data-question="${q.id}"]`);
+    if(el) el.style.display = show ? "" : "none";
+  });
 }
+
+function sectionRequiredSatisfied(step){
+  return step.questions.every(q => {
+    if(!q.required) return true;
+    // If the required field is currently hidden by revealIf, don't block.
+    if(q.revealIf){
+      const ref = state.answers[q.revealIf.field];
+      const visible = Array.isArray(ref)
+        ? ref.includes(q.revealIf.equals)
+        : ref === q.revealIf.equals;
+      if(!visible) return true;
+    }
+    const v = state.answers[q.id];
+    if(q.field.kind === "email"){
+      return typeof v === "string" && /^\S+@\S+\.\S+$/.test(v.trim());
+    }
+    if(q.field.kind === "radio") return !!v;
+    if(q.field.kind === "checkbox") return Array.isArray(v) && v.length > 0;
+    return typeof v === "string" && v.trim().length > 0;
+  });
+}
+
 function refreshNextEnabled(step){
   const btn = document.getElementById("next-btn");
   if(!btn) return;
-  btn.disabled = !isAnswered(step);
+  btn.disabled = !sectionRequiredSatisfied(step);
 }
 
 function tryNext(){
-  const step = STEPS[state.cur];
-  if(step.kind) { next(); return }
-  if(!isAnswered(step)) return;
-  // If this is the final question, submit before advancing to done.
-  if(state.cur === STEPS.length - 2){
+  const step = SECTIONS[state.cur];
+  if(step.kind){ next(); return; }
+  if(!sectionRequiredSatisfied(step)) return;
+  if(state.cur === SECTIONS.length - 2){
     submitToNetlify();
     return;
   }
@@ -691,7 +1062,6 @@ function submitToNetlify(){
   const btn = document.getElementById("next-btn");
   if(btn){ btn.disabled = true; btn.innerHTML = "Sending…"; }
 
-  // Build FormData — Netlify's recommended path for JS submission.
   const fd = new FormData();
   fd.append("form-name", "questionnaire");
   Object.keys(state.answers).forEach(k => {
@@ -706,8 +1076,11 @@ function submitToNetlify(){
   .then(res => {
     console.log("[questionnaire] submit status:", res.status, res.statusText);
     if(!res.ok) throw new Error("Submit failed: " + res.status);
-    clearState();
+    // Advance to the done screen first, then clear storage — otherwise next()'s save()
+    // would immediately rewrite it and a page refresh would resume on the done screen
+    // with stale answers from a submission that's already been sent.
     next();
+    clearState();
   })
   .catch(err => {
     console.error("[questionnaire] submit error:", err);
@@ -718,12 +1091,12 @@ function submitToNetlify(){
     alert("Sorry — something went wrong sending your answers. Please try once more, and if it still won't go through, email mark@alongsideai.ai and we'll take it from there.");
   });
 }
+
 function next(){
-  if(state.cur < STEPS.length - 1){
+  if(state.cur < SECTIONS.length - 1){
     state.cur++;
     save();
     render();
-    window.scrollTo({top:0, behavior:"smooth"});
   }
 }
 function prev(){
@@ -731,15 +1104,17 @@ function prev(){
     state.cur--;
     save();
     render();
-    window.scrollTo({top:0, behavior:"smooth"});
   }
+}
+function scrollToTop(){
+  window.scrollTo({top:0, behavior:"smooth"});
 }
 
 function render(){
-  const step = STEPS[state.cur];
+  const step = SECTIONS[state.cur];
   if(step.kind === "intro") renderIntro();
   else if(step.kind === "done") renderDone();
-  else renderQuestion(step);
+  else renderSection(step);
   updateProgress();
 }
 
