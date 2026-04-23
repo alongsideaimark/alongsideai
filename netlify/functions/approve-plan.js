@@ -24,8 +24,10 @@ async function convertToPdf({ url, apiKey }) {
       sandbox: false,
       format: "Letter",
       margin: "18mm",
-      wait_for: "networkidle0",
       use_print: true,
+      // Give the page a short beat to finish painting (custom fonts, logo SVG)
+      // before the capture fires. PDFShift v3 uses plain delay in ms.
+      delay: 800,
     }),
   });
   if (!res.ok) {
