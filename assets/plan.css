@@ -186,6 +186,31 @@ section.s:first-of-type{border-top:none}
 }
 .rec-body .what{font-weight:600; color:var(--charcoal); margin-bottom:8px; font-size:15px}
 .rec-body .why{color:var(--charcoal-soft); font-size:15px; line-height:1.55}
+.rec-body .wont{
+  margin-top:12px; padding-top:12px;
+  border-top:1px dashed color-mix(in oklab, var(--charcoal) 14%, transparent);
+  font-size:14px; color:var(--gray); line-height:1.55;
+}
+.rec-body .wont::before{
+  content:"What it won't fix — ";
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold); margin-right:4px;
+}
+
+/* ruled out (section 4b) */
+.ruled-out{margin-top:24px; display:grid; gap:18px}
+.ruled-item{
+  padding:18px 20px;
+  background:color-mix(in oklab, var(--charcoal) 3%, transparent);
+  border-radius:10px;
+  display:grid; grid-template-columns:1fr 2.4fr; gap:24px; align-items:baseline;
+}
+@media (max-width:720px){ .ruled-item{grid-template-columns:1fr; gap:6px} }
+.ruled-name{
+  font-family:var(--serif); font-size:20px; letter-spacing:-.005em;
+  color:var(--charcoal);
+}
+.ruled-reason{margin:0; color:var(--charcoal-soft); font-size:15px; line-height:1.55}
 
 /* table (section 5) */
 table{width:100%; border-collapse:separate; border-spacing:0; margin-top:8px; font-size:15px}

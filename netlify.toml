@@ -8,6 +8,12 @@
   status = 404
   force = true
 
+# Pretty URL for plan previews: /plans/abc123 serves the rendered draft.
+[[redirects]]
+  from = "/plans/:id"
+  to = "/.netlify/functions/view-plan?id=:id"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]

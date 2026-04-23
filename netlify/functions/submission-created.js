@@ -479,6 +479,30 @@ exports.handler = async (event) => {
     }
 
     await Promise.all(jobs);
+
+    // Kick off plan drafting in the background. Fire-and-forget: the background
+    // function accepts the POST and returns 202 immediately, then runs Claude
+    // + renders HTML + emails Mark on its own schedule (up to 15 min).
+    const baseUrl = process.env.URL || process.env.DEPLOY_URL;
+    if (baseUrl) {
+      try {
+        await fetch(`${baseUrl}/.netlify/functions/generate-plan-background`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            data,
+            firstName,
+            submittedAt: payload.created_at,
+          }),
+        });
+        console.log("[submission] plan drafting kicked off in background");
+      } catch (err) {
+        console.error("[submission] failed to trigger plan drafting:", err.message);
+      }
+    } else {
+      console.warn("[submission] no URL env var; skipping plan drafting trigger");
+    }
+
     return { statusCode: 200, body: "done" };
   } catch (err) {
     console.error("[submission] handler error", err);

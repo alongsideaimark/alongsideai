@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>A plan for {{FIRST_NAME}} — Alongside AI</title>
+<meta name="robots" content="noindex,nofollow"/>
+
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png"/>
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/assets/plan.css"/>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand-tl">
+    <img src="/assets/logo-mark.svg" alt=""/>
+    <span><span class="word">alongside</span><span class="ai">AI</span></span>
+    <span class="meta">A plan for {{FIRST_NAME}}</span>
+  </div>
+  <div class="btn-set">
+    <button onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-mark">
+      <img src="/assets/logo-mark.svg" alt=""/>
+      <span class="wordmark">alongside<span class="ai">AI</span></span>
+    </div>
+    <div class="cover-kicker">Technology Assessment &amp; Plan</div>
+    <h1>A plan for <em>{{FIRST_NAME}}.</em></h1>
+    <div class="prepared">
+      <div>
+        <div class="k">Prepared for</div>
+        <div class="v">{{PREPARED_FOR_NAME}}<small>{{PREPARED_FOR_TAGLINE}}</small></div>
+      </div>
+      <div>
+        <div class="k">Prepared by</div>
+        <div class="v">Mark Skeehan<small>Alongside AI · {{PREPARED_DATE}}</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1 — A note to start (boilerplate, identical across plans) -->
+  <section class="s">
+    <div class="s-num">01 — A note to start</div>
+    <h2 class="s-title">Thank you for trusting us <em>with the honest version.</em></h2>
+    <p class="lede">You shared where things get stuck. We read everything carefully. What follows is a plan written for you — not a template — and yours to keep whether you decide to continue or not.</p>
+    <p>We don't sell software, and we don't make anything on the side from any of the tools we recommend. That means we only suggest things we'd use ourselves, and only when the math clearly works for you. If a recommendation below doesn't feel right, say so — we'll happily rework it.</p>
+    <p>Everything here is a suggestion, not a commitment. You can do all of it, some of it, or none of it.</p>
+  </section>
+
+  <!-- 2 — Your world today -->
+  <section class="s">
+    <div class="s-num">02 — Your world today</div>
+    <h2 class="s-title">Here's what we understood from <em>your answers.</em></h2>
+    <p class="lede">Not problems — just observations. If we got anything wrong, tell us and we'll fix it before going further.</p>
+
+    <div class="obs">
+      {{OBSERVATIONS}}
+    </div>
+  </section>
+
+  <!-- 3 — How we picked these tools -->
+  <section class="s">
+    <div class="s-num">03 — How we picked these tools</div>
+    <h2 class="s-title">{{PICKING_TITLE}}</h2>
+    <p class="lede">{{PICKING_LEDE}}</p>
+    {{PICKING_EXTRA_PARAGRAPH}}
+  </section>
+
+  <!-- 4 — What we think could help -->
+  <section class="s">
+    <div class="s-num">04 — What we think could help</div>
+    <h2 class="s-title">A short list of tools <em>worth your attention</em>.</h2>
+    <p class="lede">{{TOOLS_LEDE}}</p>
+
+    <div class="rec-group">
+      <div class="rec-group-head sage">Foundation <span class="tally">{{FOUNDATION_TALLY}}</span></div>
+      {{FOUNDATION_TOOLS}}
+    </div>
+
+    <div class="rec-group">
+      <div class="rec-group-head">AI <span class="tally">{{AI_TALLY}}</span></div>
+      {{AI_TOOLS}}
+    </div>
+  </section>
+
+  <!-- 4b — What we considered and ruled out -->
+  <section class="s">
+    <div class="s-num">04b — What we considered and ruled out</div>
+    <h2 class="s-title">A short list of tools we <em>looked at and didn't pick.</em></h2>
+    <p class="lede">{{RULED_OUT_LEDE}}</p>
+
+    <div class="ruled-out">
+      {{RULED_OUT_ITEMS}}
+    </div>
+  </section>
+
+  <!-- 5 — What this looks like in practice -->
+  <section class="s">
+    <div class="s-num">05 — What this looks like in practice</div>
+    <h2 class="s-title">{{PRACTICE_TITLE}}</h2>
+    <p class="lede">{{PRACTICE_LEDE}}</p>
+
+    <table>
+      <thead><tr><th>Task</th><th>Today</th><th>With the plan</th><th style="text-align:right">Weekly saved</th></tr></thead>
+      <tbody>
+        {{PRACTICE_ROWS}}
+        <tr class="total"><td colspan="3">Estimated weekly savings</td><td class="num" style="text-align:right">{{PRACTICE_WEEKLY_TOTAL}}</td></tr>
+      </tbody>
+    </table>
+    <p class="caveat">{{PRACTICE_CAVEAT}}</p>
+  </section>
+
+  <!-- 6 — A suggested rollout -->
+  <section class="s">
+    <div class="s-num">06 — A suggested rollout</div>
+    <h2 class="s-title">Do it yourself, or let us <em>set it up alongside you.</em></h2>
+    <p class="lede">{{ROLLOUT_LEDE}}</p>
+
+    <div class="phase">
+      <div class="phase-head"><div class="phase-name">Week 1 — Foundation</div><div class="phase-time">{{WEEK1_TIME}}</div></div>
+      <p>{{WEEK1_SUMMARY}}</p>
+      <ul>
+        {{WEEK1_BULLETS}}
+      </ul>
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><div class="phase-name">Week 2 — AI tools</div><div class="phase-time">{{WEEK2_TIME}}</div></div>
+      <p>{{WEEK2_SUMMARY}}</p>
+      <ul>
+        {{WEEK2_BULLETS}}
+      </ul>
+    </div>
+
+    <div class="phase checkin">
+      <div class="phase-head"><div class="phase-name">Check back in 30 days</div><div class="phase-time">—</div></div>
+      <p>{{CHECKIN_NOTE}}</p>
+    </div>
+  </section>
+
+  <!-- 7 — The numbers -->
+  <section class="s">
+    <div class="s-num">07 — The numbers</div>
+    <h2 class="s-title">{{NUMBERS_TITLE}}</h2>
+    <p class="lede">{{NUMBERS_LEDE}}</p>
+
+    <div class="invest-grid">
+      <div class="invest-box">
+        <h4>Software — monthly, ongoing</h4>
+        {{SOFTWARE_LINES}}
+        <div class="line total"><span>Net new monthly</span><span class="v">{{SOFTWARE_TOTAL}}</span></div>
+      </div>
+      <div class="invest-box">
+        <h4>Implementation help — optional, one-time</h4>
+        {{IMPLEMENTATION_LINES}}
+        <div class="line total"><span>Full package</span><span class="v">{{IMPLEMENTATION_TOTAL}}</span></div>
+      </div>
+    </div>
+
+    <div class="net-note">
+      <strong>{{NET_NOTE_HEADING}}</strong>
+      {{NET_NOTE_BODY}}
+    </div>
+  </section>
+
+  <!-- 8 — Closing note (boilerplate, identical across plans) -->
+  <section class="s">
+    <div class="s-num">08 — What happens next</div>
+    <h2 class="s-title">This plan is yours. <em>Take it at your pace.</em></h2>
+    <p class="lede">You don't need to do any of this today. Read it, let it sit, come back to it. The tools aren't going anywhere, and neither are we.</p>
+
+    <div class="close-card">
+      <h3>If you'd rather not do it alone, <em>we can help.</em></h3>
+      <p>Setting things up alongside you — walking through the signup, migrating your data, showing you how to actually use each tool in the first week — is optional. Most people can do it themselves from this plan. If you'd like us to handle it with you, reply to the email that brought you this plan and we'll take it from there.</p>
+      <a href="mailto:mark@alongsideai.ai?subject=Plan for {{FIRST_NAME}} — a question" class="close-cta">
+        Get in touch
+        <svg width="14" height="14" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <div class="doc-foot">
+    <div>ALONGSIDE AI</div>
+    <div>PREPARED FOR {{FIRST_NAME_UPPER}} · {{PREPARED_DATE_UPPER}}</div>
+    <div>MARK@ALONGSIDEAI.AI</div>
+  </div>
+</div>
+
+</body>
+</html>

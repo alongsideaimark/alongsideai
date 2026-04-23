@@ -1,0 +1,139 @@
+{
+  "first_name": "Frank",
+  "prepared_for_name": "Frank M.",
+  "prepared_for_tagline": "Semi-retired · Altadena, CA",
+  "observations": [
+    "You **sold the contracting business last year** after thirty-one years. You're 'semi-retired,' which so far means three nonprofit boards, managing your own finances for the first time in decades, and three grandkids in two states.",
+    "You have **Microsoft 365** from the business, but mostly use Word and Excel. OneDrive exists but you've never really used it. Your photos live on your phone. Your passwords live on a paper list in the top drawer.",
+    "You said appointments and commitments slip. You're on the boards of **three organizations**, each with its own email thread, its own calendar invitations, and its own document library. None of them talk to each other.",
+    "You're **skeptical of AI**. You mentioned scam worries — fair. You also said you don't want to sound like an idiot on the phone with your CPA. Both of those are reasonable.",
+    "**You're not behind.** You've run a business well for three decades. The question isn't capability — it's whether there's a simpler way to keep track of a life that now has more moving parts than it did when you had an office manager handling them for you."
+  ],
+  "picking": {
+    "title": "Trusted brands. *No startups that might vanish.*",
+    "lede": "Given what you told us about scam worries, we're extra careful here. Everything below comes from a name you'd recognize (Google, Apple, OpenAI, or a company with a long track record and strong security). We skipped a handful of promising-but-newer tools because 'promising' isn't good enough when the stakes are your photos, your passwords, and your financial information.",
+    "extra_paragraph": "You'll see a short section at the end listing the ones we considered and cut, and why."
+  },
+  "tools_lede": "Two groups. Foundation tools handle the basics — photos, passwords, staying safe online. AI tools are the newer stuff that'll feel odd for a week and then change how you handle information. Each has a plain-English explanation.",
+  "foundation_tally": "3 items",
+  "foundation_tools": [
+    {
+      "name": "Google Photos",
+      "cost": "~$3 / mo for 200 GB",
+      "conditional": false,
+      "what_it_is": "The photo app your grandkids already use. It backs up every picture on your iPhone automatically, and when your wife asks you to send 'the one from Hazel's birthday,' you type those three words and it finds it.",
+      "why_it_helps_you": "Twenty thousand photos in one pile become searchable. You can text your daughter the picture she asked about while you're still on the phone with her. The search is meaningfully better than the one built into your iPhone, which is why we're bringing Google in even though you're an Apple person otherwise.",
+      "what_it_wont_fix": "It won't tidy up the existing mess of near-duplicates on your phone — that's a separate weekend project if you want to do it at all."
+    },
+    {
+      "name": "1Password",
+      "cost": "~$4 / mo individual · ~$7 / mo family",
+      "conditional": false,
+      "what_it_is": "A digital version of the paper list in your drawer, but protected by one strong password you memorize. It fills in the rest for you on your phone and computer automatically.",
+      "why_it_helps_you": "The paper list is the single biggest security risk you have — not because someone might steal it, but because reused passwords are how most people get scammed. 1Password eliminates that. If a website looks legit but isn't, 1Password refuses to fill the password in. It's a quiet line of defense against phishing.",
+      "what_it_wont_fix": "It won't change the passwords for you — you'll spend an afternoon migrating the list. After that, it runs in the background."
+    },
+    {
+      "name": "Aura",
+      "cost": "~$12 / mo individual · ~$20 / mo couple",
+      "conditional": false,
+      "what_it_is": "One subscription that watches your credit, your identity, your bank accounts, and incoming texts/emails for scams — and alerts you if something looks wrong. Think of it as a security guard for your digital life.",
+      "why_it_helps_you": "You said you're worried about scams. This addresses that head-on. Instead of you having to evaluate every suspicious text or email, Aura does it. They also have real customer service you can call, which matters.",
+      "what_it_wont_fix": "It won't stop every scam call — nothing will. It'll catch the majority and alert you fast on the rest."
+    }
+  ],
+  "ai_tally": "3 items",
+  "ai_tools": [
+    {
+      "name": "NotebookLM",
+      "cost": "Free · made by Google",
+      "conditional": false,
+      "what_it_is": "A private research assistant from Google. You upload the board packet — fifty pages of PDFs — and then ask questions out loud: 'What are we voting on Thursday?' or 'What did we decide about the audit last month?' It answers only from the documents you gave it.",
+      "why_it_helps_you": "**This is the single biggest tool on this list for you.** Three boards times fifty pages of packets per meeting is a mountain of reading. NotebookLM collapses it. It also generates a 10-minute audio summary of the packet — two voices discussing the documents like a podcast — that you can listen to in the car on the way to the meeting.",
+      "what_it_wont_fix": "It only works with the packets you upload. If a board decision was made verbally and never written down, NotebookLM can't help you find it."
+    },
+    {
+      "name": "ChatGPT Plus",
+      "cost": "~$20 / mo · made by OpenAI",
+      "conditional": false,
+      "what_it_is": "The 'explain this to me like I'm not a CPA' app. You snap a photo of a confusing tax letter, a page from your 401(k) statement, or a doctor's report, and it explains what it means in plain English.",
+      "why_it_helps_you": "You said you don't want to sound like an idiot on the phone with your CPA. This is how you walk into that call having already asked the dumb-sounding question privately. You end up with three sharp questions, not thirty vague ones.",
+      "what_it_wont_fix": "It's not a substitute for the CPA. Think of it as the preparation step — you still need the human for the actual advice."
+    },
+    {
+      "name": "Otter.ai Pro",
+      "cost": "~$8 / mo (annual) · $17 / mo monthly",
+      "conditional": true,
+      "what_it_is": "Hit record on your iPhone at a board meeting; afterwards you get a clean written transcript, a one-page summary, and a list of who committed to what.",
+      "why_it_helps_you": "Board meetings become searchable instead of relying on whatever minutes the secretary eventually circulates. When you can't remember what the chair said about the audit, you type three words and jump to that moment. **Always ask the board's permission before recording.** If any of the three boards says no, skip Otter for that one and lean on NotebookLM for the packet instead.",
+      "what_it_wont_fix": "It won't transcribe well in a noisy room or with heavy accents — plan for 80–90% accuracy, not perfect."
+    }
+  ],
+  "ruled_out": {
+    "lede": "A few tools a knowledgeable friend might suggest — that we looked at and decided against for your specific situation.",
+    "items": [
+      { "name": "LastPass", "reason": "Once the default password manager, but hit by a serious breach in 2022. 1Password has a cleaner track record and is worth the extra couple of dollars a month given how much of your financial life goes through it." },
+      { "name": "Claude (over ChatGPT)", "reason": "Claude is excellent for writing, but the ChatGPT iPhone app is better for photographing a document and asking 'what does this mean.' For your specific use case, ChatGPT wins." },
+      { "name": "Notion or Obsidian for notes", "reason": "Too much rope. You're not trying to build a second brain; you're trying to keep three boards straight. Apple Notes or paper is fine for now." },
+      { "name": "LifeLock instead of Aura", "reason": "Similar product, but Aura's customer service and scam-call blocking are currently better-reviewed. Revisit annually; if Aura slips, we'd switch you." }
+    ]
+  },
+  "practice": {
+    "title": "The real measure isn't hours. *It's peace of mind.*",
+    "lede": "Your situation is less about 'hours saved' than about the quiet things: not missing a meeting, not losing a document, not getting scammed. We've put time estimates where we can.",
+    "rows": [
+      { "task": "Preparing for a board meeting", "today": "Reading 50 pages of packet", "with_plan": "Ask NotebookLM; listen to the 10-min audio summary in the car", "weekly_saved": "~2 hrs" },
+      { "task": "Finding a photo or document", "today": "A lot of scrolling", "with_plan": "Type what you're looking for; get it in seconds", "weekly_saved": "~1 hr" },
+      { "task": "Understanding a confusing letter", "today": "Call the CPA; feel small", "with_plan": "Snap a photo, ChatGPT explains it, then you call with sharp questions", "weekly_saved": "~1 hr" },
+      { "task": "Remembering what was said at a meeting", "today": "Memory, or wait for minutes", "with_plan": "Search the Otter transcript", "weekly_saved": "~30 min" },
+      { "task": "Password & scam headaches", "today": "Paper list; occasional stress", "with_plan": "1Password + Aura handle it", "weekly_saved": "~30 min" }
+    ],
+    "weekly_total": "4–5 hrs",
+    "caveat": "What people in your situation report a month in isn't 'look at all the hours I saved.' It's 'I'm not afraid of the computer anymore,' and 'I walk into the CPA's office knowing what I'm talking about now.' That's the real deliverable."
+  },
+  "rollout": {
+    "lede": "This plan gives you enough to do the setup yourself — each tool has a short guide. If you'd rather we handle it alongside you (for a fee — see section 7), that's optional. Either way, here's the order.",
+    "week1": {
+      "time": "About 3 hours",
+      "summary": "Put the quiet things in place. This is the week that kills the paper password list and the scam worry.",
+      "bullets": [
+        "Set up **1Password** on your iPhone and PC; migrate the paper list",
+        "Turn on iCloud photo backup AND **Google Photos** on your iPhone (belt and suspenders)",
+        "Set up **Aura**; walk through each of its dashboards so you know what you're looking at",
+        "A 20-minute 'scam patterns' tour so you can spot the common tricks without relying on Aura to catch them all"
+      ]
+    },
+    "week2": {
+      "time": "About 2 hours",
+      "summary": "Short week. Two tools. Real tasks, not theory.",
+      "bullets": [
+        "Set up **NotebookLM**; upload the next board packet and try three questions. Listen to the audio summary once.",
+        "Set up **ChatGPT Plus** on your iPhone; photograph three real documents and have it explain each",
+        "Optional: **Otter.ai** on your iPhone. Try it on one non-sensitive meeting first."
+      ]
+    },
+    "checkin_note": "Give it a month. What stuck, what didn't, what felt awkward. If you want a 45-minute session to tune things up, it's included in the optional implementation package. If you went DIY, just reply to the email with what's not working."
+  },
+  "numbers": {
+    "title": "Less than a night out a month. *Help setting it up is optional.*",
+    "lede": "The plan you're reading is free. The only costs are the software subscriptions below. If you'd like us to set things up alongside you, the implementation package is optional.",
+    "software_lines": [
+      { "label": "Google Photos (200 GB)", "cost": "~$3/mo" },
+      { "label": "1Password", "cost": "~$4/mo" },
+      { "label": "Aura", "cost": "~$12/mo" },
+      { "label": "NotebookLM", "cost": "Free" },
+      { "label": "ChatGPT Plus", "cost": "~$20/mo" },
+      { "label": "Otter.ai Pro *(optional)*", "cost": "~$8/mo" },
+      { "label": "Microsoft 365 / iCloud", "cost": "Already paid" }
+    ],
+    "software_total": "~$39–47/mo",
+    "implementation_lines": [
+      { "label": "Week 1 setup (alongside you)", "cost": "$1,400" },
+      { "label": "Week 2 setup + training", "cost": "$600" },
+      { "label": "30-day tune-up session", "cost": "Included" }
+    ],
+    "implementation_total": "$2,000",
+    "net_note_heading": "About $40 a month, DIY",
+    "net_note_body": "Less than a night out, and the quiet benefits — knowing what's in the board packet, walking into the CPA's office with the right questions, not worrying about the next scam text — are the real return. Most people in your situation can do the setup themselves from this plan."
+  }
+}
