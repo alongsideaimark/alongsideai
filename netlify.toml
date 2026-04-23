@@ -14,6 +14,17 @@
   to = "/.netlify/functions/view-plan?id=:id"
   status = 200
 
+# The plan-drafting function reads the HTML template, the prompt, and the two
+# sample plans at runtime. Tell Netlify's function bundler to ship those files
+# with the function — otherwise they'd be missing and the function would crash.
+[functions."generate-plan-background"]
+  included_files = [
+    "netlify/plan-template/template.html",
+    "netlify/plan-template/prompt.md",
+    "examples/semi-retired/index.html",
+    "examples/busy-professional/index.html"
+  ]
+
 [[headers]]
   for = "/*"
   [headers.values]
