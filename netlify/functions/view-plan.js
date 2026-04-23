@@ -72,8 +72,17 @@ function injectReviewBar(html, record) {
 exports.handler = async (event) => {
   try {
     connectLambda(event);
-    const id = (event.queryStringParameters && event.queryStringParameters.id) || "";
-    console.log(`[view-plan] requested id="${id}"`);
+
+    // Try to recover the id from either the query string (redirect path) or
+    // the URL path itself (direct /plans/:id hit that somehow bypassed the
+    // redirect substitution).
+    const queryId = (event.queryStringParameters && event.queryStringParameters.id) || "";
+    const pathMatch = /\/plans\/([A-Za-z0-9_-]+)/.exec(event.path || event.rawUrl || "");
+    const pathId = pathMatch ? pathMatch[1] : "";
+    const id = queryId || pathId;
+
+    console.log(`[view-plan] path="${event.path || ""}" rawUrl="${event.rawUrl || ""}" queryId="${queryId}" pathId="${pathId}" finalId="${id}"`);
+
     if (!id || !/^[A-Za-z0-9_-]+$/.test(id)) {
       console.log("[view-plan] id failed regex, returning 404");
       return notFound();
