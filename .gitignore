@@ -1,0 +1,9 @@
+# Claude Code local settings
+.claude/settings.local.json
+
+# Font cache used by scripts/build-og-image.py — re-downloaded on demand
+scripts/.font-cache/
+
+# OS junk
+.DS_Store
+Thumbs.db
