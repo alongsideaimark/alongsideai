@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>See what a plan looks like — Alongside AI</title>
+<meta name="description" content="Three real-format sample plans — for a busy nonprofit professional, someone semi-retired, and a mom keeping a family organized. See exactly what you'd receive before filling anything out."/>
+<link rel="canonical" href="https://alongsideai.ai/examples/"/>
+
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png"/>
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"/>
+
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Alongside AI"/>
+<meta property="og:title" content="See what a plan looks like — Alongside AI"/>
+<meta property="og:description" content="Three real-format sample plans. See exactly what you'd receive before filling anything out."/>
+<meta property="og:url" content="https://alongsideai.ai/examples/"/>
+<meta property="og:image" content="https://alongsideai.ai/assets/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="See what a plan looks like — Alongside AI"/>
+<meta name="twitter:description" content="Three real-format sample plans. See exactly what you'd receive before filling anything out."/>
+<meta name="twitter:image" content="https://alongsideai.ai/assets/og-image.png"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --sage:#7B9E87; --sage-light:#A8C5B2; --sage-pale:#E8F0EB;
+    --gold:#D4A853; --gold-light:#F2E6C9;
+    --charcoal:#2C3330; --charcoal-soft:#4A5550;
+    --cream:#FAF6F1; --white:#FFFFFF; --gray:#8A8780;
+    --serif:"DM Serif Display", Georgia, serif;
+    --sans:"Nunito", system-ui, Arial, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+    --maxw:1240px; --gutter:40px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--cream); color:var(--charcoal);
+    font-family:var(--sans); font-size:18px; line-height:1.55;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  img,svg{display:block; max-width:100%}
+  a{color:inherit}
+  h1,h2,h3,h4{margin:0; font-weight:400}
+  p{margin:0}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--gutter)}
+  @media (max-width:720px){ :root{ --gutter:22px } }
+
+  /* nav */
+  .nav{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in oklab, var(--cream) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+  }
+  .nav-inner{display:flex; align-items:center; height:82px; gap:32px}
+  .nav-spacer{flex:1}
+  .brand{display:flex; align-items:center; gap:14px; text-decoration:none; color:var(--charcoal)}
+  .brand-mark{width:34px; height:40px; flex-shrink:0}
+  .brand-lockup{display:inline-flex; align-items:baseline; gap:12px; white-space:nowrap}
+  .brand-word{font-family:var(--serif); font-size:28px; letter-spacing:-.01em; line-height:1}
+  .brand-ai{font-family:var(--sans); font-weight:700; font-size:15px; letter-spacing:.24em; color:var(--sage); line-height:1; text-transform:uppercase}
+  .nav-links{display:flex; gap:28px; align-items:center}
+  .nav-links a{
+    text-decoration:none; font-size:15px; color:var(--charcoal-soft);
+    font-weight:500; white-space:nowrap;
+  }
+  .nav-links a:hover{color:var(--charcoal)}
+  .nav-cta{
+    font-size:15px; font-weight:600;
+    padding:11px 20px; border-radius:999px;
+    background:var(--charcoal); color:var(--cream);
+    text-decoration:none;
+    transition:transform .2s ease;
+  }
+  .nav-cta:hover{transform:translateY(-1px)}
+  @media (max-width:820px){ .nav-links a:not(.nav-cta){display:none} }
+
+  /* hero */
+  .hero{padding: 72px 0 40px}
+  @media (max-width:720px){ .hero{padding:48px 0 24px} }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--sage);
+    margin-bottom:24px; display:flex; align-items:center; gap:12px;
+  }
+  .eyebrow::before{content:""; width:28px; height:1px; background:var(--sage)}
+  h1.hero-title{
+    font-family:var(--serif);
+    font-size:clamp(40px, 6vw, 72px);
+    line-height:1.04; letter-spacing:-.015em;
+    color:var(--charcoal);
+    max-width:860px;
+  }
+  h1.hero-title em{font-style:italic; color:var(--sage); font-weight:400}
+  .hero-lede{
+    margin-top:24px;
+    max-width:640px;
+    font-size:19px; line-height:1.55;
+    color:var(--charcoal-soft);
+  }
+
+  /* cards */
+  .cards-section{padding: 48px 0 72px}
+  .cards{
+    display:grid; gap:24px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width:960px){ .cards{grid-template-columns:1fr 1fr} }
+  @media (max-width:640px){ .cards{grid-template-columns:1fr} }
+
+  .card-ex{
+    display:flex; flex-direction:column;
+    background:var(--white);
+    border:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+    border-radius:16px;
+    padding: 32px 30px 30px;
+    text-decoration:none; color:inherit;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    min-height:100%;
+  }
+  .card-ex:hover{
+    transform:translateY(-2px);
+    border-color:var(--sage);
+    box-shadow: 0 24px 60px -30px rgba(44,51,48,.18);
+  }
+  .card-tag{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--sage);
+    margin-bottom:20px;
+  }
+  .card-name{
+    font-family:var(--serif); font-size:34px;
+    letter-spacing:-.01em; line-height:1;
+    color:var(--charcoal);
+    margin-bottom:6px;
+  }
+  .card-role{
+    font-size:14px; color:var(--gray);
+    margin-bottom:20px;
+    font-family:var(--mono); letter-spacing:.06em;
+  }
+  .card-summary{
+    font-size:16px; line-height:1.55;
+    color:var(--charcoal-soft);
+    margin-bottom:22px;
+    flex:1;
+  }
+  .card-meta{
+    display:flex; flex-wrap:wrap; gap:14px 20px;
+    padding-top:18px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 7%, transparent);
+    font-size:13px;
+    color:var(--charcoal-soft);
+    margin-bottom:20px;
+  }
+  .card-meta strong{
+    display:block;
+    font-family:var(--serif); font-size:18px;
+    color:var(--charcoal); line-height:1;
+    margin-bottom:4px;
+    font-weight:400;
+  }
+  .card-cta{
+    display:inline-flex; align-items:center; gap:10px;
+    color:var(--charcoal);
+    font-weight:600; font-size:15px;
+  }
+  .card-cta .arrow{
+    width:26px; height:26px; border-radius:999px;
+    border:1px solid var(--charcoal);
+    display:grid; place-items:center;
+    transition:transform .2s ease;
+  }
+  .card-ex:hover .card-cta .arrow{transform:translateX(3px)}
+
+  /* note / closing CTA */
+  .note{
+    margin-top:56px;
+    padding:40px 44px;
+    background:var(--sage-pale);
+    border-radius:18px;
+    display:grid; grid-template-columns: 1.8fr 1fr; gap:32px;
+    align-items:center;
+  }
+  @media (max-width:720px){ .note{grid-template-columns:1fr; padding:32px 28px} }
+  .note h3{
+    font-family:var(--serif); font-size:30px;
+    letter-spacing:-.01em; line-height:1.1;
+    color:var(--charcoal);
+    margin-bottom:12px;
+  }
+  .note h3 em{font-style:italic; color:var(--sage); font-weight:400}
+  .note p{font-size:16px; color:var(--charcoal-soft); line-height:1.55}
+  .note-cta{justify-self:end}
+  @media (max-width:720px){ .note-cta{justify-self:start} }
+  .btn{
+    font-family:var(--sans); font-weight:600; font-size:16px;
+    padding:16px 26px; border-radius:999px;
+    text-decoration:none;
+    display:inline-flex; align-items:center; gap:10px;
+    transition: transform .2s ease, background .2s ease;
+    background:var(--charcoal); color:var(--cream);
+    border:none;
+  }
+  .btn:hover{transform:translateY(-1px); background:#1e2320}
+
+  /* footer */
+  footer.foot{
+    padding: 40px 0 48px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+    font-size:13px; color:var(--gray);
+    margin-top:48px;
+  }
+  .foot-inner{display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px}
+  .foot a{color:inherit; text-decoration:underline}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/" aria-label="Alongside AI home">
+      <img class="brand-mark" src="/assets/logo-mark.svg" alt=""/>
+      <span class="brand-lockup"><span class="brand-word">alongside</span><span class="brand-ai">AI</span></span>
+    </a>
+    <div class="nav-spacer"></div>
+    <div class="nav-links">
+      <a href="/#how">How it works</a>
+      <a href="/examples/">Examples</a>
+      <a class="nav-cta" href="/questionnaire/">Get your custom plan</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Sample plans</div>
+    <h1 class="hero-title">See what a plan looks like <em>before you fill anything out.</em></h1>
+    <p class="hero-lede">Three examples, in the same format you'd receive yours. Written for three different kinds of people — pick whichever feels closest to your life and read through. Your own plan would be different, but the structure, the tone, and the kind of recommendations are the same.</p>
+  </section>
+
+  <section class="cards-section">
+    <div class="cards">
+
+      <a class="card-ex" href="/examples/busy-professional/">
+        <div class="card-tag">For a busy professional</div>
+        <div class="card-name">Priya</div>
+        <div class="card-role">42 · Nonprofit director · Pasadena</div>
+        <p class="card-summary">Drowning in a 400-unread inbox, building board decks the night before, and losing forty evenings to the annual report. A plan focused on getting her evenings back.</p>
+        <div class="card-meta">
+          <div><strong>5 tools</strong>recommended</div>
+          <div><strong>8–10 hrs</strong>weekly saved</div>
+          <div><strong>~$48/mo</strong>net new</div>
+        </div>
+        <div class="card-cta">
+          Read the plan
+          <span class="arrow">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="card-ex" href="/examples/semi-retired/">
+        <div class="card-tag">For someone semi-retired</div>
+        <div class="card-name">Frank</div>
+        <div class="card-role">68 · Sold business last year · Altadena</div>
+        <p class="card-summary">Three nonprofit boards, first time managing his own finances, and a paper list of passwords in the drawer. Scam-wary. A plan focused on peace of mind over hours saved.</p>
+        <div class="card-meta">
+          <div><strong>6 tools</strong>recommended</div>
+          <div><strong>4–5 hrs</strong>weekly saved</div>
+          <div><strong>~$39/mo</strong>net new</div>
+        </div>
+        <div class="card-cta">
+          Read the plan
+          <span class="arrow">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="card-ex" href="/examples/family-organized/">
+        <div class="card-tag">For a mom holding it all together</div>
+        <div class="card-name">Sarah</div>
+        <div class="card-role">38 · Mom of three · South Pasadena</div>
+        <p class="card-summary">Three kids across two schools, permission slips on the counter, fourteen group chats, and "what's for dinner?" at 4pm. A plan focused on dropping the mental load.</p>
+        <div class="card-meta">
+          <div><strong>5 tools</strong>recommended</div>
+          <div><strong>5–6 hrs</strong>weekly saved</div>
+          <div><strong>~$50/mo</strong>net new</div>
+        </div>
+        <div class="card-cta">
+          Read the plan
+          <span class="arrow">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="note">
+      <div>
+        <h3>None of these quite fit? <em>That's the point.</em></h3>
+        <p>Your plan would be different. Every one we write starts from your answers to seven short sections of plain-English questions — around 20 to 25 minutes, at your own pace. You'll get a plan written for your specific situation within two business days.</p>
+      </div>
+      <div class="note-cta">
+        <a class="btn" href="/questionnaire/">
+          Start your plan
+          <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-inner">
+      <div>© 2026 Alongside AI LLC</div>
+      <div><a href="mailto:mark@alongsideai.ai">mark@alongsideai.ai</a></div>
+    </div>
+  </footer>
+</main>
+
+</body>
+</html>
