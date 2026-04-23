@@ -39,11 +39,13 @@ exports.handler = async (event) => {
       return { statusCode: 409, body: "plan already sent — can't revise" };
     }
 
-    console.log(`[revise-plan] ${id} revising with instruction (${instruction.length} chars)`);
+    const priorTurns = Array.isArray(record.revisions) ? record.revisions : [];
+    console.log(`[revise-plan] ${id} chat turn ${priorTurns.length + 1} (instruction ${instruction.length} chars)`);
     const { plan, note, usage, searchCount } = await revisePlan({
       currentPlan: record.plan,
       briefing: record.briefing,
       instruction: instruction.trim(),
+      priorTurns,
       apiKey,
     });
     console.log(`[revise-plan] ${id} revision returned; web searches: ${searchCount || 0}; note: "${(note || "").slice(0, 120)}"; tokens:`, JSON.stringify(usage));

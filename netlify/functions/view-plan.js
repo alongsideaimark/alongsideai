@@ -70,19 +70,19 @@ function injectReviewBar(html, record) {
       <span style="color:#9E9E9C;margin-left:10px;">· ${record.customer_email || "no email"} · created ${new Date(record.created_at).toLocaleString()}${revisedTag}</span>
     </div>
     <div style="display:flex;gap:10px;">
-      <button id="mark-revise-toggle" style="background:transparent;color:#FAF6F1;border:1px solid #555;padding:8px 14px;border-radius:6px;font-weight:500;cursor:pointer;font-size:14px;">Revise draft</button>
+      <button id="mark-revise-toggle" style="background:transparent;color:#FAF6F1;border:1px solid #555;padding:8px 14px;border-radius:6px;font-weight:500;cursor:pointer;font-size:14px;">Chat about this plan</button>
       <button id="mark-approve-btn" style="background:#7A8B6F;color:#FAF6F1;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-size:14px;">Approve &amp; send to customer</button>
     </div>
   </div>
   <div id="mark-revise-panel" style="display:none;padding:0 20px 18px;border-top:1px solid #333;">
     <div style="padding:14px 0 10px;color:#C9C9C7;font-size:13px;line-height:1.5;">
-      Plain English. Specific edits, scoped critiques, or agentic audits (<em style="color:#9E9E9C;font-style:italic;">e.g., "verify the tool picks are still current," "re-read the briefing and tell me what threads I missed," "tighten section 03"</em>). Claude runs fresh web searches if needed and reports back what it changed.
+      Ongoing chat about this draft. Ask questions, request edits, or run an audit (<em style="color:#9E9E9C;font-style:italic;">"verify the tool picks are still current," "tighten section 03," "is Quill really the right pick?"</em>). Claude remembers the conversation and runs fresh web searches if needed. Plan changes happen in-line; you'll see the new version after each turn.
     </div>
     ${renderRevisionLog(record.revisions)}
-    <textarea id="mark-revise-input" rows="4" placeholder="What would you like changed or reviewed?" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:8px;border:1px solid #555;background:#2a2a28;color:#FAF6F1;font-family:inherit;font-size:14px;line-height:1.5;resize:vertical;min-height:90px;"></textarea>
+    <textarea id="mark-revise-input" rows="3" placeholder="Message Claude about this plan..." style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:8px;border:1px solid #555;background:#2a2a28;color:#FAF6F1;font-family:inherit;font-size:14px;line-height:1.5;resize:vertical;min-height:70px;"></textarea>
     <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
       <div id="mark-revise-status" style="color:#9E9E9C;font-size:13px;"></div>
-      <button id="mark-revise-submit" style="background:#9E7B84;color:#FAF6F1;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-size:14px;">Apply revision</button>
+      <button id="mark-revise-submit" style="background:#9E7B84;color:#FAF6F1;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;font-size:14px;">Send</button>
     </div>
   </div>
 </div>
@@ -125,12 +125,28 @@ function injectReviewBar(html, record) {
     });
   }
 
+  // Panel-persistence: keep it open across reloads if the user just had it
+  // open. Also auto-open after a revision so the new log entry is visible.
+  var PANEL_KEY = "alongside-revise-panel-open";
+  var setPanelOpen = function(open, focus){
+    revisePanel.style.display = open ? "block" : "none";
+    reviseToggle.textContent = open ? "Hide revision panel" : "Revise draft";
+    try { sessionStorage.setItem(PANEL_KEY, open ? "1" : "0"); } catch (e) {}
+    if (open && focus){ setTimeout(function(){ reviseInput.focus(); }, 50); }
+    if (open){
+      // Scroll the log to the bottom so the most recent exchange is visible.
+      var log = revisePanel.querySelector("div[style*='overflow-y:auto']");
+      if (log){ setTimeout(function(){ log.scrollTop = log.scrollHeight; }, 50); }
+    }
+  };
+  try {
+    if (sessionStorage.getItem(PANEL_KEY) === "1"){ setPanelOpen(true, false); }
+  } catch (e) {}
+
   if (reviseToggle){
     reviseToggle.addEventListener("click", function(){
       var open = revisePanel.style.display !== "none";
-      revisePanel.style.display = open ? "none" : "block";
-      reviseToggle.textContent = open ? "Revise draft" : "Hide revision panel";
-      if (!open){ setTimeout(function(){ reviseInput.focus(); }, 50); }
+      setPanelOpen(!open, true);
     });
   }
 
@@ -172,8 +188,8 @@ function injectReviewBar(html, record) {
       var instruction = (reviseInput.value || "").trim();
       if (!instruction){ reviseInput.focus(); return; }
       reviseSubmit.disabled = true;
-      reviseSubmit.textContent = "Revising...";
-      reviseStatus.textContent = "Revision kicked off. This usually takes 30–180 seconds.";
+      reviseSubmit.textContent = "Sending...";
+      reviseStatus.textContent = "Sent. Claude is thinking — this usually takes 30–180 seconds.";
       // Background function: returns 202 accepted, work continues server-side.
       fetch("/.netlify/functions/revise-plan-background", {
         method: "POST",
@@ -185,9 +201,9 @@ function injectReviewBar(html, record) {
         pollForRevision(Date.now());
       }).catch(function(err){
         reviseStatus.textContent = "";
-        alert("Revision failed: " + err.message);
+        alert("Send failed: " + err.message);
         reviseSubmit.disabled = false;
-        reviseSubmit.textContent = "Apply revision";
+        reviseSubmit.textContent = "Send";
       });
     };
     reviseSubmit.addEventListener("click", runRevision);

@@ -153,7 +153,7 @@ ${briefing}`,
 // Same model, same system prompt (so the voice rules carry over), same
 // web_search tool (so agentic instructions like "verify the tool picks are
 // still current" actually work). Returns a fully revised plan JSON.
-async function revisePlan({ currentPlan, briefing, instruction, apiKey }) {
+async function revisePlan({ currentPlan, briefing, instruction, priorTurns, apiKey }) {
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
 
   const systemPrompt = readFile(PROMPT_PATH);
@@ -174,22 +174,23 @@ async function revisePlan({ currentPlan, briefing, instruction, apiKey }) {
     {
       type: "text",
       text:
-`You previously drafted the plan below for this respondent. The reviewer wants revisions.
+`You drafted the plan below for this respondent. The reviewer is now chatting with you about it. Treat this as an ongoing back-and-forth conversation, not a one-shot edit.
 
-REVISION INSTRUCTION FROM REVIEWER:
+${priorTurns && priorTurns.length ? `CONVERSATION SO FAR:\n${priorTurns.map((t, i) => `[Turn ${i + 1}] Reviewer: ${t.instruction}\n[Turn ${i + 1}] You: ${t.note || "(no response recorded)"}`).join("\n\n")}\n\n` : ""}LATEST MESSAGE FROM REVIEWER:
 ${instruction}
 
-Your job:
-- If the instruction is a specific edit ("swap tool X for Y", "tighten section 03"), make that edit cleanly and touch nothing else.
-- If the instruction is a critique or audit ("verify tool picks are current", "make sure research was thorough", "read as a skeptical customer"), use the web_search tool as needed, find weaknesses, and fix them. Be willing to change multiple sections if the audit reveals real gaps.
-- If the instruction doesn't require changes (e.g., "spell check" and there are no errors), that's fine — say so in your note. Return the plan unchanged.
-- Always preserve the JSON shape defined in the system prompt. Return the COMPLETE revised plan. Even sections you didn't change must be present.
+How to respond:
+- Treat the latest message in the context of the conversation so far. If they say "make it a bit less formal," you know what "it" is from prior turns.
+- If the message is a specific edit ("swap tool X for Y," "tighten section 03"), make that edit cleanly and touch nothing else.
+- If it's a critique or audit ("verify tool picks are current," "make sure research was thorough," "read as a skeptical customer"), use the web_search tool as needed, find weaknesses, and fix them in the plan.
+- If it's a question or a discussion turn ("is Quill actually the right pick?", "what would make this stronger?", "spell check" when there are no errors), just answer in your note and return the plan unchanged. Plan changes are not required on every turn. A "no changes this turn" response is fine when the message calls for discussion rather than edits.
+- Always preserve the plan's JSON shape from the system prompt. Return the COMPLETE plan — even sections you didn't touch.
 
 Return a single JSON object with TWO top-level fields:
 
 {
-  "note": "A plain-English report of what you did, written directly to the reviewer. 2–6 sentences. Include what you checked, what you changed (section and specifics), what you considered but decided against, and any web searches you ran. If you made no changes, explain why. This is the back-and-forth — be specific, not generic.",
-  "plan": { ...the complete revised plan JSON following the system-prompt schema... }
+  "note": "Your reply to the reviewer, in plain English, 2-6 sentences. If you made changes, describe what you changed and why. If you made none, answer their question or explain why no change was needed. Specific, not generic. This is the visible half of the back-and-forth.",
+  "plan": { ...the complete plan JSON following the system-prompt schema... }
 }
 
 Your final text output must contain ONLY this JSON object — no preamble, no code fences, no trailing commentary.
