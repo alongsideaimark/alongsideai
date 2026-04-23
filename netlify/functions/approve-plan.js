@@ -8,7 +8,7 @@ const PDFSHIFT_URL = "https://api.pdfshift.io/v3/convert/pdf";
 const FROM = "Mark <mark@alongsideai.ai>";
 const REPLY_TO = "mark@alongsideai.ai";
 
-async function convertToPdf({ html, apiKey }) {
+async function convertToPdf({ url, apiKey }) {
   const auth = "Basic " + Buffer.from(`api:${apiKey}`).toString("base64");
   const res = await fetch(PDFSHIFT_URL, {
     method: "POST",
@@ -17,15 +17,15 @@ async function convertToPdf({ html, apiKey }) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      source: html,
+      // Passing the public URL (not raw HTML) lets PDFShift fetch the page
+      // itself, so relative asset paths (/assets/plan.css, fonts, logo) all
+      // resolve naturally. The review bar is hidden via @media print.
+      source: url,
       sandbox: false,
       format: "Letter",
       margin: "18mm",
       wait_for: "networkidle0",
       use_print: true,
-      // The template uses relative /assets/plan.css — tell PDFShift where to
-      // resolve those from so the CSS, fonts, and logo mark load.
-      base_url: "https://alongsideai.ai",
     }),
   });
   if (!res.ok) {
@@ -125,8 +125,14 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: "no customer email on record" };
     }
 
-    console.log("[approve-plan] converting to pdf:", id);
-    const pdf = await convertToPdf({ html: record.html, apiKey: pdfshiftKey });
+    const baseUrl =
+      process.env.URL ||
+      process.env.DEPLOY_PRIME_URL ||
+      process.env.DEPLOY_URL ||
+      "https://alongsideai.ai";
+    const planUrl = `${baseUrl}/plans/${id}`;
+    console.log("[approve-plan] converting to pdf:", planUrl);
+    const pdf = await convertToPdf({ url: planUrl, apiKey: pdfshiftKey });
     console.log("[approve-plan] pdf size:", pdf.length, "bytes");
 
     await emailCustomer({
