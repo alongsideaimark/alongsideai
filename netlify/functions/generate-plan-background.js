@@ -96,8 +96,8 @@ exports.handler = async (event) => {
     const briefing = buildAiBriefing(firstName, data);
     console.log("[generate-plan] drafting for", firstName, "email:", email || "(none)");
 
-    const { plan, usage } = await draftPlan({ briefing, apiKey: anthropicKey });
-    console.log("[generate-plan] draft returned; tokens:", JSON.stringify(usage));
+    const { plan, usage, searchCount } = await draftPlan({ briefing, apiKey: anthropicKey });
+    console.log(`[generate-plan] draft returned; web searches: ${searchCount || 0}; tokens:`, JSON.stringify(usage));
 
     // Render to final HTML.
     const html = renderPlan(plan);

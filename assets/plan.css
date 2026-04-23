@@ -186,6 +186,23 @@ section.s:first-of-type{border-top:none}
 }
 .rec-body .what{font-weight:600; color:var(--charcoal); margin-bottom:8px; font-size:15px}
 .rec-body .why{color:var(--charcoal-soft); font-size:15px; line-height:1.55}
+
+/* "Build it yourself" recommendations — same grid, different chrome so they
+   read as a distinct kind of recommendation (custom build vs. subscription). */
+.rec.rec-build{
+  background:color-mix(in oklab, #6F7A8B 6%, transparent);
+  border-radius:12px;
+  padding: 24px 24px 24px 24px;
+  border-bottom:none;
+  margin-top:4px;
+  position:relative;
+}
+.rec.rec-build::before{
+  content:""; position:absolute; left:0; top:24px; bottom:24px; width:3px;
+  background:#6F7A8B; border-radius:0 3px 3px 0;
+}
+.rec.rec-build + .rec{margin-top:4px}
+
 .rec-body .wont{
   margin-top:12px; padding-top:12px;
   border-top:1px dashed color-mix(in oklab, var(--charcoal) 14%, transparent);

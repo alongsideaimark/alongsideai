@@ -1,14 +1,21 @@
 // Calls the Anthropic API to draft a plan from a briefing block.
-// No SDK — plain fetch, same as the Resend call in submission-created.js.
-// Uses prompt caching on the stable inputs (system prompt + reference plans)
-// so every call after the first is roughly 10x cheaper.
+// Enables Anthropic's server-side web_search tool so Claude can research
+// tools specific to the respondent's niche (vet practice management AI,
+// insurance agency AI, whatever their world is) before drafting — instead
+// of just recycling what's in the reference plans.
+//
+// The search tool is server-side: Anthropic runs the searches on their end,
+// so we don't need a tool-use loop — it all happens inside one API call.
+// Downside: the call takes longer (2-3 minutes) because of the search round
+// trips. Our background function has a 15-min budget, plenty of room.
 
 const fs = require("fs");
 const path = require("path");
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-opus-4-7";
-const MAX_OUTPUT_TOKENS = 8192;
+const MAX_OUTPUT_TOKENS = 12000;
+const MAX_WEB_SEARCHES = 8;
 
 const PROMPT_PATH = path.join(__dirname, "..", "plan-template", "prompt.md");
 const SAMPLE_DIR = path.join(__dirname, "..", "..", "examples");
@@ -18,8 +25,6 @@ function readFile(p) {
 }
 
 function parsePlanJson(text) {
-  // Be tolerant: if Claude wraps in ```json ... ``` or adds trailing prose,
-  // grab the outermost JSON object.
   const firstBrace = text.indexOf("{");
   const lastBrace = text.lastIndexOf("}");
   if (firstBrace === -1 || lastBrace === -1) {
@@ -33,6 +38,16 @@ function parsePlanJson(text) {
   }
 }
 
+// Claude may do many searches, which arrive interleaved with tool_result and
+// text blocks. The actual JSON plan will be in one of the text blocks — we
+// concatenate all text output and let parsePlanJson find the outer JSON.
+function collectText(contentArray) {
+  return (contentArray || [])
+    .filter((b) => b.type === "text")
+    .map((b) => b.text || "")
+    .join("\n");
+}
+
 async function draftPlan({ briefing, apiKey }) {
   if (!apiKey) {
     throw new Error("ANTHROPIC_API_KEY not set");
@@ -42,22 +57,35 @@ async function draftPlan({ briefing, apiKey }) {
   const frankSample = readFile(path.join(SAMPLE_DIR, "semi-retired", "index.html"));
   const priyaSample = readFile(path.join(SAMPLE_DIR, "busy-professional", "index.html"));
 
-  // User message: two reference plans (cached) followed by the actual briefing.
-  // cache_control markers allow Anthropic to cache the big stable chunks.
   const userContent = [
     {
       type: "text",
-      text: `Reference plan #1 — Frank, semi-retired. This is the voice and quality bar:\n\n${frankSample}`,
+      text: `Reference plan #1 — Frank, semi-retired. This is the voice and quality bar. Do NOT recycle these tool picks for other personas; each plan's tools must be researched fresh for the respondent in front of you:\n\n${frankSample}`,
       cache_control: { type: "ephemeral" },
     },
     {
       type: "text",
-      text: `Reference plan #2 — Priya, busy professional. Same voice, different persona:\n\n${priyaSample}`,
+      text: `Reference plan #2 — Priya, busy professional. Same voice, different persona. Same rule — don't recycle these picks either:\n\n${priyaSample}`,
       cache_control: { type: "ephemeral" },
     },
     {
       type: "text",
-      text: `Now draft the plan for this respondent. Return the JSON object specified in the system prompt — no prose, no code fences, no trailing commentary.\n\n${briefing}`,
+      text:
+`Now draft the plan for this respondent.
+
+RESEARCH FIRST. Before picking any tools, use the web_search tool to investigate the respondent's specific world. Good searches look like:
+- "[their specific profession/industry] AI tools 2026"
+- "best [specific software they use] AI integrations"
+- "[specific pain point they mentioned] AI solutions"
+- Competitor research for any tool you're considering (is this tool actually current? are there better alternatives?)
+
+Run 4–8 targeted searches. Find tools that a knowledgeable friend in their field would know about — not just the generic consumer AI lineup. If a niche-specific tool genuinely fits, recommend it. If the niche doesn't have good specialized tools yet, that's fine — but prove you looked.
+
+You MUST consider "build it yourself" as a recommendation type. For respondents whose magic-wand answer is bespoke (writing in their voice, a workflow no SaaS addresses, something specific to them), the right recommendation is often to build a small custom tool in Claude or a comparable assistant — not to subscribe to yet another piece of SaaS. At least one plan in every five should include a "build it yourself" recommendation where it genuinely fits.
+
+After research, draft the plan in the JSON format specified in the system prompt. Your final text output must contain ONLY the JSON object — no preamble, no search summaries, no trailing commentary.
+
+${briefing}`,
     },
   ];
 
@@ -69,6 +97,13 @@ async function draftPlan({ briefing, apiKey }) {
         type: "text",
         text: systemPrompt,
         cache_control: { type: "ephemeral" },
+      },
+    ],
+    tools: [
+      {
+        type: "web_search_20250305",
+        name: "web_search",
+        max_uses: MAX_WEB_SEARCHES,
       },
     ],
     messages: [
@@ -92,18 +127,25 @@ async function draftPlan({ briefing, apiKey }) {
   }
 
   const json = await res.json();
-  const textBlock = (json.content || []).find((b) => b.type === "text");
-  if (!textBlock) {
+
+  // Count how many searches actually ran — useful in logs to confirm the
+  // research step is doing its job.
+  const searchCount = (json.content || []).filter(
+    (b) => b.type === "server_tool_use" && b.name === "web_search"
+  ).length;
+
+  const fullText = collectText(json.content);
+  if (!fullText.trim()) {
     throw new Error("Anthropic returned no text content");
   }
 
-  const plan = parsePlanJson(textBlock.text);
+  const plan = parsePlanJson(fullText);
 
-  // Pass back usage numbers so we can log cost per plan.
   return {
     plan,
     usage: json.usage || {},
-    rawText: textBlock.text,
+    rawText: fullText,
+    searchCount,
   };
 }
 

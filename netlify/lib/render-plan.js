@@ -42,13 +42,17 @@ function renderTool(tool) {
   const conditionalTag = tool.conditional
     ? ` <em style="font-style:normal;color:#8b6f28;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Conditional</em>`
     : "";
+  const buildTag = tool.build_it_yourself
+    ? ` <em style="font-style:normal;color:#6F7A8B;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Build it yourself</em>`
+    : "";
   const wontLine = tool.what_it_wont_fix
     ? `<p class="wont">${renderInline(tool.what_it_wont_fix)}</p>`
     : "";
+  const classes = tool.build_it_yourself ? "rec rec-build" : "rec";
   return `
-      <div class="rec">
+      <div class="${classes}">
         <div>
-          <div class="rec-name">${escapeHtml(tool.name)}${conditionalTag}</div>
+          <div class="rec-name">${escapeHtml(tool.name)}${conditionalTag}${buildTag}</div>
           <div class="rec-cost">${escapeHtml(tool.cost)}</div>
         </div>
         <div class="rec-body">

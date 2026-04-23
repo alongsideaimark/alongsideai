@@ -56,13 +56,17 @@ def render_tool(tool):
     conditional = ""
     if tool.get("conditional"):
         conditional = ' <em style="font-style:normal;color:#8b6f28;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Conditional</em>'
+    build_tag = ""
+    if tool.get("build_it_yourself"):
+        build_tag = ' <em style="font-style:normal;color:#6F7A8B;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Build it yourself</em>'
     wont_line = ""
     if tool.get("what_it_wont_fix"):
         wont_line = f'<p class="wont">{render_inline(tool["what_it_wont_fix"])}</p>'
+    classes = "rec rec-build" if tool.get("build_it_yourself") else "rec"
     return f"""
-      <div class="rec">
+      <div class="{classes}">
         <div>
-          <div class="rec-name">{escape_html(tool["name"])}{conditional}</div>
+          <div class="rec-name">{escape_html(tool["name"])}{conditional}{build_tag}</div>
           <div class="rec-cost">{escape_html(tool["cost"])}</div>
         </div>
         <div class="rec-body">

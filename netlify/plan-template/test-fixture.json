@@ -67,6 +67,14 @@
       "what_it_is": "Hit record on your iPhone at a board meeting; afterwards you get a clean written transcript, a one-page summary, and a list of who committed to what.",
       "why_it_helps_you": "Board meetings become searchable instead of relying on whatever minutes the secretary eventually circulates. When you can't remember what the chair said about the audit, you type three words and jump to that moment. **Always ask the board's permission before recording.** If any of the three boards says no, skip Otter for that one and lean on NotebookLM for the packet instead.",
       "what_it_wont_fix": "It won't transcribe well in a noisy room or with heavy accents — plan for 80–90% accuracy, not perfect."
+    },
+    {
+      "name": "Custom CPA-prep assistant (Claude Project)",
+      "cost": "Claude Pro (~$20/mo) + 2 hours of setup",
+      "build_it_yourself": true,
+      "what_it_is": "You feed a Claude Project five of your past CPA interactions — a letter that confused you, how you wanted it explained, what you eventually asked. It learns your terminology and your level. Going forward, you snap a photo of any confusing tax letter and ask 'what does this mean and what should I ask my CPA' — it answers in your register, not a textbook's.",
+      "why_it_helps_you": "You said you don't want to sound like an idiot on the phone with your CPA. A custom assistant **trained on your past CPA conversations** outperforms a generic chatbot — it remembers that you're a retired contractor, not a finance person, and phrases things accordingly. Your data stays in your Claude account — no training for anyone else.",
+      "what_it_wont_fix": "Takes one weekend to set up right. If Claude changes the Project feature significantly, you'll need to rebuild — probably 30 minutes, every 18 months or so."
     }
   ],
   "ruled_out": {
