@@ -2,7 +2,7 @@
 // to the customer, and flip the stored record status to "sent". Called from
 // the review bar on /plans/:id when Mark clicks "Approve & send to customer".
 
-const { getStore } = require("@netlify/blobs");
+const { connectLambda, getStore } = require("@netlify/blobs");
 
 const PDFSHIFT_URL = "https://api.pdfshift.io/v3/convert/pdf";
 const FROM = "Mark Skeehan <mark@alongsideai.ai>";
@@ -102,6 +102,7 @@ exports.handler = async (event) => {
       return { statusCode: 405, body: "method not allowed" };
     }
 
+    connectLambda(event);
     const { id } = JSON.parse(event.body || "{}");
     if (!id || !/^[A-Za-z0-9_-]+$/.test(id)) {
       return { statusCode: 400, body: "invalid id" };

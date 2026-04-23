@@ -2,7 +2,7 @@
 // overlayed on top that lets Mark ship the plan to the customer in one click.
 // URL shape: /plans/:id  (via the netlify.toml redirect).
 
-const { getStore } = require("@netlify/blobs");
+const { connectLambda, getStore } = require("@netlify/blobs");
 
 function notFound() {
   return {
@@ -71,6 +71,7 @@ function injectReviewBar(html, record) {
 
 exports.handler = async (event) => {
   try {
+    connectLambda(event);
     const id = (event.queryStringParameters && event.queryStringParameters.id) || "";
     if (!id || !/^[A-Za-z0-9_-]+$/.test(id)) {
       return notFound();
