@@ -5,7 +5,7 @@
 const { connectLambda, getStore } = require("@netlify/blobs");
 
 const PDFSHIFT_URL = "https://api.pdfshift.io/v3/convert/pdf";
-const FROM = "Mark Skeehan <mark@alongsideai.ai>";
+const FROM = "Mark <mark@alongsideai.ai>";
 const REPLY_TO = "mark@alongsideai.ai";
 
 async function convertToPdf({ html, apiKey }) {

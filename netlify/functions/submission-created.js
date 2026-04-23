@@ -8,7 +8,7 @@
 
 const INTERNAL_TO = "mark@alongsideai.ai";
 const INTERNAL_FROM = "Alongside AI Intake <intake@alongsideai.ai>";
-const AUTOREPLY_FROM = "Mark Skeehan <mark@alongsideai.ai>";
+const AUTOREPLY_FROM = "Mark <mark@alongsideai.ai>";
 const REPLY_TO = "mark@alongsideai.ai";
 
 // Labels mirror the radio/checkbox option labels rendered in the form,

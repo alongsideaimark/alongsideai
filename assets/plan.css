@@ -75,7 +75,7 @@ a{color:inherit}
   pointer-events:none;
 }
 .cover-mark{display:flex; align-items:center; gap:14px; margin-bottom:72px; position:relative; z-index:1}
-.cover-mark img{width:34px; height:40px; filter:brightness(0) invert(1) opacity(.95)}
+.cover-mark img{width:34px; height:40px}
 .cover-mark .wordmark{display:inline-flex; align-items:baseline; gap:12px; font-family:var(--serif); font-size:26px; line-height:1}
 .cover-mark .ai{font-family:var(--sans); font-weight:700; font-size:14px; letter-spacing:.24em; color:var(--gold-light)}
 
