@@ -28,8 +28,10 @@
   ]
 
 # Revisions call the same library code (prompt + reference plans + template),
-# so they need the same runtime files bundled alongside them.
-[functions."revise-plan"]
+# so they need the same runtime files bundled alongside them. Background
+# function (the -background suffix) so it gets the 15-minute timeout — a
+# synchronous call runs past Netlify's 10-second default.
+[functions."revise-plan-background"]
   included_files = [
     "netlify/plan-template/template.html",
     "netlify/plan-template/prompt.md",

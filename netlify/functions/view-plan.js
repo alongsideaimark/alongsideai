@@ -99,22 +99,54 @@ function injectReviewBar(html, record) {
   }
 
   if (reviseSubmit){
+    var INITIAL_REVISION_COUNT = ${Array.isArray(record.revisions) ? record.revisions.length : 0};
+
+    var pollForRevision = function(startedAt){
+      // Poll the status endpoint; resolve when revision_count has gone up.
+      var POLL_INTERVAL_MS = 5000;
+      var MAX_WAIT_MS = 4 * 60 * 1000; // 4 minutes — plenty for a long revision
+      fetch("/.netlify/functions/view-plan?id=" + encodeURIComponent(PLAN_ID) + "&status=1", {
+        cache: "no-store",
+      }).then(function(r){
+        if (!r.ok) throw new Error("status poll returned " + r.status);
+        return r.json();
+      }).then(function(meta){
+        if ((meta.revision_count || 0) > INITIAL_REVISION_COUNT){
+          reviseStatus.textContent = "Revision applied. Reloading...";
+          setTimeout(function(){ window.location.reload(); }, 500);
+          return;
+        }
+        if (Date.now() - startedAt > MAX_WAIT_MS){
+          reviseStatus.textContent = "";
+          alert("Revision is taking longer than expected. Check the generate-plan-background logs on Netlify.");
+          reviseSubmit.disabled = false;
+          reviseSubmit.textContent = "Apply revision";
+          return;
+        }
+        var elapsed = Math.round((Date.now() - startedAt) / 1000);
+        reviseStatus.textContent = "Revising... " + elapsed + "s elapsed. Claude may be running web searches.";
+        setTimeout(function(){ pollForRevision(startedAt); }, POLL_INTERVAL_MS);
+      }).catch(function(err){
+        // Transient poll failure — just try again.
+        setTimeout(function(){ pollForRevision(startedAt); }, POLL_INTERVAL_MS);
+      });
+    };
+
     var runRevision = function(){
       var instruction = (reviseInput.value || "").trim();
       if (!instruction){ reviseInput.focus(); return; }
       reviseSubmit.disabled = true;
       reviseSubmit.textContent = "Revising...";
-      reviseStatus.textContent = "This usually takes 30–180 seconds. Web searches may run if the instruction calls for them.";
-      fetch("/.netlify/functions/revise-plan", {
+      reviseStatus.textContent = "Revision kicked off. This usually takes 30–180 seconds.";
+      // Background function: returns 202 accepted, work continues server-side.
+      fetch("/.netlify/functions/revise-plan-background", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ id: PLAN_ID, instruction: instruction })
       }).then(function(r){
-        if (!r.ok) return r.text().then(function(t){ throw new Error(t); });
-        return r.json();
-      }).then(function(){
-        reviseStatus.textContent = "Revision applied. Reloading...";
-        setTimeout(function(){ window.location.reload(); }, 600);
+        if (r.status !== 202 && !r.ok) return r.text().then(function(t){ throw new Error(t); });
+        // Whether 202 or 200, start polling for the revision to land.
+        pollForRevision(Date.now());
       }).catch(function(err){
         reviseStatus.textContent = "";
         alert("Revision failed: " + err.message);
@@ -147,29 +179,55 @@ exports.handler = async (event) => {
     const pathId = pathMatch ? pathMatch[1] : "";
     const id = queryId || pathId;
 
-    console.log(`[view-plan] path="${event.path || ""}" rawUrl="${event.rawUrl || ""}" queryId="${queryId}" pathId="${pathId}" finalId="${id}"`);
+    // Status mode: return lightweight JSON metadata for the client-side
+    // revision poller (so it can tell when a background revision completes).
+    const statusMode = event.queryStringParameters && event.queryStringParameters.status === "1";
+
+    if (!statusMode) {
+      console.log(`[view-plan] path="${event.path || ""}" rawUrl="${event.rawUrl || ""}" queryId="${queryId}" pathId="${pathId}" finalId="${id}"`);
+    }
 
     if (!id || !/^[A-Za-z0-9_-]+$/.test(id)) {
-      console.log("[view-plan] id failed regex, returning 404");
-      return notFound();
+      if (!statusMode) console.log("[view-plan] id failed regex, returning 404");
+      return statusMode
+        ? { statusCode: 404, headers: { "content-type": "application/json" }, body: JSON.stringify({ error: "invalid id" }) }
+        : notFound();
     }
 
     const store = getStore("plans");
     const raw = await store.get(`${id}.json`);
     if (!raw) {
-      // Diagnostic: what IS in the store?
-      try {
-        const listing = await store.list();
-        const keys = (listing && listing.blobs) ? listing.blobs.map((b) => b.key) : [];
-        console.log(`[view-plan] blob "${id}.json" not found. store has ${keys.length} keys: ${JSON.stringify(keys.slice(0, 10))}`);
-      } catch (listErr) {
-        console.error(`[view-plan] also failed to list keys: ${listErr.message}`);
+      if (!statusMode) {
+        try {
+          const listing = await store.list();
+          const keys = (listing && listing.blobs) ? listing.blobs.map((b) => b.key) : [];
+          console.log(`[view-plan] blob "${id}.json" not found. store has ${keys.length} keys: ${JSON.stringify(keys.slice(0, 10))}`);
+        } catch (listErr) {
+          console.error(`[view-plan] also failed to list keys: ${listErr.message}`);
+        }
       }
-      return notFound();
+      return statusMode
+        ? { statusCode: 404, headers: { "content-type": "application/json" }, body: JSON.stringify({ error: "not found" }) }
+        : notFound();
     }
-    console.log(`[view-plan] found blob for id="${id}" (${raw.length} bytes)`);
+    if (!statusMode) console.log(`[view-plan] found blob for id="${id}" (${raw.length} bytes)`);
 
     const record = JSON.parse(raw);
+
+    // Status mode returns just the metadata the revision poller needs.
+    if (statusMode) {
+      return {
+        statusCode: 200,
+        headers: { "content-type": "application/json", "cache-control": "no-store" },
+        body: JSON.stringify({
+          id: record.id,
+          status: record.status,
+          revision_count: Array.isArray(record.revisions) ? record.revisions.length : 0,
+          revised_at: record.revised_at || null,
+        }),
+      };
+    }
+
     const withBar = injectReviewBar(record.html, record);
 
     return {
