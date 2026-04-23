@@ -9,9 +9,11 @@
   force = true
 
 # Pretty URL for plan previews: /plans/abc123 serves the rendered draft.
+# Uses a splat (*) rather than :id because Netlify doesn't always interpolate
+# named placeholders into the query string portion of the "to" URL.
 [[redirects]]
-  from = "/plans/:id"
-  to = "/.netlify/functions/view-plan?id=:id"
+  from = "/plans/*"
+  to = "/.netlify/functions/view-plan?id=:splat"
   status = 200
 
 # The plan-drafting function reads the HTML template, the prompt, and the two
