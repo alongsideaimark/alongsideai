@@ -16,6 +16,41 @@ a{color:#7A8B6F}</style>
   };
 }
 
+function escapeForHtml(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  }[c]));
+}
+
+// Conversation log of prior revisions — user bubble + Claude bubble per entry.
+function renderRevisionLog(revisions) {
+  if (!Array.isArray(revisions) || revisions.length === 0) return "";
+  const entries = revisions.map((r, i) => {
+    const when = r.at ? new Date(r.at).toLocaleString() : "";
+    const note = r.note ? escapeForHtml(r.note) : "<span style=\"color:#8A8780;font-style:italic;\">(no report recorded for this revision)</span>";
+    const instruction = escapeForHtml(r.instruction || "");
+    const searches = r.searchCount > 0 ? ` · <span style="color:#C9B88C;">${r.searchCount} web search${r.searchCount === 1 ? "" : "es"}</span>` : "";
+    return `
+      <div style="margin:14px 0;">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+          <div style="max-width:85%;background:#3a3a38;color:#FAF6F1;padding:10px 14px;border-radius:12px 12px 2px 12px;font-size:13px;line-height:1.5;">
+            ${instruction}
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-start;">
+          <div style="max-width:85%;background:#2a2a28;color:#E8E6E1;padding:10px 14px;border-radius:12px 12px 12px 2px;font-size:13px;line-height:1.55;border-left:3px solid #9E7B84;">
+            ${note}
+            <div style="margin-top:6px;color:#8A8780;font-size:11px;font-family:ui-monospace,Menlo,Consolas,monospace;">${when}${searches}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+  return `
+    <div style="max-height:320px;overflow-y:auto;background:#1a1a18;border:1px solid #2e2e2c;border-radius:10px;padding:4px 14px;margin-bottom:14px;">
+      ${entries}
+    </div>`;
+}
+
 function injectReviewBar(html, record) {
   if (record.status !== "draft") {
     // Already approved/sent — don't show review controls.
@@ -41,8 +76,9 @@ function injectReviewBar(html, record) {
   </div>
   <div id="mark-revise-panel" style="display:none;padding:0 20px 18px;border-top:1px solid #333;">
     <div style="padding:14px 0 10px;color:#C9C9C7;font-size:13px;line-height:1.5;">
-      Plain English. Specific edits, scoped critiques, or agentic audits (<em style="color:#9E9E9C;font-style:italic;">e.g., "verify the tool picks are still current," "re-read the briefing and tell me what threads I missed," "tighten section 03"</em>). Claude can run fresh web searches if the instruction calls for it.
+      Plain English. Specific edits, scoped critiques, or agentic audits (<em style="color:#9E9E9C;font-style:italic;">e.g., "verify the tool picks are still current," "re-read the briefing and tell me what threads I missed," "tighten section 03"</em>). Claude runs fresh web searches if needed and reports back what it changed.
     </div>
+    ${renderRevisionLog(record.revisions)}
     <textarea id="mark-revise-input" rows="4" placeholder="What would you like changed or reviewed?" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:8px;border:1px solid #555;background:#2a2a28;color:#FAF6F1;font-family:inherit;font-size:14px;line-height:1.5;resize:vertical;min-height:90px;"></textarea>
     <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
       <div id="mark-revise-status" style="color:#9E9E9C;font-size:13px;"></div>

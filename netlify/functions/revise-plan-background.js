@@ -40,21 +40,23 @@ exports.handler = async (event) => {
     }
 
     console.log(`[revise-plan] ${id} revising with instruction (${instruction.length} chars)`);
-    const { plan, usage, searchCount } = await revisePlan({
+    const { plan, note, usage, searchCount } = await revisePlan({
       currentPlan: record.plan,
       briefing: record.briefing,
       instruction: instruction.trim(),
       apiKey,
     });
-    console.log(`[revise-plan] ${id} revision returned; web searches: ${searchCount || 0}; tokens:`, JSON.stringify(usage));
+    console.log(`[revise-plan] ${id} revision returned; web searches: ${searchCount || 0}; note: "${(note || "").slice(0, 120)}"; tokens:`, JSON.stringify(usage));
 
     // Re-render HTML and overwrite the stored record. Keep the revision
-    // history in a small array so we can see what's been changed.
+    // history in a small array so we can see what's been changed + what
+    // Claude reported doing.
     const html = renderPlan(plan);
     const revisions = Array.isArray(record.revisions) ? record.revisions.slice() : [];
     revisions.push({
       at: new Date().toISOString(),
       instruction: instruction.trim(),
+      note: note || "",
       searchCount,
       usage,
     });

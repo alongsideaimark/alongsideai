@@ -182,8 +182,17 @@ ${instruction}
 Your job:
 - If the instruction is a specific edit ("swap tool X for Y", "tighten section 03"), make that edit cleanly and touch nothing else.
 - If the instruction is a critique or audit ("verify tool picks are current", "make sure research was thorough", "read as a skeptical customer"), use the web_search tool as needed, find weaknesses, and fix them. Be willing to change multiple sections if the audit reveals real gaps.
-- Always preserve the JSON shape defined in the system prompt. Return the COMPLETE revised plan as a single JSON object. Even sections you didn't change must be present in the output.
-- Your final text output must contain ONLY the JSON object — no preamble, no diff summary, no commentary.
+- If the instruction doesn't require changes (e.g., "spell check" and there are no errors), that's fine — say so in your note. Return the plan unchanged.
+- Always preserve the JSON shape defined in the system prompt. Return the COMPLETE revised plan. Even sections you didn't change must be present.
+
+Return a single JSON object with TWO top-level fields:
+
+{
+  "note": "A plain-English report of what you did, written directly to the reviewer. 2–6 sentences. Include what you checked, what you changed (section and specifics), what you considered but decided against, and any web searches you ran. If you made no changes, explain why. This is the back-and-forth — be specific, not generic.",
+  "plan": { ...the complete revised plan JSON following the system-prompt schema... }
+}
+
+Your final text output must contain ONLY this JSON object — no preamble, no code fences, no trailing commentary.
 
 ORIGINAL BRIEFING:
 ${briefing}
@@ -230,8 +239,17 @@ ${JSON.stringify(currentPlan, null, 2)}`,
     throw new Error("Anthropic returned no text content");
   }
 
-  const plan = parsePlanJson(fullText);
-  return { plan, usage: json.usage || {}, rawText: fullText, searchCount };
+  // Revision output is a wrapper: { note: "...", plan: {...} }. Pull both.
+  const wrapper = parsePlanJson(fullText);
+  if (!wrapper || typeof wrapper !== "object") {
+    throw new Error("revision returned non-object");
+  }
+  if (!wrapper.plan || typeof wrapper.plan !== "object") {
+    throw new Error("revision missing 'plan' field");
+  }
+  const plan = wrapper.plan;
+  const note = typeof wrapper.note === "string" ? wrapper.note.trim() : "";
+  return { plan, note, usage: json.usage || {}, rawText: fullText, searchCount };
 }
 
 module.exports = { draftPlan, revisePlan };
