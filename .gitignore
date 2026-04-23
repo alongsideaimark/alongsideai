@@ -4,6 +4,9 @@
 # Font cache used by scripts/build-og-image.py — re-downloaded on demand
 scripts/.font-cache/
 
+# Node dependencies — installed on Netlify at build time
+node_modules/
+
 # Local preview output from netlify/plan-template/test-render.py — never deploy
 /plan-test-preview.html
 
