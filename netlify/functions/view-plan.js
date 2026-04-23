@@ -73,13 +73,26 @@ exports.handler = async (event) => {
   try {
     connectLambda(event);
     const id = (event.queryStringParameters && event.queryStringParameters.id) || "";
+    console.log(`[view-plan] requested id="${id}"`);
     if (!id || !/^[A-Za-z0-9_-]+$/.test(id)) {
+      console.log("[view-plan] id failed regex, returning 404");
       return notFound();
     }
 
     const store = getStore("plans");
     const raw = await store.get(`${id}.json`);
-    if (!raw) return notFound();
+    if (!raw) {
+      // Diagnostic: what IS in the store?
+      try {
+        const listing = await store.list();
+        const keys = (listing && listing.blobs) ? listing.blobs.map((b) => b.key) : [];
+        console.log(`[view-plan] blob "${id}.json" not found. store has ${keys.length} keys: ${JSON.stringify(keys.slice(0, 10))}`);
+      } catch (listErr) {
+        console.error(`[view-plan] also failed to list keys: ${listErr.message}`);
+      }
+      return notFound();
+    }
+    console.log(`[view-plan] found blob for id="${id}" (${raw.length} bytes)`);
 
     const record = JSON.parse(raw);
     const withBar = injectReviewBar(record.html, record);
