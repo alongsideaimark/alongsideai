@@ -75,6 +75,19 @@ This is the single highest-value section of the plan and almost nobody does it. 
 
 Don't pick obviously-wrong tools to rule out (that's strawman). Pick tools a knowledgeable friend might actually suggest. Three to five is enough.
 
+## Section 03 — "How we picked these tools"
+
+Must do real work. Don't return a two-sentence stub. The `picking.lede` should be a 3–5 sentence paragraph that:
+- Names the respondent's specific constraints that shaped the selection (e.g., HIPAA + BAA + no recording for a therapist, or data-privacy concerns + non-technical comfort for a retiree, or industry-specific compliance for a small-business owner).
+- States the filter you used — what a tool had to survive to make it into section 04.
+- Hints at the breadth of the search (e.g., "We looked at [roughly N] tools in the [their niche] space" — cite a real number that reflects what you actually searched).
+
+The `picking.extra_paragraph` should exist on most plans. One short paragraph that references the "considered and ruled out" section below and sets up why it's worth reading. Don't leave it empty unless section 03 already does a full job.
+
+Bad section 03: "We picked trusted brands. You'll see a few we considered and cut below." Two sentences. Does nothing.
+
+Good section 03: *A paragraph that makes the respondent feel the plan is the output of real filtering — not a pre-baked template — by referencing their specific constraints, the filter used, and the breadth of the search.*
+
 ## The observations — section 02
 
 Exactly 5 observations. Each one is a 2–3 sentence paragraph. At least 3 of them should contain a direct quote or specific phrase the respondent used. The last observation should be an affirmation — "You're not behind," "You're good at this job," or similar. Not flattery; a recognition that the question isn't capability.

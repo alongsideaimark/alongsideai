@@ -149,4 +149,89 @@ ${briefing}`,
   };
 }
 
-module.exports = { draftPlan };
+// Revises an existing plan per a plain-English instruction from Mark.
+// Same model, same system prompt (so the voice rules carry over), same
+// web_search tool (so agentic instructions like "verify the tool picks are
+// still current" actually work). Returns a fully revised plan JSON.
+async function revisePlan({ currentPlan, briefing, instruction, apiKey }) {
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
+
+  const systemPrompt = readFile(PROMPT_PATH);
+  const frankSample = readFile(path.join(SAMPLE_DIR, "semi-retired", "index.html"));
+  const priyaSample = readFile(path.join(SAMPLE_DIR, "busy-professional", "index.html"));
+
+  const userContent = [
+    {
+      type: "text",
+      text: `Reference plan #1 — Frank, semi-retired. Voice and quality bar:\n\n${frankSample}`,
+      cache_control: { type: "ephemeral" },
+    },
+    {
+      type: "text",
+      text: `Reference plan #2 — Priya, busy professional. Same voice, different persona:\n\n${priyaSample}`,
+      cache_control: { type: "ephemeral" },
+    },
+    {
+      type: "text",
+      text:
+`You previously drafted the plan below for this respondent. The reviewer wants revisions.
+
+REVISION INSTRUCTION FROM REVIEWER:
+${instruction}
+
+Your job:
+- If the instruction is a specific edit ("swap tool X for Y", "tighten section 03"), make that edit cleanly and touch nothing else.
+- If the instruction is a critique or audit ("verify tool picks are current", "make sure research was thorough", "read as a skeptical customer"), use the web_search tool as needed, find weaknesses, and fix them. Be willing to change multiple sections if the audit reveals real gaps.
+- Always preserve the JSON shape defined in the system prompt. Return the COMPLETE revised plan as a single JSON object. Even sections you didn't change must be present in the output.
+- Your final text output must contain ONLY the JSON object — no preamble, no diff summary, no commentary.
+
+ORIGINAL BRIEFING:
+${briefing}
+
+CURRENT PLAN JSON:
+${JSON.stringify(currentPlan, null, 2)}`,
+    },
+  ];
+
+  const body = {
+    model: MODEL,
+    max_tokens: MAX_OUTPUT_TOKENS,
+    system: [
+      { type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } },
+    ],
+    tools: [
+      { type: "web_search_20250305", name: "web_search", max_uses: MAX_WEB_SEARCHES },
+    ],
+    messages: [{ role: "user", content: userContent }],
+  };
+
+  const res = await fetch(ANTHROPIC_URL, {
+    method: "POST",
+    headers: {
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errBody = await res.text();
+    throw new Error(`Anthropic ${res.status}: ${errBody}`);
+  }
+
+  const json = await res.json();
+  const searchCount = (json.content || []).filter(
+    (b) => b.type === "server_tool_use" && b.name === "web_search"
+  ).length;
+
+  const fullText = collectText(json.content);
+  if (!fullText.trim()) {
+    throw new Error("Anthropic returned no text content");
+  }
+
+  const plan = parsePlanJson(fullText);
+  return { plan, usage: json.usage || {}, rawText: fullText, searchCount };
+}
+
+module.exports = { draftPlan, revisePlan };
