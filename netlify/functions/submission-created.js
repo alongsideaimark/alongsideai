@@ -481,12 +481,21 @@ exports.handler = async (event) => {
     await Promise.all(jobs);
 
     // Kick off plan drafting in the background. Fire-and-forget: the background
-    // function accepts the POST and returns 202 immediately, then runs Claude
-    // + renders HTML + emails Mark on its own schedule (up to 15 min).
-    const baseUrl = process.env.URL || process.env.DEPLOY_URL;
+    // function returns 202 immediately, then runs Claude + renders HTML + emails
+    // Mark on its own schedule (up to 15 min).
+    //
+    // Prefer DEPLOY_PRIME_URL (always the .netlify.app subdomain) over URL
+    // (the custom domain, which may be password-protected or parked). We also
+    // check response status so a silent 401/404 doesn't look like success.
+    const baseUrl =
+      process.env.DEPLOY_PRIME_URL ||
+      process.env.DEPLOY_URL ||
+      process.env.URL;
+
     if (baseUrl) {
       try {
-        await fetch(`${baseUrl}/.netlify/functions/generate-plan-background`, {
+        const triggerUrl = `${baseUrl}/.netlify/functions/generate-plan-background`;
+        const triggerRes = await fetch(triggerUrl, {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
@@ -495,7 +504,12 @@ exports.handler = async (event) => {
             submittedAt: payload.created_at,
           }),
         });
-        console.log("[submission] plan drafting kicked off in background");
+        if (triggerRes.status === 202 || triggerRes.ok) {
+          console.log(`[submission] plan drafting kicked off in background (status ${triggerRes.status}, url ${triggerUrl})`);
+        } else {
+          const bodyText = await triggerRes.text().catch(() => "(no body)");
+          console.error(`[submission] plan drafting trigger returned ${triggerRes.status}: ${bodyText} (url ${triggerUrl})`);
+        }
       } catch (err) {
         console.error("[submission] failed to trigger plan drafting:", err.message);
       }
