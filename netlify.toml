@@ -27,6 +27,16 @@
     "examples/busy-professional/index.html"
   ]
 
+# Revisions call the same library code (prompt + reference plans + template),
+# so they need the same runtime files bundled alongside them.
+[functions."revise-plan"]
+  included_files = [
+    "netlify/plan-template/template.html",
+    "netlify/plan-template/prompt.md",
+    "examples/semi-retired/index.html",
+    "examples/busy-professional/index.html"
+  ]
+
 [[headers]]
   for = "/*"
   [headers.values]
