@@ -235,8 +235,7 @@ def get_qa(qa, *keys):
 
 def build_payload(fm, qa):
     pid = str(fm.get("id", "00")).zfill(2)
-    first_name = re.split(r"[\s.]", fm.get("name", ""))[0].lower()
-    email = f"mskeehan+persona-{pid}-{first_name}@gmail.com"
+    email = "mskeehan@gmail.com"
 
     work_answer = get_qa(qa, "What do you do for work")
     biz_answer = get_qa(qa, "Do you run your own business? Tell us about it",
