@@ -20,7 +20,7 @@ import urllib.request
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PERSONAS_DIR = os.path.join(SCRIPT_DIR, "..", "eval", "personas")
 SUBMIT_URL = "https://alongsideai.ai/"
-DELAY_S = 3
+DELAY_S = 25
 
 # ---------------------------------------------------------------------------
 # Persona markdown parser
@@ -379,16 +379,18 @@ def main():
     parser.add_argument("--only", type=str, default=None, help="Submit only persona NN (e.g. --only=01)")
     args = parser.parse_args()
 
-    only = args.only.zfill(2) if args.only else None
+    only_ids = None
+    if args.only:
+        only_ids = [s.strip().zfill(2) for s in args.only.split(",") if s.strip()]
 
     files = sorted(f for f in os.listdir(PERSONAS_DIR) if re.match(r"persona-\d{2}", f))
     if not files:
         print("No persona files found in", PERSONAS_DIR, file=sys.stderr)
         sys.exit(1)
 
-    selected = [f for f in files if f"persona-{only}" in f] if only else files
+    selected = [f for f in files if any(f.startswith(f"persona-{i}") for i in only_ids)] if only_ids else files
     if not selected:
-        print(f"No persona matching --only={only}", file=sys.stderr)
+        print(f"No persona matching --only={args.only}", file=sys.stderr)
         sys.exit(1)
 
     mode = "DRY RUN" if args.dry_run else "LIVE SUBMIT"
