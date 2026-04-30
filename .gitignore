@@ -14,6 +14,9 @@ node_modules/
 .env
 .env.local
 
+# Generated plan outputs from eval runs
+eval/results/
+
 # OS junk
 .DS_Store
 Thumbs.db
