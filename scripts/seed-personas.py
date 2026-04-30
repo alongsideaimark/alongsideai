@@ -333,12 +333,36 @@ def build_payload(fm, qa):
 # HTTP submission
 # ---------------------------------------------------------------------------
 
+def encode_multipart(payload):
+    """Encode payload as multipart/form-data, matching the live browser submission."""
+    import uuid
+    boundary = "----PersonaSeedBoundary" + uuid.uuid4().hex
+    lines = []
+    for k, v in payload.items():
+        lines.append(f"--{boundary}")
+        lines.append(f'Content-Disposition: form-data; name="{k}"')
+        lines.append("")
+        lines.append(str(v))
+    lines.append(f"--{boundary}--")
+    lines.append("")
+    body = "\r\n".join(lines).encode("utf-8")
+    content_type = f"multipart/form-data; boundary={boundary}"
+    return body, content_type
+
+
 def submit_payload(payload):
-    body = urllib.parse.urlencode(payload).encode("utf-8")
+    body, content_type = encode_multipart(payload)
     req = urllib.request.Request(
         SUBMIT_URL,
         data=body,
-        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        headers={
+            "Content-Type": content_type,
+            "Accept": "*/*",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Origin": "https://alongsideai.ai",
+            "Referer": "https://alongsideai.ai/questionnaire/",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+        },
         method="POST",
     )
     resp = urllib.request.urlopen(req)
