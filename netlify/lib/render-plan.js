@@ -38,6 +38,31 @@ function renderObservation(text) {
   return `<div class="obs-item"><div class="dot"></div><p>${renderInline(text)}</p></div>`;
 }
 
+function renderSetupSteps(tool) {
+  if (!tool.setup_steps || tool.setup_steps.length === 0) return "";
+  const steps = tool.setup_steps.map((s) => `<li>${renderInline(s)}</li>`).join("\n              ");
+  const tip = tool.setup_tip
+    ? `\n            <div class="tip">${renderInline(tool.setup_tip)}</div>`
+    : "";
+  return `
+          <div class="setup-steps">
+            <div class="setup-steps-label">Getting started — step by step</div>
+            <ol>
+              ${steps}
+            </ol>${tip}
+          </div>`;
+}
+
+function renderPrompts(tool) {
+  if (!tool.prompts || tool.prompts.length === 0) return "";
+  return tool.prompts.map((p, i) => `
+          <div class="prompt-box"${i > 0 ? ' style="margin-top:10px"' : ""}>
+            <div class="prompt-box-label">${escapeHtml(p.label)}</div>
+            <div class="prompt-text">${escapeHtml(p.text)}</div>
+            ${p.note ? `<p class="prompt-note">${renderInline(p.note)}</p>` : ""}
+          </div>`).join("\n");
+}
+
 function renderTool(tool) {
   const conditionalTag = tool.conditional
     ? ` <em style="font-style:normal;color:#8b6f28;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Conditional</em>`
@@ -49,6 +74,8 @@ function renderTool(tool) {
     ? `<p class="wont">${renderInline(tool.what_it_wont_fix)}</p>`
     : "";
   const classes = tool.build_it_yourself ? "rec rec-build" : "rec";
+  const setupHtml = renderSetupSteps(tool);
+  const promptsHtml = renderPrompts(tool);
   return `
       <div class="${classes}">
         <div>
@@ -58,7 +85,7 @@ function renderTool(tool) {
         <div class="rec-body">
           <p class="what">What it is: ${renderInline(tool.what_it_is)}</p>
           <p class="why">Why it helps you: ${renderInline(tool.why_it_helps_you)}</p>
-          ${wontLine}
+          ${wontLine}${setupHtml}${promptsHtml}
         </div>
       </div>`;
 }
@@ -83,6 +110,26 @@ function renderLine(line) {
   return `<div class="line"><span>${renderInline(line.label)}</span><span class="v">${escapeHtml(line.cost)}</span></div>`;
 }
 
+function renderGuardrailItem(item) {
+  const level = item.level || "caution";
+  const labelText = level === "never" ? "Never"
+    : level === "safe" ? "Safe to use"
+    : "Be careful with";
+  return `
+      <div class="guardrail-item ${escapeHtml(level)}">
+        <div class="guardrail-label">${labelText}</div>
+        ${renderInline(item.text)}
+      </div>`;
+}
+
+function renderCancelItem(item) {
+  return `
+      <div class="cancel-item">
+        <div class="cancel-name">${escapeHtml(item.name)}</div>
+        <div>${renderInline(item.instructions)}</div>
+      </div>`;
+}
+
 function renderPlan(plan, opts = {}) {
   const template = fs.readFileSync(TEMPLATE_PATH, "utf8");
   const preparedDate = opts.preparedDate || new Date().toLocaleDateString("en-US", {
@@ -92,6 +139,14 @@ function renderPlan(plan, opts = {}) {
   const extraParagraph = plan.picking && plan.picking.extra_paragraph
     ? `<p>${renderInline(plan.picking.extra_paragraph)}</p>`
     : "";
+
+  // Guardrails — collect items from the new JSON fields
+  const guardrails = plan.guardrails || {};
+  const neverItems = (guardrails.never_items || []).map(renderGuardrailItem).join("\n      ");
+  const cautionItems = (guardrails.caution_items || []).map(renderGuardrailItem).join("\n      ");
+  const safeItems = (guardrails.safe_items || []).map(renderGuardrailItem).join("\n      ");
+  const wrongItems = (guardrails.wrong_items || []).map(renderGuardrailItem).join("\n      ");
+  const cancelItems = (guardrails.cancel_items || []).map(renderCancelItem).join("\n      ");
 
   const substitutions = {
     FIRST_NAME: escapeHtml(plan.first_name),
@@ -130,6 +185,13 @@ function renderPlan(plan, opts = {}) {
     WEEK2_SUMMARY: renderInline(plan.rollout?.week2?.summary || ""),
     WEEK2_BULLETS: (plan.rollout?.week2?.bullets || []).map(renderBullet).join("\n        "),
     CHECKIN_NOTE: renderInline(plan.rollout?.checkin_note || ""),
+
+    GUARDRAILS_LEDE: renderInline(guardrails.lede || ""),
+    GUARDRAIL_NEVER_ITEMS: neverItems,
+    GUARDRAIL_CAUTION_ITEMS: cautionItems,
+    GUARDRAIL_SAFE_ITEMS: safeItems,
+    GUARDRAIL_WRONG_ITEMS: wrongItems,
+    CANCEL_ITEMS: cancelItems,
 
     NUMBERS_TITLE: renderInline(plan.numbers?.title || ""),
     NUMBERS_LEDE: renderInline(plan.numbers?.lede || ""),

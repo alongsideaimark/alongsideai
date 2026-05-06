@@ -14,7 +14,7 @@ const path = require("path");
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-opus-4-7";
-const MAX_OUTPUT_TOKENS = 12000;
+const MAX_OUTPUT_TOKENS = 24000;
 const MAX_WEB_SEARCHES = 8;
 
 const PROMPT_PATH = path.join(__dirname, "..", "plan-template", "prompt.md");
@@ -54,18 +54,18 @@ async function draftPlan({ briefing, apiKey }) {
   }
 
   const systemPrompt = readFile(PROMPT_PATH);
+  const margaretSample = readFile(path.join(SAMPLE_DIR, "gold-standard", "index.html"));
   const frankSample = readFile(path.join(SAMPLE_DIR, "semi-retired", "index.html"));
-  const priyaSample = readFile(path.join(SAMPLE_DIR, "busy-professional", "index.html"));
 
   const userContent = [
     {
       type: "text",
-      text: `Reference plan #1 — Frank, semi-retired. This is the voice and quality bar. Do NOT recycle these tool picks for other personas; each plan's tools must be researched fresh for the respondent in front of you:\n\n${frankSample}`,
+      text: `Reference plan #1 — Margaret, retired federal judge (GOLD STANDARD). This is the format and quality bar every plan must match. Pay close attention to: (1) the "Getting started — step by step" walkthroughs on every tool, (2) the copy-paste prompt boxes on AI tools, (3) the Guardrails section with never/caution/safe items and cancellation instructions. Every plan you draft must include all of these. Do NOT recycle Margaret's tool picks — research fresh for each respondent:\n\n${margaretSample}`,
       cache_control: { type: "ephemeral" },
     },
     {
       type: "text",
-      text: `Reference plan #2 — Priya, busy professional. Same voice, different persona. Same rule — don't recycle these picks either:\n\n${priyaSample}`,
+      text: `Reference plan #2 — Frank, semi-retired. Older format — good voice and personalization, but lacks the step-by-step setup walkthroughs, prompts, and guardrails that the gold standard above requires. Use Frank for voice reference only; use Margaret's format for structure:\n\n${frankSample}`,
       cache_control: { type: "ephemeral" },
     },
     {
@@ -157,18 +157,18 @@ async function revisePlan({ currentPlan, briefing, instruction, priorTurns, apiK
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
 
   const systemPrompt = readFile(PROMPT_PATH);
+  const margaretSample = readFile(path.join(SAMPLE_DIR, "gold-standard", "index.html"));
   const frankSample = readFile(path.join(SAMPLE_DIR, "semi-retired", "index.html"));
-  const priyaSample = readFile(path.join(SAMPLE_DIR, "busy-professional", "index.html"));
 
   const userContent = [
     {
       type: "text",
-      text: `Reference plan #1 — Frank, semi-retired. Voice and quality bar:\n\n${frankSample}`,
+      text: `Reference plan #1 — Margaret, retired federal judge (GOLD STANDARD). Format and quality bar — every plan must include step-by-step setup walkthroughs, copy-paste prompts on AI tools, and a full guardrails section:\n\n${margaretSample}`,
       cache_control: { type: "ephemeral" },
     },
     {
       type: "text",
-      text: `Reference plan #2 — Priya, busy professional. Same voice, different persona:\n\n${priyaSample}`,
+      text: `Reference plan #2 — Frank, semi-retired. Voice reference (older format):\n\n${frankSample}`,
       cache_control: { type: "ephemeral" },
     },
     {

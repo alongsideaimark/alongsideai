@@ -52,6 +52,39 @@ def render_observation(text):
     return f'<div class="obs-item"><div class="dot"></div><p>{render_inline(text)}</p></div>'
 
 
+def render_setup_steps(tool):
+    steps = tool.get("setup_steps") or []
+    if not steps:
+        return ""
+    items = "\n              ".join(f"<li>{render_inline(s)}</li>" for s in steps)
+    tip = ""
+    if tool.get("setup_tip"):
+        tip = f'\n            <div class="tip">{render_inline(tool["setup_tip"])}</div>'
+    return f"""
+          <div class="setup-steps">
+            <div class="setup-steps-label">Getting started — step by step</div>
+            <ol>
+              {items}
+            </ol>{tip}
+          </div>"""
+
+
+def render_prompts(tool):
+    prompts = tool.get("prompts") or []
+    if not prompts:
+        return ""
+    parts = []
+    for i, p in enumerate(prompts):
+        style = ' style="margin-top:10px"' if i > 0 else ""
+        note = f'\n            <p class="prompt-note">{render_inline(p.get("note", ""))}</p>' if p.get("note") else ""
+        parts.append(f"""
+          <div class="prompt-box"{style}>
+            <div class="prompt-box-label">{escape_html(p.get("label", ""))}</div>
+            <div class="prompt-text">{escape_html(p.get("text", ""))}</div>{note}
+          </div>""")
+    return "\n".join(parts)
+
+
 def render_tool(tool):
     conditional = ""
     if tool.get("conditional"):
@@ -63,6 +96,8 @@ def render_tool(tool):
     if tool.get("what_it_wont_fix"):
         wont_line = f'<p class="wont">{render_inline(tool["what_it_wont_fix"])}</p>'
     classes = "rec rec-build" if tool.get("build_it_yourself") else "rec"
+    setup_html = render_setup_steps(tool)
+    prompts_html = render_prompts(tool)
     return f"""
       <div class="{classes}">
         <div>
@@ -72,7 +107,7 @@ def render_tool(tool):
         <div class="rec-body">
           <p class="what">What it is: {render_inline(tool["what_it_is"])}</p>
           <p class="why">Why it helps you: {render_inline(tool["why_it_helps_you"])}</p>
-          {wont_line}
+          {wont_line}{setup_html}{prompts_html}
         </div>
       </div>"""
 
@@ -102,6 +137,24 @@ def render_line(line):
     return f'<div class="line"><span>{render_inline(line["label"])}</span><span class="v">{escape_html(line["cost"])}</span></div>'
 
 
+def render_guardrail_item(item):
+    level = item.get("level", "caution")
+    label_text = {"never": "Never", "safe": "Safe to use"}.get(level, "Be careful with")
+    return f"""
+      <div class="guardrail-item {escape_html(level)}">
+        <div class="guardrail-label">{label_text}</div>
+        {render_inline(item.get("text", ""))}
+      </div>"""
+
+
+def render_cancel_item(item):
+    return f"""
+      <div class="cancel-item">
+        <div class="cancel-name">{escape_html(item.get("name", ""))}</div>
+        <div>{render_inline(item.get("instructions", ""))}</div>
+      </div>"""
+
+
 def main():
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
     plan = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
@@ -114,9 +167,16 @@ def main():
     week2 = (rollout.get("week2") or {})
     numbers = plan.get("numbers", {}) or {}
     ruled = plan.get("ruled_out", {}) or {}
+    guardrails = plan.get("guardrails", {}) or {}
 
     extra = picking.get("extra_paragraph") or ""
     extra_html = f"<p>{render_inline(extra)}</p>" if extra else ""
+
+    never_items = "\n      ".join(render_guardrail_item(i) for i in guardrails.get("never_items", []))
+    caution_items = "\n      ".join(render_guardrail_item(i) for i in guardrails.get("caution_items", []))
+    safe_items = "\n      ".join(render_guardrail_item(i) for i in guardrails.get("safe_items", []))
+    wrong_items = "\n      ".join(render_guardrail_item(i) for i in guardrails.get("wrong_items", []))
+    cancel_items = "\n      ".join(render_cancel_item(i) for i in guardrails.get("cancel_items", []))
 
     subs = {
         "FIRST_NAME": escape_html(plan["first_name"]),
@@ -149,6 +209,12 @@ def main():
         "WEEK2_SUMMARY": render_inline(week2.get("summary", "")),
         "WEEK2_BULLETS": "\n        ".join(render_bullet(b) for b in week2.get("bullets", [])),
         "CHECKIN_NOTE": render_inline(rollout.get("checkin_note", "")),
+        "GUARDRAILS_LEDE": render_inline(guardrails.get("lede", "")),
+        "GUARDRAIL_NEVER_ITEMS": never_items,
+        "GUARDRAIL_CAUTION_ITEMS": caution_items,
+        "GUARDRAIL_SAFE_ITEMS": safe_items,
+        "GUARDRAIL_WRONG_ITEMS": wrong_items,
+        "CANCEL_ITEMS": cancel_items,
         "NUMBERS_TITLE": render_inline(numbers.get("title", "")),
         "NUMBERS_LEDE": render_inline(numbers.get("lede", "")),
         "SOFTWARE_LINES": "\n        ".join(render_line(l) for l in numbers.get("software_lines", [])),

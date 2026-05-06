@@ -336,6 +336,101 @@ tr.total td.num{color:#8b6f28}
 }
 @media (max-width:720px){ .doc-foot{padding:32px 28px} }
 
+/* step-by-step setup walkthroughs */
+.setup-steps{
+  margin-top:16px;
+  padding:20px 24px;
+  background:var(--cream);
+  border:1px solid color-mix(in oklab, var(--sage) 25%, transparent);
+  border-radius:12px;
+  border-left:3px solid var(--sage);
+}
+.setup-steps-label{
+  font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--sage); margin-bottom:12px; font-weight:600;
+}
+.setup-steps ol{padding-left:20px; margin:0; font-size:15px; color:var(--charcoal-soft); line-height:1.6}
+.setup-steps ol li{margin-bottom:10px}
+.setup-steps ol li strong{color:var(--charcoal); font-weight:600}
+.setup-steps .tip{
+  margin-top:12px; padding:10px 14px;
+  background:var(--gold-light);
+  border-radius:8px;
+  font-size:13px; color:#7a5f1f; line-height:1.5;
+}
+.setup-steps .tip::before{
+  content:"Tip — "; font-family:var(--mono); font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600;
+}
+
+/* copy-paste prompt boxes */
+.prompt-box{
+  margin-top:16px;
+  padding:20px 24px;
+  background:color-mix(in oklab, var(--charcoal) 4%, transparent);
+  border-radius:12px;
+  border-left:3px solid var(--gold);
+}
+.prompt-box-label{
+  font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:10px; font-weight:600;
+}
+.prompt-box .prompt-text{
+  font-family:var(--mono); font-size:13px; line-height:1.6;
+  color:var(--charcoal); background:var(--white);
+  padding:14px 18px; border-radius:8px;
+  border:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+  white-space:pre-wrap;
+}
+.prompt-box .prompt-note{
+  margin-top:10px; font-size:13px; color:var(--gray); line-height:1.5;
+}
+
+/* guardrails section */
+.guardrail-list{margin-top:16px; display:grid; gap:12px}
+.guardrail-item{
+  padding:16px 20px;
+  border-radius:10px;
+  font-size:15px; line-height:1.55;
+}
+.guardrail-item.danger{
+  background:color-mix(in oklab, #C0392B 8%, transparent);
+  border-left:3px solid #C0392B;
+  color:var(--charcoal);
+}
+.guardrail-item.caution{
+  background:var(--gold-light);
+  border-left:3px solid var(--gold);
+  color:var(--charcoal);
+}
+.guardrail-item.safe{
+  background:var(--sage-pale);
+  border-left:3px solid var(--sage);
+  color:var(--charcoal);
+}
+.guardrail-item strong{font-weight:600; color:var(--charcoal)}
+.guardrail-label{
+  font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  font-weight:600; margin-bottom:6px;
+}
+.guardrail-item.danger .guardrail-label{color:#C0392B}
+.guardrail-item.caution .guardrail-label{color:#8b6f28}
+.guardrail-item.safe .guardrail-label{color:var(--sage)}
+
+/* cancel instructions */
+.cancel-grid{margin-top:16px; display:grid; gap:10px}
+.cancel-item{
+  padding:14px 18px;
+  background:var(--cream);
+  border-radius:10px;
+  font-size:14px; color:var(--charcoal-soft); line-height:1.5;
+  display:grid; grid-template-columns:140px 1fr; gap:16px; align-items:baseline;
+}
+@media (max-width:720px){ .cancel-item{grid-template-columns:1fr; gap:4px} }
+.cancel-item .cancel-name{
+  font-family:var(--serif); font-size:17px; color:var(--charcoal);
+}
+
 /* print */
 @media print{
   body{background:white; padding-top:0 !important}
