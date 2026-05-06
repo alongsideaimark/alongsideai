@@ -156,18 +156,18 @@ async function sendEmail(apiKey, opts) {
 }
 
 function buildAutoReply(firstName, email) {
-  const subject = `We got it, ${firstName} — here's what happens next`;
+  const subject = `We got it, ${firstName} — your plan is on the way`;
 
   const text =
-`Thanks for sending that through. I'm Mark, the person who'll be reading your answers and writing your plan.
+`Thanks for sending that through. I'm Mark, the person behind Alongside AI.
 
-Here's what the next couple of days look like.
+Your answers are being read carefully right now — where your time goes, what you've already tried, what "working in six months" looks like for you. That's where the real plan comes from.
 
-I'll sit down with what you told me — probably tonight or tomorrow — and go through it carefully. The answers you gave about where your time goes, what you've already tried, and what "working in six months" looks like for you are usually where the real plan comes from. From there I'll draft something specific to your setup, not a template. A few pages, usually. It'll say plainly what I think would help, in what order, and roughly what it would look like week to week if we worked together. If something you're hoping for isn't realistic — or if you'd be better off with someone else entirely — I'll tell you that.
+You'll get your plan as a PDF in the next few minutes. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic — or if you'd be better off doing nothing at all — the plan will say that too.
 
-You'll get the plan as a PDF, within two business days. It's yours to keep either way.
+It's yours to keep either way.
 
-If anything pops into your head between now and then that you wish you'd added — the fifteenth thing that drives you crazy, a screenshot of an inbox that's stressing you out, anything — just reply to this email. It comes straight to me.
+If anything comes to mind after you read it — a question, something that doesn't fit, or a part you want to dig into — just reply to this email. It comes straight to me.
 
 — Mark
 Alongside AI`;
@@ -177,11 +177,11 @@ Alongside AI`;
 <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
 <body style="margin:0;padding:32px 16px;background:#FAF6F1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#2C3330;line-height:1.65;">
   <div style="max-width:560px;margin:0 auto;font-size:16px;">
-    <p style="margin:0 0 20px;">Thanks for sending that through. I'm Mark, the person who'll be reading your answers and writing your plan.</p>
-    <p style="margin:0 0 20px;">Here's what the next couple of days look like.</p>
-    <p style="margin:0 0 20px;">I'll sit down with what you told me &mdash; probably tonight or tomorrow &mdash; and go through it carefully. The answers you gave about where your time goes, what you've already tried, and what &ldquo;working in six months&rdquo; looks like for you are usually where the real plan comes from. From there I'll draft something specific to your setup, not a template. A few pages, usually. It'll say plainly what I think would help, in what order, and roughly what it would look like week to week if we worked together. If something you're hoping for isn't realistic &mdash; or if you'd be better off with someone else entirely &mdash; I'll tell you that.</p>
-    <p style="margin:0 0 20px;">You'll get the plan as a PDF, within two business days. It's yours to keep either way.</p>
-    <p style="margin:0 0 20px;">If anything pops into your head between now and then that you wish you'd added &mdash; the fifteenth thing that drives you crazy, a screenshot of an inbox that's stressing you out, anything &mdash; just reply to this email. It comes straight to me.</p>
+    <p style="margin:0 0 20px;">Thanks for sending that through. I'm Mark, the person behind Alongside AI.</p>
+    <p style="margin:0 0 20px;">Your answers are being read carefully right now &mdash; where your time goes, what you've already tried, what &ldquo;working in six months&rdquo; looks like for you. That's where the real plan comes from.</p>
+    <p style="margin:0 0 20px;">You'll get your plan as a PDF in the next few minutes. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic &mdash; or if you'd be better off doing nothing at all &mdash; the plan will say that too.</p>
+    <p style="margin:0 0 20px;">It's yours to keep either way.</p>
+    <p style="margin:0 0 20px;">If anything comes to mind after you read it &mdash; a question, something that doesn't fit, or a part you want to dig into &mdash; just reply to this email. It comes straight to me.</p>
     <p style="margin:32px 0 0;">&mdash; Mark<br/><span style="color:#7B9E87;">Alongside AI</span></p>
   </div>
 </body></html>`;
