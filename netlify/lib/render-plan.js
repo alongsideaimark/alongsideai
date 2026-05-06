@@ -7,6 +7,7 @@ const fs = require("fs");
 const path = require("path");
 
 const TEMPLATE_PATH = path.join(__dirname, "..", "plan-template", "template.html");
+const CSS_PATH = path.join(__dirname, "..", "..", "assets", "plan.css");
 
 function escapeHtml(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({
@@ -269,6 +270,18 @@ function renderPlan(plan, opts = {}) {
   for (const [key, value] of Object.entries(substitutions)) {
     html = html.split(`{{${key}}}`).join(value);
   }
+
+  // Inline the CSS so PDFShift doesn't need to fetch it separately.
+  try {
+    const css = fs.readFileSync(CSS_PATH, "utf8");
+    html = html.replace(
+      '<link rel="stylesheet" href="/assets/plan.css"/>',
+      `<style>${css}</style>`
+    );
+  } catch (_) {
+    // CSS file not available (e.g. local test) — keep the external link.
+  }
+
   return html;
 }
 
