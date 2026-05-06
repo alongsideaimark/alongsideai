@@ -24,6 +24,31 @@ function readFile(p) {
   return fs.readFileSync(p, "utf8");
 }
 
+async function callAnthropic(apiKey, body) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10 * 60 * 1000);
+  let res;
+  try {
+    res = await fetch(ANTHROPIC_URL, {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+  if (!res.ok) {
+    const errBody = await res.text();
+    throw new Error(`Anthropic ${res.status}: ${errBody}`);
+  }
+  return res.json();
+}
+
 function parsePlanJson(text) {
   const firstBrace = text.indexOf("{");
   const lastBrace = text.lastIndexOf("}");
@@ -111,22 +136,7 @@ ${briefing}`,
     ],
   };
 
-  const res = await fetch(ANTHROPIC_URL, {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const errBody = await res.text();
-    throw new Error(`Anthropic ${res.status}: ${errBody}`);
-  }
-
-  const json = await res.json();
+  const json = await callAnthropic(apiKey, body);
 
   // Count how many searches actually ran — useful in logs to confirm the
   // research step is doing its job.
@@ -215,22 +225,7 @@ ${JSON.stringify(currentPlan, null, 2)}`,
     messages: [{ role: "user", content: userContent }],
   };
 
-  const res = await fetch(ANTHROPIC_URL, {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const errBody = await res.text();
-    throw new Error(`Anthropic ${res.status}: ${errBody}`);
-  }
-
-  const json = await res.json();
+  const json = await callAnthropic(apiKey, body);
   const searchCount = (json.content || []).filter(
     (b) => b.type === "server_tool_use" && b.name === "web_search"
   ).length;
