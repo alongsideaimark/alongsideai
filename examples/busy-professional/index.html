@@ -329,9 +329,69 @@
     </div>
   </section>
 
-  <!-- 5 -->
+  <!-- 5 — CUSTOM BUILD -->
   <section class="s">
-    <div class="s-num">05 &mdash; What this looks like in practice</div>
+    <div class="s-num">05 &mdash; Something only yours</div>
+    <h2 class="s-title">Your donor thank-you letter <em>assistant.</em></h2>
+    <p class="lede">You already have Claude Pro from the section above. This takes it further -- a dedicated space inside Claude that knows your nonprofit, your voice, and your donor relationships, so every thank-you letter starts 80% done instead of blank.</p>
+
+    <p>The idea: a Claude Project pre-loaded with everything it needs to draft thank-you letters that sound like you wrote them on your best day. Your organization's mission, your tone, the way you reference a donor's specific gift and what it funded, the personal callbacks that make your letters the ones donors actually keep. You paste in the basics -- who gave, how much, what it supports, any personal detail -- and get back a draft you can send with minor edits.</p>
+
+    <p>This is not a template. Templates are why donor thank-yous feel like form letters. This is a writing partner that has read your best work and matches it, every time, even on the Friday afternoons when you're running on caffeine and guilt.</p>
+
+    <div class="rec">
+      <div>
+        <div class="rec-name">Claude Project: "Donor Thank-You Letters"</div>
+        <div class="rec-cost">No extra cost -- uses your Claude Pro subscription</div>
+      </div>
+      <div class="rec-body">
+        <p class="what">What it is: A dedicated project inside Claude with a custom system prompt and your reference documents. Think of it as a Claude that already knows who you are, where you work, and how you write -- so you skip the explaining and go straight to drafting.</p>
+        <p class="why">Why it helps you: Those thank-you letters that keep falling behind? The ones you care about too much to rush but don't have time to write properly? This gets you from "I owe Linda a letter" to "here's a draft that sounds like me" in about two minutes. The personal, specific tone that donors love -- the one that references their daughter's painting classes or the conversation you had over coffee -- that's exactly what this is built to preserve.</p>
+
+        <div class="setup-steps">
+          <div class="setup-steps-label">Getting started -- step by step</div>
+          <ol>
+            <li><strong>Open Claude and find Projects.</strong> On your Mac, open Chrome and go to <strong>claude.ai</strong>. Sign in with the account you created in Section 04. In the left sidebar, look for <strong>Projects</strong>. If you already created a "Donor Communications" project during the Claude Pro setup, you can either rename it or create a new one specifically for thank-you letters. Click the <strong>+</strong> button next to Projects to create a new one. Name it <strong>"Donor Thank-You Letters"</strong>.</li>
+            <li><strong>Open the project settings.</strong> Click into your new project. You'll see a settings area at the top (or a gear icon). Look for the field labeled <strong>"Custom Instructions"</strong> or <strong>"System Prompt"</strong> -- this is where you tell Claude how to behave inside this project. Everything you put here applies to every conversation you start within this project, so you only set it up once.</li>
+            <li><strong>Paste the system prompt.</strong> Copy the entire block below (under "System prompt -- ready to paste") and paste it into the Custom Instructions field. This prompt tells Claude who you are, how you write, and what to avoid. Read through it first -- if anything doesn't match your actual voice or preferences, edit it before saving. Click <strong>Save</strong>.</li>
+            <li><strong>Upload your best thank-you letters.</strong> In the project, look for an option to <strong>add knowledge</strong> or <strong>upload files</strong> (it may say "Project Knowledge" or have a paperclip/upload icon). Upload 3 to 5 of your best past thank-you letters -- the ones where you felt the tone was exactly right. These don't have to be perfect; they just need to sound like you. Claude will use them as voice references. Good formats: PDF, Word doc, or just paste the text into a .txt file and upload that.</li>
+            <li><strong>Upload your organization one-pager.</strong> Also upload a short document about your nonprofit -- your mission statement, a list of current programs, and the names of any major initiatives or events. This gives Claude the context to mention specific programs accurately instead of guessing. If you don't have a one-pager, a copy of the "About" page from your website works fine.</li>
+            <li><strong>Test it with a real donor.</strong> Start a new conversation inside the project. Try the first test prompt below -- use a real donor name, a real gift amount, and a real program. Read the draft Claude produces. It should sound like your voice from the uploaded letters, reference the specific gift and its impact, and feel warm without being gushing. If the tone is off, tell Claude what to adjust ("warmer," "less formal," "more like the letter I wrote to the Garcias") -- it learns within the conversation.</li>
+            <li><strong>Try a second test with a personal detail.</strong> Use the second test prompt below, which includes a personal callback. This is where the project really earns its keep -- the ability to weave in "your daughter took painting classes here" or "you mentioned at coffee that..." is what separates a good thank-you from a great one. Check that Claude includes the personal detail naturally, not as a forced insert.</li>
+          </ol>
+        </div>
+
+        <div class="prompt-box">
+          <div class="prompt-box-label">System prompt -- ready to paste into your project's Custom Instructions</div>
+          <div class="prompt-text">You are a writing assistant for Priya, the Director of Development at a Pasadena-based arts nonprofit. Your only job is drafting donor thank-you letters in Priya's voice.
+
+Her voice is warm, personal, and specific. She always references the donor's specific gift and names the program or event it supports. She never uses generic fundraising language like "your generous contribution makes a difference" or "we are so grateful for your support." Every letter should feel like it was written by someone who knows the donor personally.
+
+When Priya provides a personal detail or callback to a previous interaction, weave it in naturally -- it should feel like a genuine aside, not a forced insert.
+
+Format every letter as: a greeting using the donor's first name, 2 to 3 short paragraphs, and a warm close signed with Priya's name.
+
+Do not invent details Priya hasn't provided. If you don't know something, leave a bracket like [specific detail] for her to fill in. Keep the tone confident and genuine -- never fawning, never corporate.</div>
+        </div>
+
+        <div class="prompt-box" style="margin-top:10px">
+          <div class="prompt-box-label">Test it -- donor thank-you with specific gift details</div>
+          <div class="prompt-text">Draft a thank-you to Robert and Maria Garcia who gave $2,500 to our youth mural program. This is their third year giving. The gift will fund supplies and teaching-artist stipends for the summer session, which serves about 40 kids from the neighborhood.</div>
+          <p class="prompt-note">Replace with a real donor if you'd prefer. The more specific the details, the less editing the draft needs.</p>
+        </div>
+
+        <div class="prompt-box" style="margin-top:10px">
+          <div class="prompt-box-label">Test it -- with a personal callback</div>
+          <div class="prompt-text">Draft a thank-you to Linda Chen who gave $5,000 to the youth arts program last week. I had coffee with her in March and she mentioned her daughter took painting classes here as a kid. She said watching the kids in the studio reminded her of those Saturday mornings. This is her second gift -- she gave $1,000 last year to the general fund.</div>
+          <p class="prompt-note">This is the kind of letter that used to take 20 minutes to write from scratch. With the project set up, it should take about two minutes of editing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="s">
+    <div class="s-num">06 &mdash; What this looks like in practice</div>
     <h2 class="s-title">Conservative time savings, <em>honestly estimated.</em></h2>
     <p class="lede">Some of these are big weekly chunks. Some are small daily savings that compound. We'd rather understate than overpromise.</p>
 
@@ -349,9 +409,9 @@
     <p class="caveat">The hours are real, but the bigger shift most people describe a month in is different: &ldquo;evenings back.&rdquo; The annual report no longer eats March. Sunday-night email dread stops. That's harder to put on a spreadsheet.</p>
   </section>
 
-  <!-- 6 -->
+  <!-- 7 -->
   <section class="s">
-    <div class="s-num">06 &mdash; A suggested rollout</div>
+    <div class="s-num">07 &mdash; A suggested rollout</div>
     <h2 class="s-title">Two weeks. <em>At your own pace.</em></h2>
     <p class="lede">Each tool above has its own &ldquo;Getting started&rdquo; walkthrough. This section tells you what order to do them in, and how to know when each one is working. Everything is designed so you can work through it at your desk &mdash; no outside help required, though we're here if you want it.</p>
 
@@ -383,9 +443,9 @@
     </div>
   </section>
 
-  <!-- 7 — GUARDRAILS -->
+  <!-- 8 — GUARDRAILS -->
   <section class="s">
-    <div class="s-num">07 &mdash; Guardrails</div>
+    <div class="s-num">08 &mdash; Guardrails</div>
     <h2 class="s-title">What never goes into these tools. <em>And how to get out if you want to.</em></h2>
     <p class="lede">You work with donors who trust you with their generosity, and a board that trusts you with their organization. That trust has boundaries, and the tools should too. Here are the lines, plainly &mdash; what's safe, what's not, and how to walk away from any of this if it doesn't feel right.</p>
 
@@ -414,7 +474,7 @@
         <strong>Internal personnel discussions.</strong> If you're asking Claude to help draft a performance review or think through a staffing concern, keep the language general. &ldquo;A team member who is struggling with event logistics&rdquo; instead of &ldquo;Sarah, who keeps missing deadlines on the gala.&rdquo; This protects your staff and keeps HR-sensitive information out of external systems.
       </div>
       <div class="guardrail-item safe">
-        <div class="guardrail-label">Safe to use</div>
+        <div class="guardrail-label">Generally fine</div>
         <strong>Public program descriptions, draft thank-you letters, event logistics, board deck narratives, annual report sections, and grant application language.</strong> These are the intended use case. Anything that would appear in a published annual report or a mailed donor letter is fine to draft with AI assistance.
       </div>
     </div>
@@ -463,9 +523,9 @@
     </div>
   </section>
 
-  <!-- 8 -->
+  <!-- 9 -->
   <section class="s">
-    <div class="s-num">08 &mdash; The numbers</div>
+    <div class="s-num">09 &mdash; The numbers</div>
     <h2 class="s-title">Software, and (optionally) <em>help setting it up.</em></h2>
     <p class="lede">The plan you're reading is free. The only costs are the software subscriptions below. If you'd like us to set things up alongside you instead of going DIY, the implementation package is optional.</p>
 
@@ -496,9 +556,9 @@
     </div>
   </section>
 
-  <!-- 9 -->
+  <!-- 10 -->
   <section class="s">
-    <div class="s-num">09 &mdash; If you want your own</div>
+    <div class="s-num">10 &mdash; If you want your own</div>
     <h2 class="s-title">This is a sample. <em>Yours would be different.</em></h2>
     <p class="lede">Every plan starts with your actual answers &mdash; seven short sections of plain-English questions, around 20 to 25 minutes at your own pace. You can skip anything that doesn't feel right.</p>
 

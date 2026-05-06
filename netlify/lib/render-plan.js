@@ -110,10 +110,68 @@ function renderLine(line) {
   return `<div class="line"><span>${renderInline(line.label)}</span><span class="v">${escapeHtml(line.cost)}</span></div>`;
 }
 
+function renderTestQuery(query) {
+  const goodHtml = query.expected
+    ? `\n            <p class="prompt-note"><strong>Good output looks like:</strong> ${renderInline(query.expected)}</p>`
+    : "";
+  const badHtml = query.red_flag
+    ? `\n            <p class="prompt-note" style="color:#8b6f28"><strong>Red flag:</strong> ${renderInline(query.red_flag)}</p>`
+    : "";
+  return `
+          <div class="prompt-box"${query !== undefined ? ' style="margin-top:10px"' : ""}>
+            <div class="prompt-box-label">${escapeHtml(query.label || "Test this")}</div>
+            <div class="prompt-text">${escapeHtml(query.input || "")}</div>${goodHtml}${badHtml}
+          </div>`;
+}
+
+function renderCustomBuild(cb) {
+  if (!cb || !cb.project_name) return "";
+  const steps = (cb.setup_steps || []).map((s) => `<li>${renderInline(s)}</li>`).join("\n              ");
+  const tip = cb.setup_tip
+    ? `\n            <div class="tip">${renderInline(cb.setup_tip)}</div>`
+    : "";
+  const setupHtml = steps ? `
+          <div class="setup-steps">
+            <div class="setup-steps-label">Building it — step by step</div>
+            <ol>
+              ${steps}
+            </ol>${tip}
+          </div>` : "";
+
+  const sysPromptHtml = cb.system_prompt ? `
+          <div class="prompt-box" style="margin-top:20px">
+            <div class="prompt-box-label">${escapeHtml(cb.system_prompt_label || "The system prompt — copy this exactly")}</div>
+            <div class="prompt-text">${escapeHtml(cb.system_prompt)}</div>
+            ${cb.system_prompt_note ? `<p class="prompt-note">${renderInline(cb.system_prompt_note)}</p>` : ""}
+          </div>` : "";
+
+  const testHtml = (cb.test_queries || []).length > 0 ? `
+          <div style="margin-top:24px">
+            <div class="setup-steps-label">Test it with these</div>
+            ${(cb.test_queries || []).map(renderTestQuery).join("\n")}
+          </div>` : "";
+
+  const iterHtml = cb.iteration_tip ? `
+          <div class="tip" style="margin-top:16px">${renderInline(cb.iteration_tip)}</div>` : "";
+
+  return `
+      <div class="rec rec-build">
+        <div>
+          <div class="rec-name">${escapeHtml(cb.project_name)} <em style="font-style:normal;color:#6F7A8B;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Build it yourself</em></div>
+          <div class="rec-cost">${escapeHtml(cb.platform_cost || "")}</div>
+        </div>
+        <div class="rec-body">
+          <p>${renderInline(cb.project_pitch || "")}</p>
+          <p style="margin-top:8px"><strong>Where to build it:</strong> ${renderInline(cb.platform || "")}</p>
+          ${setupHtml}${sysPromptHtml}${testHtml}${iterHtml}
+        </div>
+      </div>`;
+}
+
 function renderGuardrailItem(item) {
   const level = item.level || "caution";
   const labelText = level === "never" ? "Never"
-    : level === "safe" ? "Safe to use"
+    : level === "safe" ? "Generally fine"
     : "Be careful with";
   return `
       <div class="guardrail-item ${escapeHtml(level)}">
@@ -167,6 +225,10 @@ function renderPlan(plan, opts = {}) {
     FOUNDATION_TOOLS: (plan.foundation_tools || []).map(renderTool).join("\n"),
     AI_TALLY: escapeHtml(plan.ai_tally || `${(plan.ai_tools || []).length} items`),
     AI_TOOLS: (plan.ai_tools || []).map(renderTool).join("\n"),
+
+    CUSTOM_BUILD_TITLE: renderInline(plan.custom_build?.title || "A custom tool, <em>built for your exact situation.</em>"),
+    CUSTOM_BUILD_LEDE: renderInline(plan.custom_build?.lede || ""),
+    CUSTOM_BUILD_CONTENT: renderCustomBuild(plan.custom_build),
 
     RULED_OUT_LEDE: renderInline(plan.ruled_out?.lede || ""),
     RULED_OUT_ITEMS: (plan.ruled_out?.items || []).map(renderRuledItem).join("\n"),

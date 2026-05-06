@@ -303,7 +303,76 @@
 
   <!-- 5 -->
   <section class="s">
-    <div class="s-num">05 &mdash; What this looks like in practice</div>
+    <div class="s-num">05 &mdash; Something only yours</div>
+    <h2 class="s-title">Your family weekly planner assistant. <em>Built for Sunday night in 60 seconds.</em></h2>
+    <p class="lede">You already pay for ChatGPT Plus. This takes it further &mdash; a custom assistant that knows your family by name, knows who won&rsquo;t eat mushrooms, knows Jake is traveling, and gives you a complete weekly plan every Sunday before the week has a chance to fall apart.</p>
+
+    <p>A Custom GPT is a version of ChatGPT that starts every conversation already knowing your rules. You build it once, and from then on you just open it and say &ldquo;plan next week&rdquo; &mdash; no repeating yourself, no pasting constraints. It lives inside ChatGPT Plus, which you&rsquo;re already paying for, so there&rsquo;s no extra cost.</p>
+    <p>Here&rsquo;s what it gives you each Sunday:</p>
+    <ul style="margin-top:8px; margin-bottom:16px;">
+      <li><strong>Seven dinners</strong> &mdash; under 30 minutes each, serving five, with Emma&rsquo;s vegetarian needs, Jacob&rsquo;s no-mushrooms-no-olives rule, and Lily&rsquo;s beige-food phase all baked in. At least one slow-cooker or prep-ahead meal for your busiest weeknight.</li>
+      <li><strong>A grocery list organized by store aisle</strong> &mdash; produce, dairy, meat, pantry, frozen. Walk the store once, top to bottom, done.</li>
+      <li><strong>The week&rsquo;s carpool and activity schedule</strong> &mdash; soccer, piano, whatever you tell it &mdash; as a quick-reference reminder block.</li>
+      <li><strong>Upcoming deadlines</strong> &mdash; permission slips due, picture day, cupcakes for the birthday party &mdash; anything you mention when you prompt it.</li>
+    </ul>
+    <p>One prompt, 60 seconds, and you walk into Monday with a plan instead of a prayer.</p>
+
+    <div class="setup-steps">
+      <div class="setup-steps-label">Getting started &mdash; step by step</div>
+      <ol>
+        <li><strong>Open ChatGPT on your MacBook.</strong> Go to <strong>chatgpt.com</strong> in Safari and sign in with your Plus account. (Building a Custom GPT is easier on a laptop than on your phone &mdash; you&rsquo;ll use it from your phone once it&rsquo;s built.)</li>
+        <li><strong>Go to the GPT builder.</strong> In the left sidebar, click <strong>Explore GPTs</strong> &rarr; then click the <strong>+ Create</strong> button in the top right corner. This opens the GPT builder with two tabs: <strong>Create</strong> and <strong>Configure</strong>. Click <strong>Configure</strong> &mdash; we&rsquo;re going to paste the instructions directly rather than using the wizard.</li>
+        <li><strong>Name it.</strong> In the <strong>Name</strong> field, type <strong>&ldquo;Family Weekly Planner&rdquo;</strong>. In the <strong>Description</strong> field, type <strong>&ldquo;Sunday meal plan, grocery list, and schedule for the week.&rdquo;</strong></li>
+        <li><strong>Paste the system prompt.</strong> In the large <strong>Instructions</strong> text box, paste the entire system prompt from the gray box below. This is what teaches the GPT your family&rsquo;s rules. Don&rsquo;t change anything unless a detail is wrong (for example, if Jacob has started eating mushrooms, update that line).</li>
+        <li><strong>Turn off unnecessary features.</strong> Scroll down to the <strong>Capabilities</strong> section. Turn <strong>off</strong> &ldquo;Web Browsing&rdquo; and &ldquo;DALL-E Image Generation&rdquo; &mdash; you don&rsquo;t need them and they slow things down. Leave &ldquo;Code Interpreter&rdquo; off too.</li>
+        <li><strong>Save it.</strong> Click <strong>Save</strong> (top right) &rarr; choose <strong>&ldquo;Only me&rdquo;</strong> so it stays private. Click <strong>Confirm</strong>.</li>
+        <li><strong>Pin it on your phone.</strong> Open the <strong>ChatGPT</strong> app on your iPhone. Tap <strong>Explore GPTs</strong> (bottom bar) &rarr; tap <strong>My GPTs</strong>. You&rsquo;ll see <strong>&ldquo;Family Weekly Planner.&rdquo;</strong> Tap it to open a conversation, then tap the <strong>&hellip;</strong> menu (top right) &rarr; <strong>Keep in Sidebar</strong>. Now it&rsquo;s always one tap away on Sunday night.</li>
+      </ol>
+      <div class="tip">Every Sunday, open it on your phone while the kids are winding down. Tell it what&rsquo;s happening that week &mdash; activities, guests, special events &mdash; and it hands you the whole plan. Screenshot the grocery list and you&rsquo;re set for the store.</div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-box-label">System prompt &mdash; paste this into the Instructions field</div>
+      <div class="prompt-text">You are Sarah&rsquo;s family weekly planner. You know this family:
+
+&bull; Sarah (38) &mdash; mom, part-time graphic designer, runs the household solo Mon&ndash;Thu.
+&bull; Jake &mdash; husband, travels for work Mon&ndash;Thu, home Fri&ndash;Sun.
+&bull; Emma (11) &mdash; vegetarian. No meat, no fish.
+&bull; Jacob (8) &mdash; won&rsquo;t eat mushrooms or olives. Eats everything else.
+&bull; Lily (5) &mdash; currently in a &ldquo;only beige food&rdquo; phase: pasta, bread, cheese, chicken nuggets, pancakes. Introduce one new mild item per week but don&rsquo;t force it.
+
+Dinner rules:
+&ndash; Every meal must be under 30 minutes active time, serve 5 people, and use ingredients from a regular suburban grocery store.
+&ndash; At least one dinner per week should be a slow-cooker or prep-ahead meal Sarah can start before the afternoon rush.
+&ndash; Never suggest recipes that require specialized equipment (sous vide, stand mixer, etc.) or hard-to-find ingredients.
+&ndash; When a meal is vegetarian for Emma, make sure it still appeals to Jacob and Lily.
+&ndash; When a meal includes meat for the others, include a simple swap or side so Emma has a complete plate.
+
+When Sarah asks you to plan the week, respond with:
+1. A numbered list of 7 dinners (Mon&ndash;Sun) with a one-line description and active cook time.
+2. A combined grocery list organized by aisle: produce, dairy, meat, pantry, frozen.
+3. A &ldquo;This week&rdquo; block summarizing any activities, carpools, or deadlines Sarah mentioned.
+
+Tone: practical, quick, like a text from a friend who&rsquo;s also a mom. No preamble, no &ldquo;Sure!&rdquo; &mdash; just start with Monday&rsquo;s dinner.</div>
+      <p class="prompt-note">This is the complete system prompt. Paste it as-is into the Instructions field. If your family&rsquo;s details change &mdash; Lily outgrows the beige phase, Jacob starts tolerating olives &mdash; edit the relevant line directly in the GPT&rsquo;s settings.</p>
+    </div>
+
+    <div class="prompt-box" style="margin-top:10px">
+      <div class="prompt-box-label">Test it &mdash; try this prompt first</div>
+      <div class="prompt-text">Plan next week. Soccer practice Tuesday and Thursday at 5:30, piano Wednesday at 4, Jake is home Thursday night, Lily has a birthday party Saturday so we need cupcakes.</div>
+      <p class="prompt-note">This tests all the constraints at once: the dietary rules, the under-30-minute limit, the grocery list format, and the schedule awareness. You should get seven dinners, a grocery list by aisle (including cupcake ingredients), and a schedule summary &mdash; all in about 60 seconds.</p>
+    </div>
+
+    <div class="prompt-box" style="margin-top:10px">
+      <div class="prompt-box-label">Second test &mdash; a quieter week</div>
+      <div class="prompt-text">Plan next week. No evening activities except soccer Thursday at 5:30. Jake is gone all week. Emma has a science project due Friday &mdash; remind me. I want to try that slow-cooker chili again from two weeks ago.</div>
+      <p class="prompt-note">This checks that it handles a lighter schedule, picks up the reminder about Emma&rsquo;s project, and responds to a reference to a past meal. If it doesn&rsquo;t remember the chili, just say &ldquo;it was a turkey chili with black beans&rdquo; and it will use that going forward.</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="s">
+    <div class="s-num">06 &mdash; What this looks like in practice</div>
     <h2 class="s-title">The mental load drops. <em>That's the point.</em></h2>
     <p class="lede">The hours matter, but what matters more is the 4pm feeling &mdash; three kids asking what's for dinner while you're trying to send a client email &mdash; going away.</p>
 
@@ -321,9 +390,9 @@
     <p class="caveat">What parents in your situation report a month in isn't the hours &mdash; it's &ldquo;my husband finally sees what's on the calendar without asking me&rdquo; and &ldquo;I'm not the last line of defense against a missed appointment anymore.&rdquo; That's the real deliverable.</p>
   </section>
 
-  <!-- 6 -->
+  <!-- 7 -->
   <section class="s">
-    <div class="s-num">06 &mdash; A suggested rollout</div>
+    <div class="s-num">07 &mdash; A suggested rollout</div>
     <h2 class="s-title">Two weeks. <em>At your own pace.</em></h2>
     <p class="lede">Each tool above has its own &ldquo;Getting started&rdquo; walkthrough. This section tells you what order to do them in, and how to know when each one is working. Everything is designed so you can do it at the kitchen table after the kids are in bed &mdash; no outside help required, though we're here if you want it.</p>
 
@@ -338,11 +407,12 @@
     </div>
 
     <div class="phase">
-      <div class="phase-head"><div class="phase-name">Week 2 &mdash; AI tools</div><div class="phase-time">About 1.5 hours</div></div>
-      <p>Two tools. Real tasks, not practice.</p>
+      <div class="phase-head"><div class="phase-name">Week 2 &mdash; AI tools</div><div class="phase-time">About 2 hours</div></div>
+      <p>Three tools. Real tasks, not practice.</p>
       <ul>
         <li><strong>Session 1 (~45 min): Ohai.ai.</strong> Follow the steps above. Sign up, connect your calendar, save the contact. Forward three real things: a school email, a group-chat screenshot, a permission slip photo. <em>You'll know it's working when:</em> Ohai texts you back with the extracted dates and they land on your calendar.</li>
         <li><strong>Session 2 (~30 min): ChatGPT Plus.</strong> Follow the steps above. Install, subscribe, turn off training, give it your family context. Then try the meal-planning prompt and the email-drafting prompt. <em>You'll know it's working when:</em> you have next week's dinner plan and a grocery list in under two minutes.</li>
+        <li><strong>Session 3 (~30 min): Family Weekly Planner GPT.</strong> Follow the Section 05 setup steps. Build the Custom GPT on your MacBook, paste the system prompt, save it, pin it on your phone. Run both test prompts. <em>You'll know it's working when:</em> you get seven dinners with the right dietary rules, a grocery list by aisle, and your schedule summary &mdash; all from one sentence.</li>
       </ul>
     </div>
 
@@ -352,9 +422,9 @@
     </div>
   </section>
 
-  <!-- 7 — GUARDRAILS -->
+  <!-- 8 — GUARDRAILS -->
   <section class="s">
-    <div class="s-num">07 &mdash; Guardrails</div>
+    <div class="s-num">08 &mdash; Guardrails</div>
     <h2 class="s-title">What never goes into these tools. <em>And how to get out if you want to.</em></h2>
     <p class="lede">You're putting family information into these tools. That's the whole point &mdash; but it means being deliberate about what goes in and what stays out. Here are the lines, plainly drawn.</p>
 
@@ -383,7 +453,7 @@
         <strong>Specific schedule details that reveal when your house is empty.</strong> &ldquo;Plan meals for a family of five&rdquo; is fine. &ldquo;We're all away August 3&ndash;17 and the house will be empty&rdquo; is information that doesn't need to be in a chat log. Keep travel dates in your calendar, not in AI conversations.
       </div>
       <div class="guardrail-item safe">
-        <div class="guardrail-label">Safe to use</div>
+        <div class="guardrail-label">Generally fine</div>
         <strong>Meal planning, general school research, camp research, drafting generic parent communications, explaining a confusing document.</strong> These are the intended use cases. First names, ages, dietary restrictions, general location (&ldquo;near South Pasadena&rdquo;) &mdash; all fine.
       </div>
     </div>
@@ -429,9 +499,9 @@
     <p style="margin-top:16px; font-size:14px; color:var(--gray);">Apple Family Sharing is free &mdash; there's nothing to cancel. The Skylight Calendar 2 hardware is yours regardless of whether you keep the Plus subscription.</p>
   </section>
 
-  <!-- 8 -->
+  <!-- 9 -->
   <section class="s">
-    <div class="s-num">08 &mdash; The numbers</div>
+    <div class="s-num">09 &mdash; The numbers</div>
     <h2 class="s-title">Mostly a one-time cost. <em>Monthly is modest.</em></h2>
     <p class="lede">The plan you're reading is free. The main cost is the Skylight frame (one-time, $299). Monthly software is modest. If you'd like us to set it up alongside you, the implementation package is optional.</p>
 
@@ -462,9 +532,9 @@
     </div>
   </section>
 
-  <!-- 9 -->
+  <!-- 10 -->
   <section class="s">
-    <div class="s-num">09 &mdash; If you want your own</div>
+    <div class="s-num">10 &mdash; If you want your own</div>
     <h2 class="s-title">This is a sample. <em>Yours would be different.</em></h2>
     <p class="lede">Every plan starts with your actual answers &mdash; seven short sections of plain-English questions, around 20 to 25 minutes at your own pace. You can skip anything that doesn't feel right.</p>
 

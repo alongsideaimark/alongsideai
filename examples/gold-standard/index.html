@@ -360,9 +360,72 @@
     </div>
   </section>
 
-  <!-- 5 -->
+  <!-- 5 — Something only yours -->
   <section class="s">
-    <div class="s-num">05 &mdash; What this looks like in practice</div>
+    <div class="s-num">05 &mdash; Something only yours</div>
+    <h2 class="s-title">A custom tool, <em>built for your exact situation.</em></h2>
+    <p class="lede">You fly to see seven grandchildren in multiple states, and the volume of trip logistics is the pain you named first. TripIt organizes the confirmations &mdash; but nothing takes that raw data and gives you the one clean page you actually want in your hand when you walk through the terminal.</p>
+
+    <div class="rec rec-build">
+      <div>
+        <div class="rec-name">Your pre-trip briefing assistant <em style="font-style:normal;color:#6F7A8B;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Build it yourself</em></div>
+        <div class="rec-cost">No extra cost &mdash; uses the ChatGPT account from Section 04</div>
+      </div>
+      <div class="rec-body">
+        <p>You paste your TripIt itinerary (or forward the confirmation emails) into this Custom GPT, and it hands you a clean, chronological one-page briefing: departure time and terminal, flight details, hotel address and check-in time, rental car confirmation, restaurant reservations in order, key phone numbers, and a &ldquo;things to remember&rdquo; section at the end. Print it, slip it in the Filofax, and go.</p>
+        <p style="margin-top:8px"><strong>Where to build it:</strong> ChatGPT&rsquo;s Custom GPTs. You already have ChatGPT from the recommendations above. Custom GPTs let you create a specialized version that remembers your preferences without you explaining them every time.</p>
+
+        <div class="setup-steps">
+          <div class="setup-steps-label">Building it &mdash; step by step</div>
+          <ol>
+            <li><strong>Open ChatGPT on your Mac.</strong> Go to <strong>chatgpt.com</strong> in Safari (or open the app if you installed it). In the left sidebar, look for <strong>Explore GPTs</strong>. Click it, then click the <strong>Create</strong> button in the top right.</li>
+            <li><strong>Name it.</strong> In the &ldquo;Name&rdquo; field, type <strong>Margaret&rsquo;s Trip Briefer</strong> (or whatever feels natural &mdash; only you will see it).</li>
+            <li><strong>Find the Instructions field.</strong> Click the <strong>Configure</strong> tab at the top. You&rsquo;ll see a large text box labeled <strong>Instructions</strong>. This is where you paste the system prompt below &mdash; copy it exactly.</li>
+            <li><strong>No file uploads needed.</strong> Leave the Knowledge section empty. This GPT works entirely from whatever you paste into it each time.</li>
+            <li><strong>Save and test.</strong> Click <strong>Create</strong> (top right). Then open the GPT and paste a real TripIt itinerary or forward a confirmation email into the chat. Use the test prompts below.</li>
+            <li><strong>You&rsquo;ll know it&rsquo;s working when</strong> you get a clean one-page summary you could print and put in the Filofax &mdash; no links, no clutter, just the facts in the order you need them.</li>
+          </ol>
+          <div class="tip">You can always edit the Instructions later. If the briefing format isn&rsquo;t quite right &mdash; too much detail, not enough, wrong order &mdash; open the GPT settings and adjust the prompt. It&rsquo;s not permanent.</div>
+        </div>
+
+        <div class="prompt-box" style="margin-top:20px">
+          <div class="prompt-box-label">The system prompt &mdash; copy this exactly into the Instructions field</div>
+          <div class="prompt-text">You are a travel briefing assistant for Margaret, a retired federal judge who travels frequently to visit seven grandchildren across the country. She often travels with her husband Walter, who sometimes flies separately.
+
+When Margaret pastes a trip itinerary, confirmation emails, or travel details, produce a clean one-page briefing organized chronologically. Include: departure time and terminal, flight number and arrival time, hotel name with street address and check-in time, rental car confirmation number, restaurant reservations in time order, and key phone numbers (hotel front desk, airline, car rental).
+
+Always end with a &ldquo;Things to remember&rdquo; section: note any time zone changes, medication timing adjustments, and Walter&rsquo;s flight details if his itinerary differs from Margaret&rsquo;s.
+
+Format for printing: use plain text with clear headers and line breaks. No links, no markdown formatting, no bullet points &mdash; just clean, readable lines. Never add information that is not in the itinerary. If something is missing (a terminal, a confirmation number), write &ldquo;not provided&rdquo; rather than guessing. Keep the tone warm and concise.</div>
+          <p class="prompt-note">This tells ChatGPT who you are and exactly how you want your briefings formatted. You paste it once when creating the Custom GPT; after that, it remembers every time you use it.</p>
+        </div>
+
+        <div style="margin-top:24px">
+          <div class="setup-steps-label">Test it with these</div>
+
+          <div class="prompt-box" style="margin-top:10px">
+            <div class="prompt-box-label">Try this first</div>
+            <div class="prompt-text">I&rsquo;m flying to Boston on June 12 to see Sarah&rsquo;s family. United flight 1247 departing LAX Terminal 7 at 8:15am, arriving Logan 4:45pm. Hertz rental car confirmation #H8834710. Staying at the Colonnade Hotel, 120 Huntington Ave, check-in 3pm. Dinner reservation at Legal Sea Foods, Long Wharf, 7:30pm Thursday. Walter is on a later flight &mdash; Delta 2214 departing LAX at 11:40am, arriving Logan 7:55pm.</div>
+            <p class="prompt-note"><strong>Good output looks like:</strong> A clean chronological briefing you could print &mdash; your departure time and which terminal at LAX, arrival info, rental car details, hotel address with check-in time, dinner reservation, Walter&rsquo;s separate flight clearly noted, and a &ldquo;things to remember&rdquo; section flagging the three-hour time zone change.</p>
+            <p class="prompt-note" style="color:#8b6f28"><strong>Red flag:</strong> If it adds information you didn&rsquo;t give it (inventing a gate number, suggesting restaurants you didn&rsquo;t book), go back to the Instructions and add: &ldquo;Never add information that isn&rsquo;t in the itinerary I paste. If something is missing, flag it as &lsquo;not provided&rsquo; rather than guessing.&rdquo;</p>
+          </div>
+
+          <div class="prompt-box" style="margin-top:10px">
+            <div class="prompt-box-label">Test with a more complex trip</div>
+            <div class="prompt-text">Trip to Chicago and then Minneapolis, July 18&ndash;24. Leg 1: American flight 688, LAX to O&rsquo;Hare, departs 6:50am, arrives 12:45pm. Palmer House Hilton, 17 E Monroe St, check-in 3pm, two nights. Dinner at Gibson&rsquo;s Bar, 7pm Friday. Leg 2: July 20, Southwest flight 3412, O&rsquo;Hare to MSP, departs 10:15am, arrives 11:40am. Switching to the Hewing Hotel, 300 Washington Ave N, Minneapolis, check-in 4pm. Enterprise rental car confirmation #E2209871, picking up at MSP. Walter is driving up from Madison and meeting me at the Minneapolis hotel on the 20th. Return: July 24, Delta 1894, MSP to LAX, departs 2:10pm, arrives 4:35pm. Walter driving back separately.</div>
+            <p class="prompt-note"><strong>Good output looks like:</strong> Each leg clearly separated, the hotel change on July 20 called out, Walter&rsquo;s separate arrival and departure noted alongside yours, and no invented details for Walter&rsquo;s drive.</p>
+            <p class="prompt-note" style="color:#8b6f28"><strong>Red flag:</strong> If it merges your flights with Walter&rsquo;s or misses the hotel change, the Instructions need a line like: &ldquo;When two travelers have different itineraries, show them side by side, clearly labeled.&rdquo;</p>
+          </div>
+        </div>
+
+        <div class="tip" style="margin-top:16px">After your first real trip with this, note what was missing or what you wished it had included. Open the Instructions and add it. Most people refine theirs two or three times before it&rsquo;s exactly right. The Filofax page for &ldquo;trip prep&rdquo; just got a lot thinner.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="s">
+    <div class="s-num">06 &mdash; What this looks like in practice</div>
     <h2 class="s-title">Hours are not really the point. <em>Friction is.</em></h2>
     <p class="lede">You said five hours a week, perhaps, and noted the question is &ldquo;somewhat philosophical&rdquo; since you're retired. We agree. The honest measure here is how often something that used to feel like a small dread becomes invisible. We've estimated hours where we can, but the table understates the real win.</p>
 
@@ -381,9 +444,9 @@
     <p class="caveat">The hours are real but they are not what you'll remember. What you'll remember is landing in Boston knowing the rental car desk is on the lower level because TripIt told you, and finding the photograph from your granddaughter's recital in eight seconds because Apple Photos heard the word &ldquo;recital.&rdquo; Those are small things. Small things add up to a quieter life.</p>
   </section>
 
-  <!-- 6 — ROLLOUT (completely rewritten as a manual) -->
+  <!-- 7 — ROLLOUT (completely rewritten as a manual) -->
   <section class="s">
-    <div class="s-num">06 &mdash; A suggested rollout</div>
+    <div class="s-num">07 &mdash; A suggested rollout</div>
     <h2 class="s-title">Two weeks. <em>At your own pace.</em></h2>
     <p class="lede">Each tool above has its own &ldquo;Getting started&rdquo; walkthrough. This section tells you what order to do them in, and how to know when each one is working. Everything is designed so you can sit at your kitchen table with your laptop and work through it &mdash; no outside help required, though we're here if you want it.</p>
 
@@ -414,9 +477,9 @@
     </div>
   </section>
 
-  <!-- 7 — GUARDRAILS (new section) -->
+  <!-- 8 — GUARDRAILS (new section) -->
   <section class="s">
-    <div class="s-num">07 &mdash; Guardrails</div>
+    <div class="s-num">08 &mdash; Guardrails</div>
     <h2 class="s-title">What never goes into these tools. <em>And how to get out if you want to.</em></h2>
     <p class="lede">You asked the right questions about privacy and trust. Here are the answers, plainly &mdash; what's safe, what's not, and how to walk away from any of this if it doesn't feel right.</p>
 
@@ -441,7 +504,7 @@
         <strong>Full names of grandchildren combined with their schools, addresses, or medical details.</strong> Use first names only if you need to reference a child. &ldquo;My granddaughter, age 8, at a public school in Boston&rdquo; is enough context without being identifying.
       </div>
       <div class="guardrail-item safe">
-        <div class="guardrail-label">Safe to use</div>
+        <div class="guardrail-label">Generally fine</div>
         <strong>Personal documents that are already yours &mdash; Medicare statements, bank fee notices, tax summaries, travel confirmations, medical explanations from your own doctors.</strong> These are the intended use case. Just crop out account numbers before photographing.
       </div>
     </div>
@@ -490,9 +553,9 @@
     </div>
   </section>
 
-  <!-- 8 -->
+  <!-- 9 -->
   <section class="s">
-    <div class="s-num">08 &mdash; The numbers</div>
+    <div class="s-num">09 &mdash; The numbers</div>
     <h2 class="s-title">Modest software costs. One real expense <em>&mdash; and it's the photo project.</em></h2>
     <p class="lede">The recurring software here is genuinely small. The largest single line is a one-time decision about the basement boxes, and you can size that to whatever portion you want to start with.</p>
 
@@ -523,9 +586,9 @@
     </div>
   </section>
 
-  <!-- 9 -->
+  <!-- 10 -->
   <section class="s">
-    <div class="s-num">09 &mdash; If you want your own</div>
+    <div class="s-num">10 &mdash; If you want your own</div>
     <h2 class="s-title">This is a sample. <em>Yours would be different.</em></h2>
     <p class="lede">Every plan starts with your actual answers &mdash; seven short sections of plain-English questions, around 20 to 25 minutes at your own pace. You can skip anything that doesn't feel right.</p>
 

@@ -137,9 +137,78 @@ def render_line(line):
     return f'<div class="line"><span>{render_inline(line["label"])}</span><span class="v">{escape_html(line["cost"])}</span></div>'
 
 
+def render_test_query(query):
+    good_html = ""
+    if query.get("expected"):
+        good_html = f'\n            <p class="prompt-note"><strong>Good output looks like:</strong> {render_inline(query["expected"])}</p>'
+    bad_html = ""
+    if query.get("red_flag"):
+        bad_html = f'\n            <p class="prompt-note" style="color:#8b6f28"><strong>Red flag:</strong> {render_inline(query["red_flag"])}</p>'
+    return f"""
+          <div class="prompt-box" style="margin-top:10px">
+            <div class="prompt-box-label">{escape_html(query.get("label", "Test this"))}</div>
+            <div class="prompt-text">{escape_html(query.get("input", ""))}</div>{good_html}{bad_html}
+          </div>"""
+
+
+def render_custom_build(cb):
+    if not cb or not cb.get("project_name"):
+        return ""
+    steps = cb.get("setup_steps") or []
+    steps_html = ""
+    if steps:
+        items = "\n              ".join(f"<li>{render_inline(s)}</li>" for s in steps)
+        tip = ""
+        if cb.get("setup_tip"):
+            tip = f'\n            <div class="tip">{render_inline(cb["setup_tip"])}</div>'
+        steps_html = f"""
+          <div class="setup-steps">
+            <div class="setup-steps-label">Building it — step by step</div>
+            <ol>
+              {items}
+            </ol>{tip}
+          </div>"""
+
+    sys_html = ""
+    if cb.get("system_prompt"):
+        label = escape_html(cb.get("system_prompt_label", "The system prompt — copy this exactly"))
+        note = f'\n            <p class="prompt-note">{render_inline(cb["system_prompt_note"])}</p>' if cb.get("system_prompt_note") else ""
+        sys_html = f"""
+          <div class="prompt-box" style="margin-top:20px">
+            <div class="prompt-box-label">{label}</div>
+            <div class="prompt-text">{escape_html(cb["system_prompt"])}</div>{note}
+          </div>"""
+
+    test_html = ""
+    tests = cb.get("test_queries") or []
+    if tests:
+        test_html = f"""
+          <div style="margin-top:24px">
+            <div class="setup-steps-label">Test it with these</div>
+            {"".join(render_test_query(t) for t in tests)}
+          </div>"""
+
+    iter_html = ""
+    if cb.get("iteration_tip"):
+        iter_html = f'\n          <div class="tip" style="margin-top:16px">{render_inline(cb["iteration_tip"])}</div>'
+
+    return f"""
+      <div class="rec rec-build">
+        <div>
+          <div class="rec-name">{escape_html(cb["project_name"])} <em style="font-style:normal;color:#6F7A8B;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Build it yourself</em></div>
+          <div class="rec-cost">{escape_html(cb.get("platform_cost", ""))}</div>
+        </div>
+        <div class="rec-body">
+          <p>{render_inline(cb.get("project_pitch", ""))}</p>
+          <p style="margin-top:8px"><strong>Where to build it:</strong> {render_inline(cb.get("platform", ""))}</p>
+          {steps_html}{sys_html}{test_html}{iter_html}
+        </div>
+      </div>"""
+
+
 def render_guardrail_item(item):
     level = item.get("level", "caution")
-    label_text = {"never": "Never", "safe": "Safe to use"}.get(level, "Be careful with")
+    label_text = {"never": "Never", "safe": "Generally fine"}.get(level, "Be careful with")
     return f"""
       <div class="guardrail-item {escape_html(level)}">
         <div class="guardrail-label">{label_text}</div>
@@ -168,6 +237,7 @@ def main():
     numbers = plan.get("numbers", {}) or {}
     ruled = plan.get("ruled_out", {}) or {}
     guardrails = plan.get("guardrails", {}) or {}
+    custom_build = plan.get("custom_build", {}) or {}
 
     extra = picking.get("extra_paragraph") or ""
     extra_html = f"<p>{render_inline(extra)}</p>" if extra else ""
@@ -194,6 +264,9 @@ def main():
         "FOUNDATION_TOOLS": "\n".join(render_tool(t) for t in plan.get("foundation_tools", [])),
         "AI_TALLY": escape_html(plan.get("ai_tally") or f'{len(plan.get("ai_tools", []))} items'),
         "AI_TOOLS": "\n".join(render_tool(t) for t in plan.get("ai_tools", [])),
+        "CUSTOM_BUILD_TITLE": render_inline(custom_build.get("title", "")),
+        "CUSTOM_BUILD_LEDE": render_inline(custom_build.get("lede", "")),
+        "CUSTOM_BUILD_CONTENT": render_custom_build(custom_build),
         "RULED_OUT_LEDE": render_inline(ruled.get("lede", "")),
         "RULED_OUT_ITEMS": "\n".join(render_ruled_item(i) for i in ruled.get("items", [])),
         "PRACTICE_TITLE": render_inline(practice.get("title", "")),

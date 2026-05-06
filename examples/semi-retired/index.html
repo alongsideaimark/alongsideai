@@ -351,7 +351,75 @@
 
   <!-- 5 -->
   <section class="s">
-    <div class="s-num">05 &mdash; What this looks like in practice</div>
+    <div class="s-num">05 &mdash; Something only yours</div>
+    <h2 class="s-title">Your board meeting <em>prep assistant.</em></h2>
+    <p class="lede">You already have ChatGPT Plus and NotebookLM. This section puts them together into something custom &mdash; a personal assistant inside ChatGPT that takes the board packet summary you build in NotebookLM and turns it into prep notes you can actually bring to the meeting.</p>
+
+    <p>Here's the idea: before each board meeting, you upload the packet into NotebookLM (you're already doing this). NotebookLM gives you a clean summary. You paste that summary into a Custom GPT we're going to build below &mdash; and it generates your personal prep notes: what to pay attention to, questions a smart board member would ask, anything that looks different from last quarter, and a one-page cheat sheet you can print or pull up on your phone during the meeting.</p>
+    <p>The Custom GPT knows who you are &mdash; a practical, no-nonsense former contractor who sits on three nonprofit boards &mdash; and it writes accordingly. Bullet points, not paragraphs. Direct answers, not disclaimers. The kind of notes you'd make yourself if you had an extra hour before the meeting.</p>
+
+    <div class="rec">
+      <div>
+        <div class="rec-name">Custom GPT: Board Meeting Prep</div>
+        <div class="rec-cost">No extra cost &mdash; included with ChatGPT Plus</div>
+      </div>
+      <div class="rec-body">
+        <p class="what">What it is: A private, custom version of ChatGPT that's been pre-loaded with instructions about who you are and how you want your board prep formatted. You paste in a summary from NotebookLM; it hands back a prep sheet.</p>
+        <p class="why">Why it helps you: NotebookLM is excellent at reading and summarizing the packet, but it doesn't know you. This Custom GPT knows you're practical, direct, and sitting on three boards. It formats everything the way you'd want to read it &mdash; short, pointed, and organized around decisions, not background.</p>
+        <p class="wont">It won't replace reading the packet entirely. The prep notes are a lens, not a substitute &mdash; they tell you where to focus your attention. And if the board packet has confidential financial details (personnel compensation, pending real estate deals), leave those out of what you paste in, just like we mentioned in the guardrails.</p>
+
+        <div class="setup-steps">
+          <div class="setup-steps-label">Getting started &mdash; step by step</div>
+          <ol>
+            <li><strong>Open ChatGPT on your computer.</strong> Go to <strong>chatgpt.com</strong> in your browser and sign in with your ChatGPT Plus account. You need to do this on a computer, not your phone &mdash; creating a Custom GPT is easier on a bigger screen.</li>
+            <li><strong>Go to the Custom GPT builder.</strong> In the left sidebar, look for <strong>Explore GPTs</strong> (or click your name in the bottom-left corner &rarr; <strong>My GPTs</strong>). Then click <strong>Create a GPT</strong> (top right of the page). You'll see a split screen: a setup panel on the left and a preview panel on the right.</li>
+            <li><strong>Give it a name and description.</strong> Click the <strong>Configure</strong> tab at the top of the left panel. In the <strong>Name</strong> field, type: <strong>Board Meeting Prep</strong>. In the <strong>Description</strong> field, type: <strong>Generates personal board meeting prep notes from a packet summary.</strong></li>
+            <li><strong>Paste in the system prompt.</strong> In the large <strong>Instructions</strong> text box (below the description), paste the entire system prompt from the box below this walkthrough. Select all the text in the box, copy it, and paste it into the Instructions field. This is what tells the GPT who you are and how to format your prep notes.</li>
+            <li><strong>Turn off the extras you don't need.</strong> Scroll down in the Configure panel. Under <strong>Capabilities</strong>, turn <strong>off</strong> Web Browsing and DALL-E Image Generation. You don't need this GPT searching the internet or making pictures &mdash; you just want it to read what you paste in and write prep notes. Leave Code Interpreter off too.</li>
+            <li><strong>Set it to private.</strong> Under <strong>Sharing</strong> (near the bottom), make sure it's set to <strong>Only me</strong>. This GPT is just for you &mdash; no reason to make it public.</li>
+            <li><strong>Save it.</strong> Click the <strong>Create</strong> button (top right). ChatGPT will save your Custom GPT. It now appears in your sidebar under &ldquo;My GPTs&rdquo; any time you want to use it. On your iPhone, open the ChatGPT app, tap <strong>New Chat</strong>, then tap the model selector at the top and scroll down to find <strong>Board Meeting Prep</strong> under your GPTs.</li>
+          </ol>
+          <div class="tip">You only build this once. After that, the workflow is: open NotebookLM, paste the board packet, ask it for a summary, copy the summary, open your Board Meeting Prep GPT, paste it in, and you've got your prep notes in about two minutes. Do it the morning of the meeting or the night before.</div>
+        </div>
+
+        <div class="prompt-box">
+          <div class="prompt-box-label">System prompt &mdash; copy and paste into the Instructions field</div>
+          <div class="prompt-text">You are a board meeting prep assistant for Frank, a 68-year-old semi-retired general contractor who sits on three nonprofit boards. Frank is practical and direct. He does not want jargon, fluff, or long paragraphs. He wants to walk into the meeting prepared and confident.
+
+When Frank pastes a board packet summary, generate the following sections using bullet points only:
+
+1. Key decisions being asked for &mdash; what is the board voting on or being asked to approve?
+2. Financial red flags &mdash; anything in the numbers that looks unusual, is trending in the wrong direction, or deserves a question.
+3. Questions a smart board member would ask &mdash; the kind of things that show you read the packet carefully.
+4. Changes from last time &mdash; if Frank mentions or includes anything from a previous meeting, flag what shifted, what got resolved, and what got worse. If no prior meeting context is provided, skip this section and say so.
+5. One-page cheat sheet &mdash; a tight, printable summary Frank can glance at during the meeting. Keep it to one screen or one printed page. Use short bullets, bold the key names and numbers, and organize it by agenda item.
+
+Rules: Never write in paragraphs. Always use bullet points. Keep each bullet to one or two sentences. Bold the important names, numbers, and decisions. If something in the packet is unclear or missing, say so directly instead of guessing. Do not add disclaimers about not being a financial advisor.</div>
+          <p class="prompt-note">This is about 200 words. Paste the entire thing into the Instructions field in step 4. Don't edit it unless you want to change how the prep notes are formatted.</p>
+        </div>
+
+        <div class="prompt-box" style="margin-top:10px">
+          <div class="prompt-box-label">Test it &mdash; paste this into your Board Meeting Prep GPT</div>
+          <div class="prompt-text">Here's the summary from the Community Foundation's Q2 board packet:
+
+The finance committee reports total assets of $4.2M, down from $4.5M last quarter due to market corrections in the endowment portfolio. Operating expenses are 8% over budget, primarily driven by an unplanned HVAC replacement at the main office ($34,000). The executive director is requesting approval for a new grants management software system ($18,000 annual license) to replace the current spreadsheet-based tracking. Two board members' terms expire in September and the nominating committee has identified one replacement candidate. The audit committee recommends switching from the current auditing firm (used for 11 years) to a new firm that submitted a lower bid. Annual gala revenue came in at $285,000 vs. $310,000 budgeted. Staff turnover: the program director resigned; an interim has been appointed.</div>
+          <p class="prompt-note">This should produce a clean set of prep notes with all five sections. Look for the financial red flags (operating expenses over budget, endowment decline, gala shortfall) and the decisions being asked for (software approval, auditor switch, board nominations). If it writes in paragraphs instead of bullets, re-paste the system prompt &mdash; something got cut off.</p>
+        </div>
+
+        <div class="prompt-box" style="margin-top:10px">
+          <div class="prompt-box-label">Another test &mdash; with prior-meeting context</div>
+          <div class="prompt-text">Here's the Rotary Foundation's May board packet summary. At the last meeting in March, the board approved a $15,000 youth scholarship fund and tabled the discussion about hiring a part-time events coordinator.
+
+May packet summary: Total fund balance is $122,000. The scholarship committee has received 23 applications for the youth scholarship (up from 8 last year). The events coordinator position is back on the agenda with a revised job description and a proposed budget of $28,000/year (previously discussed at $22,000). The annual fundraiser is scheduled for October and the committee is requesting a $5,000 deposit to hold the venue. Membership is at 94, down from 101 at the start of the year.</div>
+          <p class="prompt-note">This one should trigger the &ldquo;Changes from last time&rdquo; section &mdash; the events coordinator cost went up from $22K to $28K, and the scholarship fund Frank approved in March now has 23 applicants. If the GPT skips the changes section, ask it: &ldquo;What changed from the March meeting?&rdquo;</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="s">
+    <div class="s-num">06 &mdash; What this looks like in practice</div>
     <h2 class="s-title">The real measure isn't hours. <em>It's peace of mind.</em></h2>
     <p class="lede">Your situation is less about &ldquo;hours saved&rdquo; than about the quiet things: not missing a meeting, not losing a document, not getting scammed. We've put time estimates where we can.</p>
 
@@ -369,9 +437,9 @@
     <p class="caveat">What people in your situation report a month in isn't &ldquo;look at all the hours I saved.&rdquo; It's &ldquo;I'm not afraid of the computer anymore.&rdquo; And &ldquo;I walk into the CPA's office knowing what I'm talking about now.&rdquo; That's the real deliverable.</p>
   </section>
 
-  <!-- 6 -->
+  <!-- 7 -->
   <section class="s">
-    <div class="s-num">06 &mdash; A suggested rollout</div>
+    <div class="s-num">07 &mdash; A suggested rollout</div>
     <h2 class="s-title">Two weeks. <em>At your own pace.</em></h2>
     <p class="lede">Each tool above has its own &ldquo;Getting started&rdquo; walkthrough. This section tells you what order to do them in, and how to know when each one is working. Everything is designed so you can sit at your kitchen table with your laptop and your iPhone and work through it &mdash; no outside help required, though we're here if you want it.</p>
 
@@ -390,7 +458,7 @@
       <div class="phase-head"><div class="phase-name">Week 2 &mdash; AI tools</div><div class="phase-time">About 2 hours</div></div>
       <p>Two tools first. Real tasks, not theory. Otter is optional and comes last.</p>
       <ul>
-        <li><strong>Before anything else:</strong> Read the Guardrails section below (Section 07). It takes five minutes and tells you what never goes into these tools.</li>
+        <li><strong>Before anything else:</strong> Read the Guardrails section below (Section 08). It takes five minutes and tells you what never goes into these tools.</li>
         <li><strong>Session 1 (~45 min): NotebookLM.</strong> Follow the steps above. Create one notebook for whichever board meets next. Upload the packet. Try the three example questions &mdash; or ask something you actually want to know. Generate the audio summary and listen to it. <em>You'll know it's working when:</em> it answers your question and highlights the exact page of the packet where it found the answer.</li>
         <li><strong>Session 2 (~30 min): ChatGPT Plus.</strong> Follow the steps above. Install, sign up, subscribe to Plus, and <strong>immediately turn off training</strong> in Settings &rarr; Data Controls. Then find one confusing document in the house &mdash; a CPA letter, a 401(k) page, a Medicare statement &mdash; photograph it (covering any account numbers), and try the prompt above. <em>You'll know it's working when:</em> it gives you a clear, plain-English explanation and tells you what to ask when you call.</li>
         <li><strong>Session 3 (~20 min, optional): Otter.ai Pro.</strong> Follow the steps above. Install, subscribe to Pro, test it at home. Then ask permission at your next board meeting. <em>You'll know it's working when:</em> you can search the transcript after the meeting and jump to any moment by typing a few words.</li>
@@ -403,9 +471,9 @@
     </div>
   </section>
 
-  <!-- 7 — GUARDRAILS -->
+  <!-- 8 — GUARDRAILS -->
   <section class="s">
-    <div class="s-num">07 &mdash; Guardrails</div>
+    <div class="s-num">08 &mdash; Guardrails</div>
     <h2 class="s-title">What never goes into these tools. <em>And how to get out if you want to.</em></h2>
     <p class="lede">You asked the right questions about scams and privacy. Here are the answers, plainly &mdash; what's safe, what's not, and how to walk away from any of this if it doesn't feel right.</p>
 
@@ -438,15 +506,15 @@
         <strong>Board financial discussions that aren't yet public.</strong> If the board packet contains a proposed budget, a pending real estate deal, or personnel compensation details, don't upload those specific pages to NotebookLM until the information is public. Upload the agenda and the general discussion items; leave the sensitive pages out.
       </div>
       <div class="guardrail-item safe">
-        <div class="guardrail-label">Safe to use</div>
+        <div class="guardrail-label">Generally fine</div>
         <strong>General health questions.</strong> &ldquo;What does it mean when a blood test shows elevated creatinine?&rdquo; or &ldquo;What should I ask my doctor about this medication?&rdquo; These are general knowledge questions with no personal data attached.
       </div>
       <div class="guardrail-item safe">
-        <div class="guardrail-label">Safe to use</div>
+        <div class="guardrail-label">Generally fine</div>
         <strong>Board packet summaries.</strong> The general agenda, committee reports, and meeting minutes are typically not sensitive. These are the intended use case for NotebookLM.
       </div>
       <div class="guardrail-item safe">
-        <div class="guardrail-label">Safe to use</div>
+        <div class="guardrail-label">Generally fine</div>
         <strong>Explaining confusing letters and statements.</strong> A Medicare Explanation of Benefits, a fee notice from your bank, a letter from an insurance company &mdash; these are the intended use case for ChatGPT. Just cover the account numbers before photographing.
       </div>
     </div>
@@ -499,9 +567,9 @@
     </div>
   </section>
 
-  <!-- 8 -->
+  <!-- 9 -->
   <section class="s">
-    <div class="s-num">08 &mdash; The numbers</div>
+    <div class="s-num">09 &mdash; The numbers</div>
     <h2 class="s-title">Less than a night out a month. <em>Help setting it up is optional.</em></h2>
     <p class="lede">The plan you're reading is free. The only costs are the software subscriptions below. If you'd like us to set things up alongside you, the implementation package is optional.</p>
 
@@ -532,9 +600,9 @@
     </div>
   </section>
 
-  <!-- 9 -->
+  <!-- 10 -->
   <section class="s">
-    <div class="s-num">09 &mdash; If you want your own</div>
+    <div class="s-num">10 &mdash; If you want your own</div>
     <h2 class="s-title">This is a sample. <em>Yours would be different.</em></h2>
     <p class="lede">Every plan starts with your actual answers &mdash; seven short sections of plain-English questions, around 20 to 25 minutes at your own pace. You can skip anything that doesn't feel right.</p>
 
