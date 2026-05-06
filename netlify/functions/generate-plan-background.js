@@ -16,44 +16,23 @@ const INTERNAL_FROM = "Alongside AI <intake@alongsideai.ai>";
 const INTERNAL_TO = "mark@alongsideai.ai";
 const CUSTOMER_FROM = "Mark <mark@alongsideai.ai>";
 const CUSTOMER_REPLY_TO = "mark@alongsideai.ai";
-const PDFSHIFT_URL = "https://api.pdfshift.io/v3/convert/pdf";
 
-async function convertToPdf({ url, apiKey }) {
-  const auth = "Basic " + Buffer.from(`api:${apiKey}`).toString("base64");
-  const res = await fetch(PDFSHIFT_URL, {
-    method: "POST",
-    headers: {
-      "Authorization": auth,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      source: url,
-      sandbox: false,
-      format: "Letter",
-      margin: "18mm",
-      use_print: true,
-      delay: 3000,
-    }),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`PDFShift ${res.status}: ${body}`);
-  }
-  return Buffer.from(await res.arrayBuffer());
-}
-
-async function emailCustomer({ apiKey, firstName, toEmail, pdfBuffer }) {
-  const subject = `Your plan — ${firstName}`;
+async function emailCustomer({ apiKey, firstName, toEmail, planUrl }) {
+  const subject = `Your plan is ready — ${firstName}`;
   const text =
 `${firstName},
 
-Your plan's attached. Read it at your own pace — there's no rush.
+Your plan is ready. Open the link below to read it — there's no rush.
+
+${planUrl}
 
 A few things to know:
 
 It's yours to keep, whether you decide to act on any of it or not. Every recommendation is grounded in what you wrote on the questionnaire; if something doesn't fit, trust your read over ours and skip it.
 
 Section 05 has a custom tool we designed just for you — it's the most personal part of the plan. If you try building it and get stuck, reply to this email and I'll help.
+
+There's a "Print / Save as PDF" button at the top of the page if you'd like a copy on your computer.
 
 If something in the plan is wrong, or if there's a part that doesn't make sense, same deal — reply to this email. It comes straight to me.
 
@@ -65,9 +44,13 @@ Alongside AI`;
 <html><body style="margin:0;padding:32px 16px;background:#FAF6F1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#2C3330;line-height:1.65;">
   <div style="max-width:560px;margin:0 auto;font-size:16px;">
     <p style="margin:0 0 18px;">${firstName},</p>
-    <p style="margin:0 0 18px;">Your plan's attached. Read it at your own pace — there's no rush.</p>
+    <p style="margin:0 0 18px;">Your plan is ready. Read it at your own pace — there's no rush.</p>
+    <p style="margin:0 0 24px;">
+      <a href="${planUrl}" style="display:inline-block;padding:14px 24px;background:#7A8B6F;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Open your plan</a>
+    </p>
     <p style="margin:0 0 18px;">It's yours to keep, whether you decide to act on any of it or not. Every recommendation is grounded in what you wrote on the questionnaire; if something doesn't fit, trust your read over ours and skip it.</p>
     <p style="margin:0 0 18px;">Section 05 has a custom tool we designed just for you — it's the most personal part of the plan. If you try building it and get stuck, reply to this email and I'll help.</p>
+    <p style="margin:0 0 18px;">There's a "Print / Save as PDF" button at the top if you'd like a copy on your computer.</p>
     <p style="margin:0 0 18px;">If something in the plan is wrong, or if there's a part that doesn't make sense, same deal — reply to this email. It comes straight to me.</p>
     <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Alongside AI</span></p>
   </div>
@@ -80,12 +63,6 @@ Alongside AI`;
     subject,
     text,
     html,
-    attachments: [
-      {
-        filename: `Alongside-AI-plan-${firstName}.pdf`,
-        content: pdfBuffer.toString("base64"),
-      },
-    ],
   };
 
   const res = await fetch("https://api.resend.com/emails", {
@@ -220,19 +197,14 @@ exports.handler = async (event) => {
 
     const baseUrl = process.env.URL || "https://alongsideai.ai";
     const planUrl = `${baseUrl}/plans/${id}`;
-    const pdfshiftKey = process.env.PDFSHIFT_API_KEY;
 
-    // Auto-send: convert to PDF and email the customer directly.
-    if (email && pdfshiftKey && resendKey) {
-      console.log("[generate-plan] converting to PDF:", planUrl);
-      const pdf = await convertToPdf({ url: planUrl, apiKey: pdfshiftKey });
-      console.log("[generate-plan] PDF size:", pdf.length, "bytes");
-
+    // Auto-send: email the customer a link to their plan.
+    if (email && resendKey) {
       await emailCustomer({
         apiKey: resendKey,
         firstName,
         toEmail: email,
-        pdfBuffer: pdf,
+        planUrl,
       });
       console.log("[generate-plan] sent to", email);
 
@@ -240,7 +212,7 @@ exports.handler = async (event) => {
       record.sent_at = new Date().toISOString();
       await store.set(`${id}.json`, JSON.stringify(record));
     } else {
-      console.warn("[generate-plan] skipping auto-send —", !email ? "no email" : !pdfshiftKey ? "no PDFSHIFT_API_KEY" : "no RESEND_API_KEY");
+      console.warn("[generate-plan] skipping auto-send —", !email ? "no email" : "no RESEND_API_KEY");
     }
 
     // Notify Mark.
