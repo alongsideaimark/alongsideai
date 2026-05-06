@@ -60,7 +60,7 @@ async function draftPlan({ briefing, apiKey }) {
   const userContent = [
     {
       type: "text",
-      text: `Reference plan #1 — Margaret, retired federal judge (GOLD STANDARD). This is the format and quality bar every plan must match. Pay close attention to: (1) the "Getting started — step by step" walkthroughs on every tool, (2) the copy-paste prompt boxes on AI tools, (3) the Guardrails section with never/caution/safe items and cancellation instructions. Every plan you draft must include all of these. Do NOT recycle Margaret's tool picks — research fresh for each respondent:\n\n${margaretSample}`,
+      text: `Reference plan #1 — Margaret, retired federal judge (GOLD STANDARD). This is the FORMAT and QUALITY BAR only. Study the structure: (1) "Getting started — step by step" walkthroughs on every tool, (2) copy-paste prompt boxes on AI tools, (3) Guardrails section with never/caution/safe items and cancellation instructions. Every plan you draft must include all of these structural elements.\n\nCRITICAL: Margaret's specific tool picks (1Password, Otter, NotebookLM, etc.) are for a retired federal judge. They are almost certainly WRONG for the next respondent. You MUST research fresh tools for each person's specific profession, industry, and pain points using web_search. A plan that recommends the same tools as Margaret's is a failed plan unless the respondent happens to have the same needs. The whole point of this product is that each plan is original research — not a template with names swapped in.\n\n${margaretSample}`,
       cache_control: { type: "ephemeral" },
     },
     {
