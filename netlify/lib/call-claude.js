@@ -11,6 +11,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const https = require("https");
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-opus-4-7";
@@ -24,36 +25,52 @@ function readFile(p) {
   return fs.readFileSync(p, "utf8");
 }
 
-async function callAnthropic(apiKey, body) {
+function callAnthropic(apiKey, body) {
   const payload = JSON.stringify(body);
   console.log(`[call-claude] request payload size: ${(payload.length / 1024).toFixed(1)}KB`);
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10 * 60 * 1000);
-  let res;
-  try {
-    res = await fetch(ANTHROPIC_URL, {
+  return new Promise((resolve, reject) => {
+    const url = new URL(ANTHROPIC_URL);
+    const req = https.request({
+      hostname: url.hostname,
+      path: url.pathname,
       method: "POST",
       headers: {
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
         "content-type": "application/json",
+        "content-length": Buffer.byteLength(payload),
       },
-      body: payload,
-      signal: controller.signal,
+      timeout: 10 * 60 * 1000,
+    }, (res) => {
+      const chunks = [];
+      res.on("data", (chunk) => chunks.push(chunk));
+      res.on("end", () => {
+        const raw = Buffer.concat(chunks).toString("utf8");
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          reject(new Error(`Anthropic ${res.statusCode}: ${raw}`));
+          return;
+        }
+        try {
+          resolve(JSON.parse(raw));
+        } catch (err) {
+          reject(new Error(`Anthropic returned unparsable JSON: ${err.message}`));
+        }
+      });
     });
-  } catch (err) {
-    const cause = err.cause || {};
-    console.error(`[call-claude] fetch failed:`, err.message, `| cause: ${cause.code || cause.message || JSON.stringify(cause)}`);
-    throw err;
-  } finally {
-    clearTimeout(timeout);
-  }
-  if (!res.ok) {
-    const errBody = await res.text();
-    throw new Error(`Anthropic ${res.status}: ${errBody}`);
-  }
-  return res.json();
+
+    req.on("error", (err) => {
+      console.error(`[call-claude] request error:`, err.message);
+      reject(err);
+    });
+
+    req.on("timeout", () => {
+      req.destroy(new Error("Anthropic request timed out after 10 minutes"));
+    });
+
+    req.write(payload);
+    req.end();
+  });
 }
 
 function parsePlanJson(text) {
