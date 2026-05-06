@@ -18,7 +18,7 @@ const MAX_OUTPUT_TOKENS = 24000;
 const MAX_WEB_SEARCHES = 8;
 
 const PROMPT_PATH = path.join(__dirname, "..", "plan-template", "prompt.md");
-const SAMPLE_DIR = path.join(__dirname, "..", "..", "examples");
+const REF_DIR = path.join(__dirname, "reference-plans");
 
 function readFile(p) {
   return fs.readFileSync(p, "utf8");
@@ -54,8 +54,8 @@ async function draftPlan({ briefing, apiKey }) {
   }
 
   const systemPrompt = readFile(PROMPT_PATH);
-  const margaretSample = readFile(path.join(SAMPLE_DIR, "gold-standard", "index.html"));
-  const frankSample = readFile(path.join(SAMPLE_DIR, "semi-retired", "index.html"));
+  const margaretSample = readFile(path.join(REF_DIR, "gold-standard.html"));
+  const frankSample = readFile(path.join(REF_DIR, "semi-retired.html"));
 
   const userContent = [
     {
@@ -157,8 +157,8 @@ async function revisePlan({ currentPlan, briefing, instruction, priorTurns, apiK
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
 
   const systemPrompt = readFile(PROMPT_PATH);
-  const margaretSample = readFile(path.join(SAMPLE_DIR, "gold-standard", "index.html"));
-  const frankSample = readFile(path.join(SAMPLE_DIR, "semi-retired", "index.html"));
+  const margaretSample = readFile(path.join(REF_DIR, "gold-standard.html"));
+  const frankSample = readFile(path.join(REF_DIR, "semi-retired.html"));
 
   const userContent = [
     {
