@@ -25,6 +25,9 @@ function readFile(p) {
 }
 
 async function callAnthropic(apiKey, body) {
+  const payload = JSON.stringify(body);
+  console.log(`[call-claude] request payload size: ${(payload.length / 1024).toFixed(1)}KB`);
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10 * 60 * 1000);
   let res;
@@ -36,9 +39,13 @@ async function callAnthropic(apiKey, body) {
         "anthropic-version": "2023-06-01",
         "content-type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: payload,
       signal: controller.signal,
     });
+  } catch (err) {
+    const cause = err.cause || {};
+    console.error(`[call-claude] fetch failed:`, err.message, `| cause: ${cause.code || cause.message || JSON.stringify(cause)}`);
+    throw err;
   } finally {
     clearTimeout(timeout);
   }
