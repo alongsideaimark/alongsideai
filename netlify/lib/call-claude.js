@@ -79,7 +79,11 @@ function parsePlanJson(text) {
   if (firstBrace === -1 || lastBrace === -1) {
     throw new Error("no JSON object found in Claude response");
   }
-  const candidate = text.slice(firstBrace, lastBrace + 1);
+  let candidate = text.slice(firstBrace, lastBrace + 1);
+  // Strip control characters that Claude sometimes puts inside JSON strings
+  // (literal tabs, newlines, etc.). Replace them with a space so text reads
+  // naturally rather than getting concatenated.
+  candidate = candidate.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, " ");
   try {
     return JSON.parse(candidate);
   } catch (err) {
