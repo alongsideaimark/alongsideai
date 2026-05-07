@@ -260,8 +260,13 @@ function renderPlan(plan, opts = {}) {
     NUMBERS_LEDE: renderInline(plan.numbers?.lede || ""),
     SOFTWARE_LINES: (plan.numbers?.software_lines || []).map(renderLine).join("\n        "),
     SOFTWARE_TOTAL: escapeHtml(plan.numbers?.software_total || ""),
-    IMPLEMENTATION_LINES: (plan.numbers?.implementation_lines || []).map(renderLine).join("\n        "),
-    IMPLEMENTATION_TOTAL: escapeHtml(plan.numbers?.implementation_total || ""),
+    IMPLEMENTATION_BOX: (plan.numbers?.implementation_lines || []).length > 0
+      ? `<div class="invest-box">
+        <h4>Implementation help — optional, one-time</h4>
+        ${(plan.numbers.implementation_lines).map(renderLine).join("\n        ")}
+        <div class="line total"><span>Full package</span><span class="v">${escapeHtml(plan.numbers?.implementation_total || "")}</span></div>
+      </div>`
+      : "",
     NET_NOTE_HEADING: renderInline(plan.numbers?.net_note_heading || ""),
     NET_NOTE_BODY: renderInline(plan.numbers?.net_note_body || ""),
   };

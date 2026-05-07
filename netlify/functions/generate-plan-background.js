@@ -158,6 +158,15 @@ exports.handler = async (event) => {
     const firstName = payload.firstName || String(data.name || "").trim().split(/\s+/)[0] || "there";
     const email = String(data.contact || "").trim();
 
+    // Gate: don't burn Claude credits on empty or near-empty submissions.
+    // A real questionnaire fills in at least work, friction, and wish.
+    const requiredFields = ["work", "friction", "wish"];
+    const filledCount = requiredFields.filter((f) => String(data[f] || "").trim().length > 10).length;
+    if (filledCount < 2) {
+      console.warn(`[generate-plan] skipping — only ${filledCount}/${requiredFields.length} required fields filled for ${firstName}`);
+      return { statusCode: 200, body: JSON.stringify({ ok: false, reason: "incomplete submission" }) };
+    }
+
     const anthropicKey = process.env.ANTHROPIC_API_KEY;
     const resendKey = process.env.RESEND_API_KEY;
 
