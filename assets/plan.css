@@ -246,7 +246,7 @@ td{
   vertical-align:top;
   word-wrap:break-word; overflow-wrap:break-word;
 }
-td.num{font-family:var(--serif); font-size:20px; color:var(--charcoal); letter-spacing:-.01em; white-space:nowrap}
+td.num{font-family:var(--serif); font-size:18px; color:var(--charcoal); letter-spacing:-.01em}
 tr:last-child td{border-bottom:none}
 tr.total td{background:var(--gold-light); font-weight:600; color:var(--charcoal)}
 tr.total td.num{color:#8b6f28}

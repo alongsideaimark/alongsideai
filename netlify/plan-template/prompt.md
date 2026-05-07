@@ -161,7 +161,7 @@ Put `<strong>` tags around the 1–3 most important nouns in each observation to
 
 ## Time-saved table — section 06
 
-5–6 rows. "Today" column is where their time goes now. "With the plan" column is the new workflow, named with specific tool names from section 04. "Weekly saved" is an honest estimate — prefer understating. Total at the bottom.
+5–6 rows. "Today" column is where their time goes now. "With the plan" column is the new workflow, named with specific tool names from section 04. "Weekly saved" must be SHORT — just the hours estimate, like "~4 hrs" or "~30 min". No parenthetical breakdowns, no qualitative notes, no "+ meaningful revenue lift." Keep every value under 10 characters. Anything longer overflows the column. Total at the bottom.
 
 The caveat paragraph after the table should acknowledge that the hours aren't the whole story — the real deliverable is emotional (evenings back, peace of mind, walking into the meeting prepared).
 
