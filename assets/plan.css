@@ -433,29 +433,20 @@ tr.total td.num{color:#8b6f28}
 
 /* print */
 @media print{
-  body{background:white; padding-top:0 !important}
+  *{-webkit-print-color-adjust:exact !important; print-color-adjust:exact !important}
+  body{padding-top:0 !important}
   .toolbar, .sample-banner, #mark-review-bar{display:none !important}
   .page{box-shadow:none; margin:0; max-width:none}
 
-  /* Cover always gets its own page */
   .cover{page-break-after: always; break-after: page}
 
-  /* Let section bodies flow across pages naturally — forcing each whole
-     section to a single page was leaving huge blank gaps at the bottom
-     whenever a section didn't fit in the remaining space. */
   section.s{page-break-inside: auto; break-inside: auto}
 
-  /* Keep section headings with the paragraph that follows them. */
   .s-num, .s-title, .lede{page-break-after: avoid; break-after: avoid}
 
-  /* Individual cards/items stay together — a tool rec or a phase block
-     splitting mid-element looks bad. */
   .rec, .phase, .obs-item, .ruled-item, .invest-box{page-break-inside: avoid; break-inside: avoid}
 
-  /* Table rows don't split either. */
   tr{page-break-inside: avoid; break-inside: avoid}
 
-  /* PDFShift handles paper margin via the "margin" option; let @page be 0
-     so CSS doesn't add a second margin on top of it. */
-  @page{margin:0}
+  @page{margin:18mm}
 }
