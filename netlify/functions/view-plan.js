@@ -3,6 +3,7 @@
 // URL shape: /plans/:id  (via the netlify.toml redirect).
 
 const { connectLambda, getStore } = require("@netlify/blobs");
+const { renderPlan } = require("../lib/render-plan");
 
 function notFound() {
   return {
@@ -280,7 +281,14 @@ exports.handler = async (event) => {
       };
     }
 
-    const withBar = injectReviewBar(record.html, record);
+    // Re-render from stored plan JSON so CSS/template changes apply immediately
+    // without needing to regenerate every plan.
+    const freshHtml = record.plan ? renderPlan(record.plan, {
+      preparedDate: record.created_at
+        ? new Date(record.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+        : undefined,
+    }) : record.html;
+    const withBar = injectReviewBar(freshHtml, record);
 
     return {
       statusCode: 200,
