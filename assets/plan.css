@@ -229,8 +229,8 @@ section.s:first-of-type{border-top:none}
 }
 .ruled-reason{margin:0; color:var(--charcoal-soft); font-size:15px; line-height:1.55}
 
-/* table (section 5) */
-table{width:100%; border-collapse:separate; border-spacing:0; margin-top:8px; font-size:15px}
+/* table (section 6) */
+table{width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; margin-top:8px; font-size:15px}
 th{
   text-align:left;
   font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase;
@@ -238,10 +238,15 @@ th{
   padding:12px 16px;
   border-bottom: 1px solid color-mix(in oklab, var(--charcoal) 16%, transparent);
 }
+th:nth-child(1){width:22%}
+th:nth-child(2){width:28%}
+th:nth-child(3){width:34%}
+th:nth-child(4){width:16%}
 td{
   padding:16px;
   border-bottom:1px solid color-mix(in oklab, var(--charcoal) 6%, transparent);
   vertical-align:top;
+  word-wrap:break-word; overflow-wrap:break-word;
 }
 td.num{font-family:var(--serif); font-size:20px; color:var(--charcoal); letter-spacing:-.01em; white-space:nowrap}
 tr:last-child td{border-bottom:none}
