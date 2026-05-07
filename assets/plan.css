@@ -429,6 +429,34 @@ tr.total td.num{color:#8b6f28}
   font-family:var(--serif); font-size:17px; color:var(--charcoal);
 }
 
+/* appendix ref link from summary to setup guide */
+.appendix-ref{
+  margin-top:10px; font-size:13px; color:var(--gray);
+  font-family:var(--mono); letter-spacing:.03em;
+}
+
+/* team handoff pages */
+.handoff-page{margin-top:28px; padding-top:20px; border-top:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent)}
+.handoff-page:first-child{margin-top:0; padding-top:0; border-top:none}
+.handoff-task{margin-top:20px}
+.handoff-task ol{margin-top:8px; padding-left:20px}
+.handoff-task li{margin-bottom:6px; font-size:15px; line-height:1.5}
+
+/* milestones */
+.milestone{margin-bottom:16px}
+.milestone-label{font-family:var(--mono); font-size:12px; letter-spacing:.15em; text-transform:uppercase; color:var(--sage); margin-bottom:4px}
+
+/* 30-day worksheet */
+.worksheet table{font-size:14px}
+.worksheet td,.worksheet th{padding:10px 12px}
+
+/* setup guide appendix entries */
+.setup-entry{
+  padding:28px 0;
+  border-bottom:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+}
+.setup-entry:last-child{border-bottom:none}
+
 /* print */
 @media print{
   *{-webkit-print-color-adjust:exact !important; print-color-adjust:exact !important}
@@ -437,6 +465,7 @@ tr.total td.num{color:#8b6f28}
   .page{box-shadow:none; margin:0; max-width:none}
 
   .cover{page-break-after: always; break-after: page}
+  .appendix{page-break-before: always; break-before: page}
 
   section.s{page-break-inside: auto; break-inside: auto}
 

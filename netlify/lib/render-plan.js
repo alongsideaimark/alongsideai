@@ -64,7 +64,7 @@ function renderPrompts(tool) {
           </div>`).join("\n");
 }
 
-function renderTool(tool) {
+function renderToolSummary(tool) {
   const conditionalTag = tool.conditional
     ? ` <em style="font-style:normal;color:#8b6f28;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Conditional</em>`
     : "";
@@ -75,8 +75,10 @@ function renderTool(tool) {
     ? `<p class="wont">${renderInline(tool.what_it_wont_fix)}</p>`
     : "";
   const classes = tool.build_it_yourself ? "rec rec-build" : "rec";
-  const setupHtml = renderSetupSteps(tool);
-  const promptsHtml = renderPrompts(tool);
+  const hasSetup = (tool.setup_steps && tool.setup_steps.length > 0) || (tool.prompts && tool.prompts.length > 0);
+  const appendixRef = hasSetup
+    ? `<p class="appendix-ref">Setup walkthrough in the <strong>Setup Guide</strong> at the end of this plan.</p>`
+    : "";
   return `
       <div class="${classes}">
         <div>
@@ -86,8 +88,19 @@ function renderTool(tool) {
         <div class="rec-body">
           <p class="what">What it is: ${renderInline(tool.what_it_is)}</p>
           <p class="why">Why it helps you: ${renderInline(tool.why_it_helps_you)}</p>
-          ${wontLine}${setupHtml}${promptsHtml}
+          ${wontLine}${appendixRef}
         </div>
+      </div>`;
+}
+
+function renderToolSetup(tool) {
+  const setupHtml = renderSetupSteps(tool);
+  const promptsHtml = renderPrompts(tool);
+  if (!setupHtml && !promptsHtml) return "";
+  return `
+      <div class="setup-entry">
+        <div class="rec-name" style="font-size:22px;margin-bottom:6px;">${escapeHtml(tool.name)}</div>
+        ${setupHtml}${promptsHtml}
       </div>`;
 }
 
@@ -125,7 +138,23 @@ function renderTestQuery(query) {
           </div>`;
 }
 
-function renderCustomBuild(cb) {
+function renderCustomBuildSummary(cb) {
+  if (!cb || !cb.project_name) return "";
+  return `
+      <div class="rec rec-build">
+        <div>
+          <div class="rec-name">${escapeHtml(cb.project_name)} <em style="font-style:normal;color:#6F7A8B;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Build it yourself</em></div>
+          <div class="rec-cost">${escapeHtml(cb.platform_cost || "")}</div>
+        </div>
+        <div class="rec-body">
+          <p>${renderInline(cb.project_pitch || "")}</p>
+          <p style="margin-top:8px"><strong>Where to build it:</strong> ${renderInline(cb.platform || "")}</p>
+          <p class="appendix-ref">Full build instructions, system prompt, and test queries in the <strong>Setup Guide</strong> at the end of this plan.</p>
+        </div>
+      </div>`;
+}
+
+function renderCustomBuildSetup(cb) {
   if (!cb || !cb.project_name) return "";
   const steps = (cb.setup_steps || []).map((s) => `<li>${renderInline(s)}</li>`).join("\n              ");
   const tip = cb.setup_tip
@@ -156,16 +185,9 @@ function renderCustomBuild(cb) {
           <div class="tip" style="margin-top:16px">${renderInline(cb.iteration_tip)}</div>` : "";
 
   return `
-      <div class="rec rec-build">
-        <div>
-          <div class="rec-name">${escapeHtml(cb.project_name)} <em style="font-style:normal;color:#6F7A8B;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-left:8px;">Build it yourself</em></div>
-          <div class="rec-cost">${escapeHtml(cb.platform_cost || "")}</div>
-        </div>
-        <div class="rec-body">
-          <p>${renderInline(cb.project_pitch || "")}</p>
-          <p style="margin-top:8px"><strong>Where to build it:</strong> ${renderInline(cb.platform || "")}</p>
-          ${setupHtml}${sysPromptHtml}${testHtml}${iterHtml}
-        </div>
+      <div class="setup-entry">
+        <div class="rec-name" style="font-size:22px;margin-bottom:6px;">${escapeHtml(cb.project_name)}</div>
+        ${setupHtml}${sysPromptHtml}${testHtml}${iterHtml}
       </div>`;
 }
 
@@ -187,6 +209,55 @@ function renderCancelItem(item) {
         <div class="cancel-name">${escapeHtml(item.name)}</div>
         <div>${renderInline(item.instructions)}</div>
       </div>`;
+}
+
+function renderTeamHandoff(handoff) {
+  if (!handoff || !handoff.audience) return "";
+  const tasks = (handoff.tasks || []).map((t) => {
+    const steps = (t.steps || []).map((s) => `<li>${renderInline(s)}</li>`).join("\n            ");
+    const escalate = t.when_to_escalate
+      ? `<p class="prompt-note"><strong>When to escalate:</strong> ${renderInline(t.when_to_escalate)}</p>`
+      : "";
+    return `
+        <div class="handoff-task">
+          <div class="rec-name" style="font-size:18px;margin-bottom:4px;">${escapeHtml(t.tool)}</div>
+          <p style="margin-bottom:8px;">${renderInline(t.what_they_do)}</p>
+          <ol>${steps}</ol>
+          ${escalate}
+        </div>`;
+  }).join("\n");
+  return `
+      <div class="handoff-page">
+        <h3 style="font-family:var(--serif);font-size:24px;margin-bottom:8px;">${escapeHtml(handoff.audience)}</h3>
+        <p style="margin-bottom:20px;">${renderInline(handoff.intro)}</p>
+        ${tasks}
+      </div>`;
+}
+
+function renderDay30Worksheet(ws) {
+  if (!ws || !ws.metrics || ws.metrics.length === 0) return "";
+  const rows = ws.metrics.map((m) =>
+    `<tr><td>${escapeHtml(m.label)}</td><td style="width:120px;border-bottom:2px solid var(--charcoal);"></td><td>${escapeHtml(m.unit || "")}</td><td style="font-family:var(--mono);font-size:13px;color:var(--sage);">${escapeHtml(m.target || "")}</td></tr>`
+  ).join("\n        ");
+  return `
+      <div class="worksheet">
+        <p>${renderInline(ws.intro || "")}</p>
+        <table style="margin-top:16px;">
+          <thead><tr><th>Metric</th><th>Your number</th><th></th><th>Target</th></tr></thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </div>`;
+}
+
+function renderMilestones(ms) {
+  if (!ms) return "";
+  const items = [];
+  if (ms.month3) items.push(`<div class="milestone"><div class="milestone-label">Month 3</div><p>${renderInline(ms.month3)}</p></div>`);
+  if (ms.month6) items.push(`<div class="milestone"><div class="milestone-label">Month 6</div><p>${renderInline(ms.month6)}</p></div>`);
+  if (ms.month12) items.push(`<div class="milestone"><div class="milestone-label">Month 12</div><p>${renderInline(ms.month12)}</p></div>`);
+  return items.join("\n      ");
 }
 
 function renderPlan(plan, opts = {}) {
@@ -223,13 +294,19 @@ function renderPlan(plan, opts = {}) {
 
     TOOLS_LEDE: renderInline(plan.tools_lede || ""),
     FOUNDATION_TALLY: escapeHtml(plan.foundation_tally || `${(plan.foundation_tools || []).length} items`),
-    FOUNDATION_TOOLS: (plan.foundation_tools || []).map(renderTool).join("\n"),
+    FOUNDATION_TOOLS: (plan.foundation_tools || []).map(renderToolSummary).join("\n"),
     AI_TALLY: escapeHtml(plan.ai_tally || `${(plan.ai_tools || []).length} items`),
-    AI_TOOLS: (plan.ai_tools || []).map(renderTool).join("\n"),
+    AI_TOOLS: (plan.ai_tools || []).map(renderToolSummary).join("\n"),
 
     CUSTOM_BUILD_TITLE: renderInline(plan.custom_build?.title || "A custom tool, <em>built for your exact situation.</em>"),
     CUSTOM_BUILD_LEDE: renderInline(plan.custom_build?.lede || ""),
-    CUSTOM_BUILD_CONTENT: renderCustomBuild(plan.custom_build),
+    CUSTOM_BUILD_CONTENT: renderCustomBuildSummary(plan.custom_build),
+
+    SETUP_GUIDE_TOOLS: [
+      ...(plan.foundation_tools || []),
+      ...(plan.ai_tools || []),
+    ].map(renderToolSetup).filter(Boolean).join("\n"),
+    SETUP_GUIDE_CUSTOM_BUILD: renderCustomBuildSetup(plan.custom_build),
 
     RULED_OUT_LEDE: renderInline(plan.ruled_out?.lede || ""),
     RULED_OUT_ITEMS: (plan.ruled_out?.items || []).map(renderRuledItem).join("\n"),
@@ -269,6 +346,17 @@ function renderPlan(plan, opts = {}) {
       : "",
     NET_NOTE_HEADING: renderInline(plan.numbers?.net_note_heading || ""),
     NET_NOTE_BODY: renderInline(plan.numbers?.net_note_body || ""),
+
+    TEAM_HANDOFFS: (plan.team_handoffs || []).length > 0
+      ? `<section class="s">
+    <div class="s-num">Team Quick-Reference</div>
+    <h2 class="s-title">Printable handoffs <em>for the people who use these tools with you.</em></h2>
+    <p class="lede">Print these pages and hand them to the right person. Each one covers just what they need to know — no background, no context they don't need.</p>
+    ${(plan.team_handoffs || []).map(renderTeamHandoff).filter(Boolean).join("\n")}
+  </section>`
+      : "",
+    DAY30_WORKSHEET: renderDay30Worksheet(plan.day30_worksheet),
+    MILESTONES: renderMilestones(plan.milestones),
   };
 
   let html = template;

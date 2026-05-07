@@ -159,8 +159,17 @@
     <div class="phase checkin">
       <div class="phase-head"><div class="phase-name">Check back in 30 days</div><div class="phase-time">—</div></div>
       <p>{{CHECKIN_NOTE}}</p>
+      {{DAY30_WORKSHEET}}
+    </div>
+
+    <div class="phase">
+      <div class="phase-head"><div class="phase-name">Longer horizon</div><div class="phase-time">—</div></div>
+      {{MILESTONES}}
     </div>
   </section>
+
+  <!-- Team handoffs (only rendered when team_handoffs is non-empty) -->
+  {{TEAM_HANDOFFS}}
 
   <!-- 8 — Guardrails -->
   <section class="s">
@@ -225,6 +234,16 @@
         <svg width="14" height="14" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
+  </section>
+
+  <!-- Setup Guide (appendix) -->
+  <section class="s appendix">
+    <div class="s-num">Setup Guide</div>
+    <h2 class="s-title">Step-by-step walkthroughs <em>for every tool above.</em></h2>
+    <p class="lede">You don't need to read this section cover to cover. Come back to each tool when you're ready to set it up — the steps are written so you can follow them at your kitchen table.</p>
+
+    {{SETUP_GUIDE_TOOLS}}
+    {{SETUP_GUIDE_CUSTOM_BUILD}}
   </section>
 
   <div class="doc-foot">
