@@ -172,16 +172,14 @@ section.s:first-of-type{border-top:none}
 .rec{
   padding: 24px 0;
   border-bottom: 1px solid color-mix(in oklab, var(--charcoal) 6%, transparent);
-  display:grid; grid-template-columns: 1.8fr 2.2fr; gap:40px;
 }
 .rec:last-child{border-bottom:none}
-@media (max-width:720px){ .rec{grid-template-columns:1fr; gap:16px} }
 .rec-name{
   font-family:var(--serif); font-size:26px; letter-spacing:-.01em;
   color:var(--charcoal); line-height:1.1;
 }
 .rec-cost{
-  margin-top:10px;
+  margin-top:6px; margin-bottom:16px;
   font-family:var(--mono); font-size:12px; letter-spacing:.08em; color:var(--gray);
 }
 .rec-body .what{font-weight:600; color:var(--charcoal); margin-bottom:8px; font-size:15px}
