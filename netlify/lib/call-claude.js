@@ -80,10 +80,15 @@ function parsePlanJson(text) {
     throw new Error("no JSON object found in Claude response");
   }
   let candidate = text.slice(firstBrace, lastBrace + 1);
-  // Strip control characters that Claude sometimes puts inside JSON strings
-  // (literal tabs, newlines, etc.). Replace them with a space so text reads
-  // naturally rather than getting concatenated.
-  candidate = candidate.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, " ");
+  // Escape unescaped control chars inside string literals
+  candidate = candidate.replace(
+    /"([^"\\]*(?:\\.[^"\\]*)*)"/g,
+    (match, inner) =>
+      '"' + inner
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/\t/g, '\\t') + '"'
+  );
   try {
     return JSON.parse(candidate);
   } catch (err) {
@@ -276,4 +281,4 @@ ${JSON.stringify(currentPlan, null, 2)}`,
   return { plan, note, usage: json.usage || {}, rawText: fullText, searchCount };
 }
 
-module.exports = { draftPlan, revisePlan };
+module.exports = { draftPlan, revisePlan, parsePlanJson };
