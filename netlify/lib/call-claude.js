@@ -18,7 +18,7 @@ const MODEL = "claude-opus-4-7";
 const MAX_OUTPUT_TOKENS = 24000;
 const MAX_WEB_SEARCHES = 8;
 
-const { SUBMIT_PLAN_SCHEMA, SUBMIT_REVISION_SCHEMA } = require("./plan-schema");
+const { SUBMIT_PLAN_SCHEMA, SUBMIT_INSUFFICIENT_INPUT_SCHEMA, SUBMIT_REVISION_SCHEMA } = require("./plan-schema");
 
 const PROMPT_PATH = path.join(__dirname, "..", "plan-template", "prompt.md");
 const REF_DIR = path.join(__dirname, "reference-plans");
@@ -143,7 +143,9 @@ Run 4–8 targeted searches. Find tools that a knowledgeable friend in their fie
 
 You MUST consider "build it yourself" as a recommendation type. For respondents whose magic-wand answer is bespoke (writing in their voice, a workflow no SaaS addresses, something specific to them), the right recommendation is often to build a small custom tool in Claude or a comparable assistant — not to subscribe to yet another piece of SaaS. At least one plan in every five should include a "build it yourself" recommendation where it genuinely fits.
 
-After research, draft the plan in the JSON format specified in the system prompt. When you have completed your research, invoke the submit_plan tool with the complete plan as the tool input. Do not emit text after the submit_plan call — that call is your final action.
+After research, draft the plan in the JSON format specified in the system prompt. When you have completed your research, invoke the submit_plan tool with the complete plan as the tool input. Do not emit text after the tool call — that call is your final action.
+
+If the briefing is too thin (fewer than 4 specific facts per the system prompt rules), invoke submit_insufficient_input instead of submit_plan.
 
 ${briefing}`,
     },
@@ -170,6 +172,11 @@ ${briefing}`,
         description: "Submit the final plan as structured data. Call this exactly once, as your final action, after completing any web research.",
         input_schema: SUBMIT_PLAN_SCHEMA,
       },
+      {
+        name: "submit_insufficient_input",
+        description: "Call this instead of submit_plan when the briefing contains fewer than 4 specific facts and you cannot produce a real plan.",
+        input_schema: SUBMIT_INSUFFICIENT_INPUT_SCHEMA,
+      },
     ],
     messages: [
       { role: "user", content: userContent },
@@ -181,6 +188,19 @@ ${briefing}`,
   const searchCount = (json.content || []).filter(
     (b) => b.type === "server_tool_use" && b.name === "web_search"
   ).length;
+
+  const insufficientBlock = (json.content || []).find(
+    (b) => b.type === "tool_use" && b.name === "submit_insufficient_input"
+  );
+  if (insufficientBlock) {
+    const result = insufficientBlock.input;
+    return {
+      plan: { insufficient_input: true, missing: result.missing, note: result.note },
+      usage: json.usage || {},
+      rawText: collectText(json.content),
+      searchCount,
+    };
+  }
 
   let toolUseBlock = (json.content || []).find(
     (b) => b.type === "tool_use" && b.name === "submit_plan"

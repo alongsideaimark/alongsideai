@@ -350,18 +350,15 @@ const toolSchema = {
   ],
 };
 
-const insufficientInputSchema = {
+const SUBMIT_PLAN_SCHEMA = toolSchema;
+
+const SUBMIT_INSUFFICIENT_INPUT_SCHEMA = {
   type: "object",
   properties: {
-    insufficient_input: { type: "boolean", enum: [true] },
     missing: { type: "array", items: { type: "string" } },
     note: { type: "string" },
   },
-  required: ["insufficient_input", "missing", "note"],
-};
-
-const SUBMIT_PLAN_SCHEMA = {
-  anyOf: [toolSchema, insufficientInputSchema],
+  required: ["missing", "note"],
 };
 
 const SUBMIT_REVISION_SCHEMA = {
@@ -373,4 +370,4 @@ const SUBMIT_REVISION_SCHEMA = {
   required: ["note", "plan"],
 };
 
-module.exports = { SUBMIT_PLAN_SCHEMA, SUBMIT_REVISION_SCHEMA };
+module.exports = { SUBMIT_PLAN_SCHEMA, SUBMIT_INSUFFICIENT_INPUT_SCHEMA, SUBMIT_REVISION_SCHEMA };
