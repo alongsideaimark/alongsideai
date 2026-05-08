@@ -182,6 +182,23 @@ exports.handler = async (event) => {
     const { plan, usage, searchCount } = await draftPlan({ briefing, apiKey: anthropicKey });
     console.log(`[generate-plan] draft returned; web searches: ${searchCount || 0}; tokens:`, JSON.stringify(usage));
 
+    // If Claude decided the briefing was too thin for a real plan, notify Mark
+    // instead of rendering a placeholder.
+    if (plan && plan.insufficient_input) {
+      console.warn(`[generate-plan] insufficient input for ${firstName}: ${JSON.stringify(plan.missing)}`);
+      if (resendKey) {
+        await sendNotificationEmail({
+          apiKey: resendKey,
+          firstName,
+          email,
+          planUrl: "(briefing too thin — no plan generated)",
+          usage,
+          sent: false,
+        });
+      }
+      return { statusCode: 200, body: JSON.stringify({ ok: false, reason: "insufficient_input", missing: plan.missing }) };
+    }
+
     // Render to final HTML.
     const html = renderPlan(plan);
 
