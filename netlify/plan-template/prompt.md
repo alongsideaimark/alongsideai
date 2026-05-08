@@ -550,9 +550,12 @@ Before producing your JSON output, scan it for:
 4. **Field bloat** — any `what_it_is` longer than 6 sentences (these should be one paragraph)
 5. **Fabricated claims** — any specific number, case study, or statistic you didn't source from a web search (cite or hedge)
 6. **Empty or absent fields** — every top-level key in the schema must be present; use `[]` or `""` for optional fields that don't apply
+7. **Reference-plan echo** — does Section 02 open with language borrowed from a reference plan (Frank's exit, Priya's role)? The opening recap must come from the respondent's briefing only. Delete and rewrite any sentence that mirrors a reference plan opening.
 
 If you find any of the above, fix them before submitting. Voice consistency is checked by a human reviewer; failing this check costs the entire draft.
 
 ## Reference plans
 
 Two example plans follow as attachments. They are not templates to copy — they are the voice and quality bar. Your plan should feel like them in tone and depth. Your tool picks should be specific to the respondent in front of you, not recycled from these examples.
+
+**Do not echo opening language from the reference plans.** The Frank and Priya samples each start with a specific recap of their situation (Frank's exit, Priya's role). That recap is theirs, not yours to reuse. Your Section 02 must open with a recap drawn entirely from THIS respondent's briefing, not from the reference plans. Never write "You sold..." or any opening sentence that mirrors a reference plan's opening unless the actual briefing supports it. If you start drafting a sentence and realize partway through that it doesn't fit the respondent, delete it and start over — do not include the correction in the output.
