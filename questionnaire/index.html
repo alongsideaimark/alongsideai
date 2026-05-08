@@ -1058,50 +1058,89 @@ function tryNext(){
   next();
 }
 
-/* ---------- Netlify Forms submission ---------- */
-function submitToNetlify(){
+/* ---------- Submission with primary + backup paths ----------
+   Primary: Netlify Forms (POST to /). Works for ~all desktop submissions
+   and most mobile, but content blockers / middleboxes can return synthetic
+   200s that never reach Netlify.
+   Backup: direct POST to /.netlify/functions/submit-questionnaire which
+   forwards to submission-created in-process. Bypasses Netlify Forms layer.
+   We only fall back if the primary response fails validation.            */
+async function submitToNetlify(){
   const btn = document.getElementById("next-btn");
   if(btn){ btn.disabled = true; btn.innerHTML = "Sending…"; }
 
-  const fd = new FormData();
-  fd.append("form-name", "questionnaire");
+  // Build the data dictionary once — used for both paths.
+  const flatData = {};
   Object.keys(state.answers).forEach(k => {
     const v = state.answers[k];
-    fd.append(k, Array.isArray(v) ? v.join(", ") : (v == null ? "" : String(v)));
+    flatData[k] = Array.isArray(v) ? v.join(", ") : (v == null ? "" : String(v));
   });
 
-  fetch("/", {
-    method: "POST",
-    body: fd
-  })
-  .then(res => {
-    console.log("[questionnaire] submit status:", res.status, res.statusText);
-    if(!res.ok) throw new Error("Submit failed: " + res.status);
-    return res.text().then(body => ({ status: res.status, body }));
-  })
-  .then(({ status, body }) => {
-    // Defensive: a content blocker or middlebox can intercept the POST and
-    // return a synthetic 200 with empty/garbage body. Verify the response is
-    // actually our site before treating it as success — Netlify Forms returns
-    // the static homepage HTML on accepted submission.
-    if(!body || body.length < 500 || !body.includes("Alongside AI")){
-      console.error("[questionnaire] suspicious response body — possible blocker or middlebox", { status, bodyLength: body && body.length });
-      throw new Error("Submit response failed validation");
-    }
+  const finishSuccess = () => {
     // Advance to the done screen first, then clear storage — otherwise next()'s save()
     // would immediately rewrite it and a page refresh would resume on the done screen
     // with stale answers from a submission that's already been sent.
     next();
     clearState();
-  })
-  .catch(err => {
-    console.error("[questionnaire] submit error:", err);
+  };
+
+  const showError = () => {
     if(btn){
       btn.disabled = false;
       btn.innerHTML = `Try again <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     }
     alert("Sorry — something went wrong sending your answers. If you have an ad blocker or content blocker enabled, please disable it and try again. If it still won't go through, email mark@alongsideai.ai and we'll take it from there.");
-  });
+  };
+
+  // Try primary (Netlify Forms).
+  try {
+    const fd = new FormData();
+    fd.append("form-name", "questionnaire");
+    Object.keys(flatData).forEach(k => fd.append(k, flatData[k]));
+
+    const primaryRes = await fetch("/", { method: "POST", body: fd });
+    console.log("[questionnaire] primary submit status:", primaryRes.status);
+    if(primaryRes.ok){
+      const body = await primaryRes.text();
+      // Defensive: a content blocker or middlebox can intercept the POST and
+      // return a synthetic 200 with empty/garbage body. Verify the response is
+      // actually our site before treating it as success — Netlify Forms returns
+      // the static homepage HTML on accepted submission.
+      if(body && body.length >= 500 && body.includes("Alongside AI")){
+        finishSuccess();
+        return;
+      }
+      console.warn("[questionnaire] primary response failed validation; falling back to backup", { bodyLength: body && body.length });
+    } else {
+      console.warn("[questionnaire] primary returned non-OK; falling back to backup");
+    }
+  } catch(err){
+    console.warn("[questionnaire] primary fetch error; falling back to backup:", err);
+  }
+
+  // Backup endpoint — direct function call, bypasses Netlify Forms layer.
+  try {
+    const backupRes = await fetch("/.netlify/functions/submit-questionnaire", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(flatData)
+    });
+    console.log("[questionnaire] backup submit status:", backupRes.status);
+    if(!backupRes.ok) throw new Error("Backup failed: " + backupRes.status);
+    const body = await backupRes.text();
+    // Backup returns JSON — validate it parses and reports ok.
+    let parsed;
+    try { parsed = JSON.parse(body); } catch { parsed = null; }
+    if(!parsed || !parsed.ok){
+      console.error("[questionnaire] backup response invalid:", body);
+      throw new Error("Backup response invalid");
+    }
+    finishSuccess();
+    return;
+  } catch(err){
+    console.error("[questionnaire] backup also failed:", err);
+    showError();
+  }
 }
 
 function next(){
