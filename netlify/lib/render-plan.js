@@ -17,8 +17,12 @@ function escapeHtml(s) {
 
 // Converts **bold** and *italic* into <strong>/<em> after escaping HTML.
 // Nothing fancy — no links, no lists, no code. Claude has been told this.
+// Defensive: if the model freelances and embeds an <a href="...">text</a>,
+// strip the anchor markup down to its visible text before escaping so the
+// customer doesn't see raw HTML in their plan.
 function renderInline(md) {
-  const esc = escapeHtml(md);
+  const stripped = String(md == null ? "" : md).replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, "$1");
+  const esc = escapeHtml(stripped);
   return esc
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
