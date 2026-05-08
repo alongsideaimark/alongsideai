@@ -212,6 +212,7 @@ function buildAiBriefing(firstName, data) {
 
   L.push("## Work context");
   L.push(`- What they do: ${textOrDash(data.work)}`);
+  L.push(`- What they create most: ${textOrDash(data.creates)}`);
   L.push(`- Team: ${label("team", data.team)}`);
   L.push(`- Typical week: ${textOrDash(data.typical_week)}`);
   L.push(`- Works from today: ${label("location_today", data.location_today)}`);
@@ -237,11 +238,13 @@ function buildAiBriefing(firstName, data) {
   L.push(`- Biggest friction: ${textOrDash(data.friction)}`);
   L.push(`- Manual tasks they named: ${textOrDash(data.manual_tasks)}`);
   L.push(`- What they've tried before: ${textOrDash(data.already_tried)}`);
+  L.push(`- Problem they've given up on: ${textOrDash(data.given_up_on)}`);
   L.push(`- Inbox state: ${label("inbox", data.inbox)}`);
   if (raw(data, "inbox_note")) {
     L.push(`  Inbox detail: ${raw(data, "inbox_note")}`);
   }
   L.push(`- Magic wand: ${textOrDash(data.wish)}`);
+  L.push(`- What they'd teach an assistant once: ${textOrDash(data.explain_once)}`);
   L.push(`- Six-month success picture: ${textOrDash(data.success_6mo)}`);
   L.push(`- Priority (time / money / peace): ${label("priority", data.priority)}`);
   L.push("");
@@ -323,6 +326,7 @@ function buildInternalNotification(firstName, data, submittedAt) {
 
     ${sectionHeading("Section 2 — Their world and work")}
     ${answerBlock("What they do (or did)", data.work)}
+    ${raw(data, "creates") ? answerBlock("What they create most", data.creates) : ""}
     ${answerBlock("A typical week", data.typical_week)}
     ${answerBlock("Where they'd like to be working from", data.location_wanted)}
 
@@ -337,11 +341,13 @@ function buildInternalNotification(firstName, data, submittedAt) {
     ${answerBlock("What takes way longer than it should", data.friction)}
     ${answerBlock("Manual tasks they suspect could be automated", data.manual_tasks)}
     ${answerBlock("What they've tried before", data.already_tried)}
+    ${raw(data, "given_up_on") ? answerBlock("A problem they've given up on solving", data.given_up_on) : ""}
     ${answerBlock("Inbox state", label("inbox", data.inbox))}
     ${raw(data, "inbox_note") ? answerBlock("Inbox specifics", data.inbox_note) : ""}
 
     ${sectionHeading("Section 5 — What they want")}
     ${answerBlock("Magic wand", data.wish)}
+    ${raw(data, "explain_once") ? answerBlock("What they'd teach an assistant once", data.explain_once) : ""}
     ${answerBlock("Six months from now, if this is working", data.success_6mo)}
 
     ${sectionHeading("Section 6 — AI and data posture")}
@@ -382,7 +388,7 @@ QUICK FACTS
 What they do (or did):
 ${textOrDash(data.work)}
 
-A typical week:
+${raw(data, "creates") ? `What they create most:\n${raw(data, "creates")}\n\n` : ""}A typical week:
 ${textOrDash(data.typical_week)}
 
 Where they'd like to be working from:
@@ -407,14 +413,14 @@ ${textOrDash(data.manual_tasks)}
 What they've tried before:
 ${textOrDash(data.already_tried)}
 
-Inbox state: ${label("inbox", data.inbox)}
+${raw(data, "given_up_on") ? `A problem they've given up on solving:\n${raw(data, "given_up_on")}\n\n` : ""}Inbox state: ${label("inbox", data.inbox)}
 ${raw(data, "inbox_note") ? `Inbox specifics: ${raw(data, "inbox_note")}\n` : ""}
 --- SECTION 5: What they want ---
 
 Magic wand:
 ${textOrDash(data.wish)}
 
-Six months from now, if this is working:
+${raw(data, "explain_once") ? `What they'd teach an assistant once:\n${raw(data, "explain_once")}\n\n` : ""}Six months from now, if this is working:
 ${textOrDash(data.success_6mo)}
 
 --- SECTION 6: AI and data posture ---

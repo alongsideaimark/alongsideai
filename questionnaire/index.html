@@ -349,6 +349,7 @@
   <input type="text" name="situation_other" />
   <input type="text" name="comfort" />
   <textarea name="work"></textarea>
+  <textarea name="creates"></textarea>
   <input type="text" name="team" />
   <textarea name="typical_week"></textarea>
   <input type="text" name="location_today" />
@@ -362,9 +363,11 @@
   <textarea name="friction"></textarea>
   <textarea name="manual_tasks"></textarea>
   <textarea name="already_tried"></textarea>
+  <textarea name="given_up_on"></textarea>
   <input type="text" name="inbox" />
   <input type="text" name="inbox_note" />
   <textarea name="wish"></textarea>
+  <textarea name="explain_once"></textarea>
   <textarea name="success_6mo"></textarea>
   <input type="text" name="priority" />
   <input type="text" name="tried_ai" />
@@ -477,6 +480,12 @@ const SECTIONS = [
         label: "In a sentence or two, what do you do — or what did you do?",
         help: "We just want a sense of your world.",
         field: { kind: "textarea", placeholder: "I own a few commercial properties in Pasadena and handle most things myself…" }
+      },
+      {
+        id: "creates",
+        label: "What do you create the most of?",
+        help: "Emails, contracts, reports, designs, slide decks, social posts, invoices, code — knowing what you make changes which tools fit. List a few.",
+        field: { kind: "textarea", placeholder: "Mostly: emails to clients, monthly status reports, contracts, the occasional pitch deck…" }
       },
       {
         id: "team",
@@ -618,6 +627,12 @@ const SECTIONS = [
         field: { kind: "textarea", placeholder: "My daughter set me up with a Gmail filter once. It was great for a month, then…" }
       },
       {
+        id: "given_up_on",
+        label: "Is there a problem you've quietly given up on solving?",
+        help: "The thing you stopped trying to fix because nothing seems to work. A workflow that doesn't fit any software you've tried. A part of your job that just is what it is. We want to know — that's often where the most useful tool ends up.",
+        field: { kind: "textarea", placeholder: "I've stopped trying to keep my contact list current. Every system I've tried gets out of date within a month…" }
+      },
+      {
         id: "inbox",
         label: "How would you describe your email inbox right now?",
         field: {
@@ -650,6 +665,12 @@ const SECTIONS = [
         label: "If a magic wand fixed one thing about how you work, what would it be?",
         help: "Be greedy. We'll tell you honestly whether we can help.",
         field: { kind: "textarea", placeholder: "I wish I could work from anywhere and not be tied to my office computer." }
+      },
+      {
+        id: "explain_once",
+        label: "If you could teach an assistant about your work once and never re-explain — what would you say?",
+        help: "Imagine a smart new hire on day one. What context, rules, preferences, or background would save them weeks of figuring it out? This is the kind of thing AI is genuinely good at remembering.",
+        field: { kind: "textarea", placeholder: "How I price jobs. The five things I always check before sending a contract. Which clients prefer texts vs. email. What \"urgent\" actually means in my world…" }
       },
       {
         id: "success_6mo",
