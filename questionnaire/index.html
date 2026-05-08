@@ -1077,6 +1077,17 @@ function submitToNetlify(){
   .then(res => {
     console.log("[questionnaire] submit status:", res.status, res.statusText);
     if(!res.ok) throw new Error("Submit failed: " + res.status);
+    return res.text().then(body => ({ status: res.status, body }));
+  })
+  .then(({ status, body }) => {
+    // Defensive: a content blocker or middlebox can intercept the POST and
+    // return a synthetic 200 with empty/garbage body. Verify the response is
+    // actually our site before treating it as success — Netlify Forms returns
+    // the static homepage HTML on accepted submission.
+    if(!body || body.length < 500 || !body.includes("Alongside AI")){
+      console.error("[questionnaire] suspicious response body — possible blocker or middlebox", { status, bodyLength: body && body.length });
+      throw new Error("Submit response failed validation");
+    }
     // Advance to the done screen first, then clear storage — otherwise next()'s save()
     // would immediately rewrite it and a page refresh would resume on the done screen
     // with stale answers from a submission that's already been sent.
@@ -1089,7 +1100,7 @@ function submitToNetlify(){
       btn.disabled = false;
       btn.innerHTML = `Try again <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     }
-    alert("Sorry — something went wrong sending your answers. Please try once more, and if it still won't go through, email mark@alongsideai.ai and we'll take it from there.");
+    alert("Sorry — something went wrong sending your answers. If you have an ad blocker or content blocker enabled, please disable it and try again. If it still won't go through, email mark@alongsideai.ai and we'll take it from there.");
   });
 }
 
