@@ -18,6 +18,8 @@ const MODEL = "claude-opus-4-7";
 const MAX_OUTPUT_TOKENS = 24000;
 const MAX_WEB_SEARCHES = 8;
 
+const { SUBMIT_PLAN_SCHEMA, SUBMIT_REVISION_SCHEMA } = require("./plan-schema");
+
 const PROMPT_PATH = path.join(__dirname, "..", "plan-template", "prompt.md");
 const REF_DIR = path.join(__dirname, "reference-plans");
 
@@ -141,7 +143,7 @@ Run 4–8 targeted searches. Find tools that a knowledgeable friend in their fie
 
 You MUST consider "build it yourself" as a recommendation type. For respondents whose magic-wand answer is bespoke (writing in their voice, a workflow no SaaS addresses, something specific to them), the right recommendation is often to build a small custom tool in Claude or a comparable assistant — not to subscribe to yet another piece of SaaS. At least one plan in every five should include a "build it yourself" recommendation where it genuinely fits.
 
-After research, draft the plan in the JSON format specified in the system prompt. Your final text output must contain ONLY the JSON object — no preamble, no search summaries, no trailing commentary.
+After research, draft the plan in the JSON format specified in the system prompt. When you have completed your research, invoke the submit_plan tool with the complete plan as the tool input. Do not emit text after the submit_plan call — that call is your final action.
 
 ${briefing}`,
     },
@@ -163,31 +165,61 @@ ${briefing}`,
         name: "web_search",
         max_uses: MAX_WEB_SEARCHES,
       },
+      {
+        name: "submit_plan",
+        description: "Submit the final plan as structured data. Call this exactly once, as your final action, after completing any web research.",
+        input_schema: SUBMIT_PLAN_SCHEMA,
+      },
     ],
     messages: [
       { role: "user", content: userContent },
     ],
   };
 
-  const json = await callAnthropic(apiKey, body);
+  let json = await callAnthropic(apiKey, body);
 
-  // Count how many searches actually ran — useful in logs to confirm the
-  // research step is doing its job.
   const searchCount = (json.content || []).filter(
     (b) => b.type === "server_tool_use" && b.name === "web_search"
   ).length;
 
-  const fullText = collectText(json.content);
-  if (!fullText.trim()) {
-    throw new Error("Anthropic returned no text content");
+  let toolUseBlock = (json.content || []).find(
+    (b) => b.type === "tool_use" && b.name === "submit_plan"
+  );
+
+  if (!toolUseBlock) {
+    console.warn("[call-claude] submit_plan not invoked on first attempt — retrying");
+    const retryBody = {
+      ...body,
+      messages: [
+        ...body.messages,
+        { role: "assistant", content: json.content },
+        {
+          role: "user",
+          content: "You did not invoke submit_plan. Please invoke submit_plan now with the final plan JSON as the tool input.",
+        },
+      ],
+    };
+    json = await callAnthropic(apiKey, retryBody);
+    toolUseBlock = (json.content || []).find(
+      (b) => b.type === "tool_use" && b.name === "submit_plan"
+    );
+    if (!toolUseBlock) {
+      const fullText = collectText(json.content);
+      if (fullText.trim()) {
+        console.warn("[call-claude] fallback: parsing plan from text output");
+        const plan = parsePlanJson(fullText);
+        return { plan, usage: json.usage || {}, rawText: fullText, searchCount };
+      }
+      throw new Error("Model did not invoke submit_plan after retry");
+    }
   }
 
-  const plan = parsePlanJson(fullText);
+  const plan = toolUseBlock.input;
 
   return {
     plan,
     usage: json.usage || {},
-    rawText: fullText,
+    rawText: collectText(json.content),
     searchCount,
   };
 }
@@ -229,14 +261,11 @@ How to respond:
 - If it's a question or a discussion turn ("is Quill actually the right pick?", "what would make this stronger?", "spell check" when there are no errors), just answer in your note and return the plan unchanged. Plan changes are not required on every turn. A "no changes this turn" response is fine when the message calls for discussion rather than edits.
 - Always preserve the plan's JSON shape from the system prompt. Return the COMPLETE plan — even sections you didn't touch.
 
-Return a single JSON object with TWO top-level fields:
+When you are ready to respond, invoke the submit_revision tool with two fields:
+- "note": Your reply to the reviewer, in plain English, 2-6 sentences. If you made changes, describe what you changed and why. If you made none, answer their question or explain why no change was needed. Specific, not generic. This is the visible half of the back-and-forth.
+- "plan": The complete plan JSON following the system-prompt schema.
 
-{
-  "note": "Your reply to the reviewer, in plain English, 2-6 sentences. If you made changes, describe what you changed and why. If you made none, answer their question or explain why no change was needed. Specific, not generic. This is the visible half of the back-and-forth.",
-  "plan": { ...the complete plan JSON following the system-prompt schema... }
-}
-
-Your final text output must contain ONLY this JSON object — no preamble, no code fences, no trailing commentary.
+Do not emit text after the submit_revision call — that call is your final action.
 
 ORIGINAL BRIEFING:
 ${briefing}
@@ -254,31 +283,62 @@ ${JSON.stringify(currentPlan, null, 2)}`,
     ],
     tools: [
       { type: "web_search_20250305", name: "web_search", max_uses: MAX_WEB_SEARCHES },
+      {
+        name: "submit_revision",
+        description: "Submit the revised plan with a reviewer note. Call this exactly once, as your final action.",
+        input_schema: SUBMIT_REVISION_SCHEMA,
+      },
     ],
     messages: [{ role: "user", content: userContent }],
   };
 
-  const json = await callAnthropic(apiKey, body);
+  let json = await callAnthropic(apiKey, body);
   const searchCount = (json.content || []).filter(
     (b) => b.type === "server_tool_use" && b.name === "web_search"
   ).length;
 
-  const fullText = collectText(json.content);
-  if (!fullText.trim()) {
-    throw new Error("Anthropic returned no text content");
+  let toolUseBlock = (json.content || []).find(
+    (b) => b.type === "tool_use" && b.name === "submit_revision"
+  );
+
+  if (!toolUseBlock) {
+    console.warn("[call-claude] submit_revision not invoked on first attempt — retrying");
+    const retryBody = {
+      ...body,
+      messages: [
+        ...body.messages,
+        { role: "assistant", content: json.content },
+        {
+          role: "user",
+          content: "You did not invoke submit_revision. Please invoke submit_revision now with your note and the complete plan JSON as the tool input.",
+        },
+      ],
+    };
+    json = await callAnthropic(apiKey, retryBody);
+    toolUseBlock = (json.content || []).find(
+      (b) => b.type === "tool_use" && b.name === "submit_revision"
+    );
+    if (!toolUseBlock) {
+      const fullText = collectText(json.content);
+      if (fullText.trim()) {
+        console.warn("[call-claude] fallback: parsing revision from text output");
+        const wrapper = parsePlanJson(fullText);
+        if (!wrapper || !wrapper.plan) throw new Error("revision missing 'plan' field");
+        const plan = wrapper.plan;
+        const note = typeof wrapper.note === "string" ? wrapper.note.trim() : "";
+        return { plan, note, usage: json.usage || {}, rawText: fullText, searchCount };
+      }
+      throw new Error("Model did not invoke submit_revision after retry");
+    }
   }
 
-  // Revision output is a wrapper: { note: "...", plan: {...} }. Pull both.
-  const wrapper = parsePlanJson(fullText);
-  if (!wrapper || typeof wrapper !== "object") {
-    throw new Error("revision returned non-object");
-  }
+  const wrapper = toolUseBlock.input;
   if (!wrapper.plan || typeof wrapper.plan !== "object") {
-    throw new Error("revision missing 'plan' field");
+    throw new Error("submit_revision missing 'plan' field");
   }
   const plan = wrapper.plan;
   const note = typeof wrapper.note === "string" ? wrapper.note.trim() : "";
-  return { plan, note, usage: json.usage || {}, rawText: fullText, searchCount };
+  return { plan, note, usage: json.usage || {}, rawText: collectText(json.content), searchCount };
 }
 
 module.exports = { draftPlan, revisePlan, parsePlanJson };

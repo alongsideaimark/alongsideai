@@ -1,4 +1,5 @@
 [build]
+  command = "node netlify/lib/__tests__/parsePlanJson.test.js"
   publish = "."
 
 # Internal working notes for the AI assistant — not a public page.
