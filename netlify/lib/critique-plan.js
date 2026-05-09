@@ -98,6 +98,27 @@ function checkRules(plan) {
         detail: `Contains literal placeholder "${bracketMatch[0]}"`,
       });
     }
+    // HTML tags in text fields — the renderer strips these defensively, but
+    // they signal the model is ignoring the markdown-only instruction.
+    // Skip system_prompt (it's code, not prose).
+    if (!path.endsWith("system_prompt")) {
+      if (/<(strong|em|b|i|br|p|div|ul|ol|li|code|pre|h[1-6])\b/i.test(text)) {
+        softFails.push({
+          rule: "html_in_text",
+          path,
+          detail: "Contains HTML tags — use **bold** and *italic* only",
+        });
+      }
+    }
+    // Markdown links — the renderer strips these to plain text, but they
+    // shouldn't appear in the plan. URLs are a distraction for non-technical readers.
+    if (/\[[^\]]+\]\(https?:\/\/[^)]+\)/.test(text)) {
+      softFails.push({
+        rule: "markdown_link",
+        path,
+        detail: "Contains a markdown link — write the text inline without the URL",
+      });
+    }
   }
 
   // --- system_prompt length ---

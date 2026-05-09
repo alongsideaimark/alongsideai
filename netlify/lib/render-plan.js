@@ -22,11 +22,17 @@ function escapeHtml(s) {
 // customer doesn't see raw HTML in their plan.
 function renderInline(md) {
   const stripped = String(md == null ? "" : md)
+    // Convert HTML formatting tags to markdown equivalents before escaping.
     .replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, "$1")
     .replace(/<strong>([\s\S]*?)<\/strong>/gi, "**$1**")
     .replace(/<b>([\s\S]*?)<\/b>/gi, "**$1**")
     .replace(/<em>([\s\S]*?)<\/em>/gi, "*$1*")
-    .replace(/<i>([\s\S]*?)<\/i>/gi, "*$1*");
+    .replace(/<i>([\s\S]*?)<\/i>/gi, "*$1*")
+    // Strip remaining HTML tags that would otherwise render as literal text.
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<\/?(p|div|span|ul|ol|li|code|pre|h[1-6]|blockquote)\b[^>]*>/gi, " ")
+    // Convert markdown links to just the visible text.
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
   const esc = escapeHtml(stripped);
   return esc
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
