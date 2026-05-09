@@ -53,8 +53,7 @@ function renderRevisionLog(revisions) {
 }
 
 function injectReviewBar(html, record) {
-  if (record.status !== "draft") {
-    // Already approved/sent — don't show review controls.
+  if (record.status !== "draft" && record.status !== "needs_review") {
     return html;
   }
 
