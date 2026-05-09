@@ -11,7 +11,7 @@ const { connectLambda, getStore } = require("@netlify/blobs");
 const { buildAiBriefing } = require("../lib/briefing");
 const { draftPlan } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
-const { checkRules } = require("../lib/critique-plan");
+const { critique } = require("../lib/critique-plan");
 
 const INTERNAL_FROM = "Alongside AI <intake@alongsideai.ai>";
 const INTERNAL_TO = "mark@alongsideai.ai";
@@ -103,7 +103,7 @@ function formatIssuesHtml(issues) {
   return `<ul style="padding-left:20px;margin:0 0 18px;">${items}</ul>`;
 }
 
-async function sendNotificationEmail({ apiKey, firstName, email, planUrl, usage, sent, hardFails, softFails }) {
+async function sendNotificationEmail({ apiKey, firstName, email, planUrl, usage, sent, hardFails, softFails, layer2 }) {
   const hasHardFails = Array.isArray(hardFails) && hardFails.length > 0;
   const hasSoftFails = Array.isArray(softFails) && softFails.length > 0;
 
@@ -137,8 +137,12 @@ async function sendNotificationEmail({ apiKey, firstName, email, planUrl, usage,
     ? `\n\n${hasHardFails ? `HARD ISSUES (blocked customer send):\n${formatIssuesText(hardFails)}\n` : ""}${hasSoftFails ? `\nSOFT ISSUES (spot-check):\n${formatIssuesText(softFails)}\n` : ""}`
     : "";
 
+  const layer2TextLine = layer2
+    ? `\nCritic: ${layer2.verdict} (${layer2.score}/10, confidence ${layer2.confidence}). ${layer2.summary}`
+    : "";
+
   const text =
-`${statusLine}
+`${statusLine}${layer2TextLine}
 
 View: ${planUrl}
 
@@ -150,11 +154,16 @@ Tokens: ${cost}`;
     ? `${hasHardFails ? `<div style="margin:24px 0 8px;font-size:13px;font-weight:600;color:#9E4444;">Hard issues (blocked customer send):</div>${formatIssuesHtml(hardFails)}` : ""}${hasSoftFails ? `<div style="margin:${hasHardFails ? '20' : '24'}px 0 8px;font-size:13px;font-weight:600;color:#A07A2C;">Soft issues (spot-check):</div>${formatIssuesHtml(softFails)}` : ""}`
     : "";
 
+  const layer2HtmlLine = layer2
+    ? `<div style="margin:0 0 18px;padding:10px 14px;background:#F3EDE3;border-radius:8px;font-size:13px;color:#4A5550;"><strong>Critic:</strong> ${escapeHtml(layer2.verdict)} (${layer2.score}/10, confidence ${layer2.confidence}). ${escapeHtml(layer2.summary || "")}</div>`
+    : "";
+
   const html =
 `<!doctype html>
 <html><body style="margin:0;padding:32px 16px;background:#FAF6F1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#2C3330;line-height:1.65;">
   <div style="max-width:560px;margin:0 auto;font-size:16px;">
     <p style="margin:0 0 18px;">${statusLine}</p>
+    ${layer2HtmlLine}
     <p style="margin:0 0 24px;">
       <a href="${planUrl}" style="display:inline-block;padding:12px 20px;background:${hasHardFails ? '#9E4444' : '#7A8B6F'};color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;">${btnLabel}</a>
     </p>
@@ -245,17 +254,22 @@ exports.handler = async (event) => {
     // Render to final HTML.
     const html = renderPlan(plan);
 
-    // Layer 1 critic — deterministic rules. Runs in milliseconds, no API call.
-    // Hard fails block the customer email and route to Mark for manual review.
-    // Soft fails ship to the customer but flag the internal notification for
-    // spot-checking. See netlify/lib/critique-plan.js for the rule set.
-    const { hardFails, softFails } = checkRules(plan);
+    // Critic pass — Layer 1 (deterministic rules) + Layer 2 (LLM critic via
+    // Haiku, ~$0.01 per plan). Hard fails block the customer email and route
+    // to Mark for manual review. Soft fails ship to the customer but flag the
+    // internal notification for spot-checking. Layer 2 only runs if Layer 1
+    // was clean, and Layer 2 failures degrade gracefully (Layer 1 verdict
+    // stands). See netlify/lib/critique-plan.js for the full rubric.
+    const { hardFails, softFails, layer2 } = await critique({ plan, briefing, apiKey: anthropicKey });
     const hasHardFails = hardFails.length > 0;
     if (hasHardFails) {
       console.warn(`[generate-plan] critic flagged ${hardFails.length} hard issue(s) for ${firstName}:`, hardFails.map((i) => `${i.rule}@${i.path}`).join(", "));
     }
     if (softFails.length > 0) {
       console.log(`[generate-plan] critic flagged ${softFails.length} soft issue(s) for ${firstName}:`, softFails.map((i) => `${i.rule}@${i.path}`).join(", "));
+    }
+    if (layer2) {
+      console.log(`[generate-plan] LLM critic: verdict=${layer2.verdict} score=${layer2.score}/10 confidence=${layer2.confidence}`);
     }
 
     // Store in Netlify Blobs so we can serve it to Mark (and later to the customer).
@@ -271,7 +285,7 @@ exports.handler = async (event) => {
       plan,
       html,
       usage,
-      critique: { hardFails, softFails },
+      critique: { hardFails, softFails, layer2 },
     };
 
     const store = getStore("plans");
@@ -311,6 +325,7 @@ exports.handler = async (event) => {
         sent: record.status === "sent",
         hardFails,
         softFails,
+        layer2,
       });
       console.log("[generate-plan] notification sent to Mark");
     }

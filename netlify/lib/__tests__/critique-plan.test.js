@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { checkRules } = require("../critique-plan");
+const { checkRules, critique } = require("../critique-plan");
 
 // Build a plausible plan skeleton so individual checks have something to find.
 function buildBasePlan(overrides = {}) {
@@ -159,4 +159,133 @@ const nullResult = checkRules(null);
 assert.ok(nullResult.hardFails.some((i) => i.rule === "structure"), "null plan should hard-fail structurally");
 console.log("PASS: null plan hard-fails");
 
-console.log("\nAll critique-plan tests passed.");
+// === Layer 2 / orchestrator tests ===
+// We inject a stub criticFn so tests don't need network or real API keys.
+
+(async () => {
+  // 12. Layer 1 hard fail short-circuits Layer 2 (criticFn never called)
+  let criticCalls = 0;
+  const stubCriticNeverCalled = async () => {
+    criticCalls++;
+    return { verdict: "ship", score: 9, summary: "fine", confidence: 1, issues: [] };
+  };
+  const blockedByL1 = await critique({
+    plan: buildBasePlan({ tools_lede: "supercharge your workflow" }),
+    briefing: "Test briefing",
+    apiKey: "fake-key",
+    criticFn: stubCriticNeverCalled,
+  });
+  assert.ok(blockedByL1.hardFails.length > 0, "Layer 1 should still hard-fail on banned phrase");
+  assert.strictEqual(criticCalls, 0, "Layer 2 must NOT be called when Layer 1 has hard fails");
+  assert.strictEqual(blockedByL1.layer2, null, "layer2 should be null when skipped");
+  console.log("PASS: Layer 1 hard fail short-circuits Layer 2");
+
+  // 13. No API key skips Layer 2 silently
+  const noKey = await critique({
+    plan: buildBasePlan(),
+    briefing: "Test briefing",
+    apiKey: null,
+    criticFn: stubCriticNeverCalled,
+  });
+  assert.strictEqual(noKey.layer2, null, "layer2 should be null when no API key");
+  console.log("PASS: missing API key skips Layer 2");
+
+  // 14. SKIP_LLM_CRITIC env var skips Layer 2
+  process.env.SKIP_LLM_CRITIC = "1";
+  criticCalls = 0;
+  const skipped = await critique({
+    plan: buildBasePlan(),
+    briefing: "Test briefing",
+    apiKey: "fake-key",
+    criticFn: stubCriticNeverCalled,
+  });
+  assert.strictEqual(skipped.layer2, null, "layer2 should be null when SKIP_LLM_CRITIC=1");
+  assert.strictEqual(criticCalls, 0, "Layer 2 must NOT be called when env kill switch is set");
+  delete process.env.SKIP_LLM_CRITIC;
+  console.log("PASS: SKIP_LLM_CRITIC=1 disables Layer 2");
+
+  // 15. Layer 2 verdict=ship with no issues — clean orchestrator output
+  const stubShip = async () => ({
+    verdict: "ship", score: 9, summary: "Personalization is high.", confidence: 0.9, issues: [],
+  });
+  const shipResult = await critique({
+    plan: buildBasePlan(),
+    briefing: "Test briefing",
+    apiKey: "fake-key",
+    criticFn: stubShip,
+  });
+  assert.strictEqual(shipResult.hardFails.length, 0);
+  assert.strictEqual(shipResult.softFails.length, 0);
+  assert.strictEqual(shipResult.layer2.verdict, "ship");
+  console.log("PASS: ship verdict produces clean output");
+
+  // 16. Layer 2 verdict=review — issues become soft fails regardless of severity
+  const stubReview = async () => ({
+    verdict: "review", score: 6, summary: "Personalization is medium.", confidence: 0.8,
+    issues: [
+      { dimension: "personalization", severity: "warn", path: "observations[0]", issue: "Generic opener" },
+      { dimension: "tool_fit", severity: "info", path: "ai_tools[0]", issue: "Could be more niche" },
+    ],
+  });
+  const reviewResult = await critique({
+    plan: buildBasePlan(),
+    briefing: "Test briefing",
+    apiKey: "fake-key",
+    criticFn: stubReview,
+  });
+  assert.strictEqual(reviewResult.hardFails.length, 0, "review verdict should not produce hard fails");
+  assert.ok(reviewResult.softFails.some((f) => f.rule === "llm:personalization"));
+  assert.ok(reviewResult.softFails.some((f) => f.rule === "llm:tool_fit"));
+  assert.strictEqual(reviewResult.layer2.verdict, "review");
+  console.log("PASS: review verdict routes issues to soft fails");
+
+  // 17. Layer 2 verdict=block with critical issue → hard fail
+  const stubBlockCritical = async () => ({
+    verdict: "block", score: 3, summary: "Hallucinated case study.", confidence: 0.95,
+    issues: [
+      { dimension: "hallucination", severity: "critical", path: "ai_tools[0].what_it_is", issue: "Invented a customer success story." },
+      { dimension: "personalization", severity: "warn", path: "observations[0]", issue: "Generic" },
+    ],
+  });
+  const blockResult = await critique({
+    plan: buildBasePlan(),
+    briefing: "Test briefing",
+    apiKey: "fake-key",
+    criticFn: stubBlockCritical,
+  });
+  assert.ok(blockResult.hardFails.some((f) => f.rule === "llm:hallucination"), "critical issue under block verdict should be hard fail");
+  assert.ok(blockResult.softFails.some((f) => f.rule === "llm:personalization"), "non-critical issues stay soft");
+  assert.strictEqual(blockResult.layer2.verdict, "block");
+  console.log("PASS: block verdict + critical severity routes to hard fail");
+
+  // 18. Layer 2 verdict=block with NO itemized critical issues → synthesizes a hard fail
+  const stubBlockBare = async () => ({
+    verdict: "block", score: 2, summary: "Plan reads like a template.", confidence: 0.85,
+    issues: [{ dimension: "personalization", severity: "warn", path: "(global)", issue: "Generic." }],
+  });
+  const bareBlockResult = await critique({
+    plan: buildBasePlan(),
+    briefing: "Test briefing",
+    apiKey: "fake-key",
+    criticFn: stubBlockBare,
+  });
+  assert.ok(bareBlockResult.hardFails.some((f) => f.rule === "llm:verdict_block"), "block verdict without critical issues must synthesize a hard fail");
+  console.log("PASS: bare block verdict synthesizes hard fail");
+
+  // 19. Layer 2 throws — graceful degradation, Layer 1 verdict stands
+  const stubThrows = async () => { throw new Error("API down"); };
+  const failedResult = await critique({
+    plan: buildBasePlan(),
+    briefing: "Test briefing",
+    apiKey: "fake-key",
+    criticFn: stubThrows,
+  });
+  assert.strictEqual(failedResult.hardFails.length, 0, "Layer 2 failure should not produce hard fails");
+  assert.strictEqual(failedResult.layer2, null, "layer2 should be null on error");
+  console.log("PASS: Layer 2 error degrades gracefully");
+
+  console.log("\nAll critique-plan tests passed.");
+})().catch((err) => {
+  console.error("TEST FAILED:", err);
+  process.exit(1);
+});
