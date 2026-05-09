@@ -11,6 +11,7 @@ const { connectLambda, getStore } = require("@netlify/blobs");
 const { buildAiBriefing } = require("../lib/briefing");
 const { draftPlan } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
+const { checkRules } = require("../lib/critique-plan");
 
 const INTERNAL_FROM = "Alongside AI <intake@alongsideai.ai>";
 const INTERNAL_TO = "mark@alongsideai.ai";
@@ -83,30 +84,71 @@ function newPlanId() {
   return crypto.randomBytes(9).toString("base64url");
 }
 
-async function sendNotificationEmail({ apiKey, firstName, email, planUrl, usage, sent }) {
-  const subject = sent
-    ? `Plan sent to ${firstName}`
-    : `Plan draft ready — ${firstName}`;
+function escapeHtml(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  }[c]));
+}
+
+function formatIssuesText(issues) {
+  if (!issues || !issues.length) return "";
+  return issues.map((i) => `  • [${i.rule}] ${i.path} — ${i.detail}`).join("\n");
+}
+
+function formatIssuesHtml(issues) {
+  if (!issues || !issues.length) return "";
+  const items = issues.map((i) =>
+    `<li style="margin-bottom:8px;"><code style="background:#F3EDE3;padding:2px 6px;border-radius:4px;font-size:13px;">${escapeHtml(i.rule)}</code> <span style="color:#8A8780;">${escapeHtml(i.path)}</span><br/><span style="color:#4A5550;">${escapeHtml(i.detail)}</span></li>`
+  ).join("");
+  return `<ul style="padding-left:20px;margin:0 0 18px;">${items}</ul>`;
+}
+
+async function sendNotificationEmail({ apiKey, firstName, email, planUrl, usage, sent, hardFails, softFails }) {
+  const hasHardFails = Array.isArray(hardFails) && hardFails.length > 0;
+  const hasSoftFails = Array.isArray(softFails) && softFails.length > 0;
+
+  const subject = hasHardFails
+    ? `⚠ Plan needs review — ${firstName}`
+    : sent
+      ? hasSoftFails
+        ? `Plan sent to ${firstName} — soft issues to spot-check`
+        : `Plan sent to ${firstName}`
+      : `Plan draft ready — ${firstName}`;
+
   const cost = usage && usage.input_tokens
     ? `${usage.input_tokens} in / ${usage.output_tokens} out (cached: ${usage.cache_read_input_tokens || 0})`
     : "—";
 
-  const statusLine = sent
-    ? `Plan was auto-sent to ${firstName}${email ? ` (${email})` : ""}.`
-    : `A plan was generated for ${firstName}${email ? ` (${email})` : ""} but could not be auto-sent.`;
-  const actionLine = sent
-    ? "Open the link to see what was sent."
-    : "Open the link to review, then send manually.";
-  const btnLabel = sent ? "View the plan" : "Open the draft";
+  const statusLine = hasHardFails
+    ? `Plan for ${firstName}${email ? ` (${email})` : ""} did NOT auto-send — critic flagged hard issues. Review before sending manually.`
+    : sent
+      ? `Plan was auto-sent to ${firstName}${email ? ` (${email})` : ""}.`
+      : `A plan was generated for ${firstName}${email ? ` (${email})` : ""} but could not be auto-sent.`;
+  const actionLine = hasHardFails
+    ? "Open the link to review the plan and the issues below."
+    : sent
+      ? hasSoftFails
+        ? "Auto-sent. Soft issues below — spot-check on your own time."
+        : "Open the link to see what was sent."
+      : "Open the link to review, then send manually.";
+  const btnLabel = hasHardFails ? "Review draft" : sent ? "View the plan" : "Open the draft";
+
+  const issuesTextBlock = (hasHardFails || hasSoftFails)
+    ? `\n\n${hasHardFails ? `HARD ISSUES (blocked customer send):\n${formatIssuesText(hardFails)}\n` : ""}${hasSoftFails ? `\nSOFT ISSUES (spot-check):\n${formatIssuesText(softFails)}\n` : ""}`
+    : "";
 
   const text =
 `${statusLine}
 
 View: ${planUrl}
 
-${actionLine}
+${actionLine}${issuesTextBlock}
 
 Tokens: ${cost}`;
+
+  const issuesHtmlBlock = (hasHardFails || hasSoftFails)
+    ? `${hasHardFails ? `<div style="margin:24px 0 8px;font-size:13px;font-weight:600;color:#9E4444;">Hard issues (blocked customer send):</div>${formatIssuesHtml(hardFails)}` : ""}${hasSoftFails ? `<div style="margin:${hasHardFails ? '20' : '24'}px 0 8px;font-size:13px;font-weight:600;color:#A07A2C;">Soft issues (spot-check):</div>${formatIssuesHtml(softFails)}` : ""}`
+    : "";
 
   const html =
 `<!doctype html>
@@ -114,9 +156,10 @@ Tokens: ${cost}`;
   <div style="max-width:560px;margin:0 auto;font-size:16px;">
     <p style="margin:0 0 18px;">${statusLine}</p>
     <p style="margin:0 0 24px;">
-      <a href="${planUrl}" style="display:inline-block;padding:12px 20px;background:#7A8B6F;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;">${btnLabel}</a>
+      <a href="${planUrl}" style="display:inline-block;padding:12px 20px;background:${hasHardFails ? '#9E4444' : '#7A8B6F'};color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;">${btnLabel}</a>
     </p>
     <p style="margin:0 0 18px;color:#4A5550;">${actionLine}</p>
+    ${issuesHtmlBlock}
     <p style="margin:32px 0 0;font-size:12px;color:#8A8780;">Tokens used: ${cost}</p>
   </div>
 </body></html>`;
@@ -202,12 +245,25 @@ exports.handler = async (event) => {
     // Render to final HTML.
     const html = renderPlan(plan);
 
+    // Layer 1 critic — deterministic rules. Runs in milliseconds, no API call.
+    // Hard fails block the customer email and route to Mark for manual review.
+    // Soft fails ship to the customer but flag the internal notification for
+    // spot-checking. See netlify/lib/critique-plan.js for the rule set.
+    const { hardFails, softFails } = checkRules(plan);
+    const hasHardFails = hardFails.length > 0;
+    if (hasHardFails) {
+      console.warn(`[generate-plan] critic flagged ${hardFails.length} hard issue(s) for ${firstName}:`, hardFails.map((i) => `${i.rule}@${i.path}`).join(", "));
+    }
+    if (softFails.length > 0) {
+      console.log(`[generate-plan] critic flagged ${softFails.length} soft issue(s) for ${firstName}:`, softFails.map((i) => `${i.rule}@${i.path}`).join(", "));
+    }
+
     // Store in Netlify Blobs so we can serve it to Mark (and later to the customer).
     const id = newPlanId();
     const record = {
       id,
       created_at: new Date().toISOString(),
-      status: "draft",
+      status: hasHardFails ? "needs_review" : "draft",
       customer_first_name: firstName,
       customer_email: email,
       submission: data,
@@ -215,17 +271,18 @@ exports.handler = async (event) => {
       plan,
       html,
       usage,
+      critique: { hardFails, softFails },
     };
 
     const store = getStore("plans");
     await store.set(`${id}.json`, JSON.stringify(record));
-    console.log("[generate-plan] stored plan", id);
+    console.log("[generate-plan] stored plan", id, "status:", record.status);
 
     const baseUrl = process.env.URL || "https://alongsideai.ai";
     const planUrl = `${baseUrl}/plans/${id}`;
 
-    // Auto-send: email the customer a link to their plan.
-    if (email && resendKey) {
+    // Auto-send to customer ONLY if no hard fails. Hard fails route to Mark.
+    if (!hasHardFails && email && resendKey) {
       await emailCustomer({
         apiKey: resendKey,
         firstName,
@@ -237,17 +294,28 @@ exports.handler = async (event) => {
       record.status = "sent";
       record.sent_at = new Date().toISOString();
       await store.set(`${id}.json`, JSON.stringify(record));
+    } else if (hasHardFails) {
+      console.warn("[generate-plan] customer send blocked by critic — manual review required");
     } else {
       console.warn("[generate-plan] skipping auto-send —", !email ? "no email" : "no RESEND_API_KEY");
     }
 
-    // Notify Mark.
+    // Notify Mark — pass the issue lists so the email surfaces them inline.
     if (resendKey) {
-      await sendNotificationEmail({ apiKey: resendKey, firstName, email, planUrl, usage, sent: record.status === "sent" });
+      await sendNotificationEmail({
+        apiKey: resendKey,
+        firstName,
+        email,
+        planUrl,
+        usage,
+        sent: record.status === "sent",
+        hardFails,
+        softFails,
+      });
       console.log("[generate-plan] notification sent to Mark");
     }
 
-    return { statusCode: 200, body: JSON.stringify({ ok: true, id, planUrl, sent: record.status === "sent" }) };
+    return { statusCode: 200, body: JSON.stringify({ ok: true, id, planUrl, sent: record.status === "sent", needs_review: hasHardFails }) };
   } catch (err) {
     console.error("[generate-plan] failed:", err.stack || err.message);
     return { statusCode: 500, body: `error: ${err.message}` };
