@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Revise your plan — Alongside AI</title>
+<meta name="robots" content="noindex,nofollow"/>
+
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png"/>
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --sage: #7A8B6F;
+    --sage-light: #A8C5B2;
+    --mauve: #9E7B84;
+    --charcoal: #1F1F1D;
+    --charcoal-soft: #4A5550;
+    --cream: #FAF6F1;
+    --white: #FFFFFF;
+    --gray: #8A8780;
+    --serif: "DM Serif Display", Georgia, serif;
+    --sans: "Nunito", system-ui, Arial, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--cream);
+    color: var(--charcoal);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    padding: 22px 40px;
+    border-bottom: 1px solid rgba(31,31,29,.08);
+    background: var(--cream);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--charcoal); }
+  .brand-lockup { display: inline-flex; align-items: baseline; gap: 10px; white-space: nowrap; }
+  .brand-word { font-family: var(--serif); font-size: 24px; letter-spacing: -.01em; line-height: 1; }
+  .brand-ai { font-family: var(--sans); font-weight: 700; font-size: 13px; letter-spacing: .24em; color: var(--sage); line-height: 1; }
+
+  main {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 24px 80px;
+  }
+  .card {
+    width: 100%;
+    max-width: 620px;
+    background: var(--white);
+    border: 1px solid rgba(31,31,29,.06);
+    border-radius: 16px;
+    box-shadow: 0 2px 20px rgba(31,31,29,.04);
+    padding: 48px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 400;
+    margin: 0 0 8px;
+    line-height: 1.2;
+  }
+  .subtitle {
+    color: var(--charcoal-soft);
+    font-size: 15px;
+    margin: 0 0 32px;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 0 0 28px;
+    padding: 16px 20px;
+    background: rgba(122,139,111,.06);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--charcoal-soft);
+  }
+  .meta-item { display: flex; align-items: center; gap: 6px; }
+  .meta-label { font-weight: 600; color: var(--charcoal); }
+
+  .revisions-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .revisions-badge.available { background: rgba(122,139,111,.12); color: var(--sage); }
+  .revisions-badge.last { background: rgba(212,168,83,.15); color: #B08E3A; }
+  .revisions-badge.none { background: rgba(158,123,132,.12); color: var(--mauve); }
+
+  label {
+    display: block;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 8px;
+    color: var(--charcoal);
+  }
+  .hint {
+    font-size: 14px;
+    color: var(--gray);
+    margin: 0 0 12px;
+    line-height: 1.5;
+  }
+  textarea {
+    width: 100%;
+    min-height: 140px;
+    padding: 14px 16px;
+    border: 1px solid rgba(31,31,29,.15);
+    border-radius: 10px;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--charcoal);
+    background: var(--white);
+    resize: vertical;
+    transition: border-color .15s;
+  }
+  textarea:focus {
+    outline: none;
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(122,139,111,.12);
+  }
+  textarea::placeholder { color: var(--gray); }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .btn {
+    display: inline-block;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s, opacity .15s;
+  }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-primary { background: var(--sage); color: var(--cream); }
+  .btn-primary:hover:not(:disabled) { background: #6B7C60; }
+  .status-msg {
+    font-size: 14px;
+    color: var(--charcoal-soft);
+    min-height: 20px;
+  }
+
+  .state-loading, .state-error, .state-expired, .state-exhausted, .state-success {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .state-loading h1, .state-error h1, .state-expired h1, .state-exhausted h1, .state-success h1 {
+    margin-bottom: 12px;
+  }
+  .state-error p, .state-expired p, .state-exhausted p {
+    color: var(--charcoal-soft);
+    max-width: 420px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .state-success p {
+    color: var(--charcoal-soft);
+    max-width: 420px;
+    margin: 8px auto 0;
+    line-height: 1.6;
+  }
+
+  .check-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    background: rgba(122,139,111,.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .check-icon svg { width: 28px; height: 28px; color: var(--sage); }
+
+  .history { margin: 0 0 28px; }
+  .history-title { font-size: 13px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 10px; }
+  .history-item {
+    padding: 12px 16px;
+    background: rgba(31,31,29,.02);
+    border: 1px solid rgba(31,31,29,.06);
+    border-radius: 8px;
+    margin: 0 0 8px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .history-item .when { color: var(--gray); font-size: 12px; margin-top: 4px; }
+
+  @media (max-width: 640px) {
+    header { padding: 16px 20px; }
+    main { padding: 32px 16px 60px; }
+    .card { padding: 32px 24px; }
+    .actions { flex-direction: column-reverse; align-items: stretch; }
+    .btn { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="brand">
+    <div class="brand-lockup">
+      <span class="brand-word">alongside</span><span class="brand-ai">AI</span>
+    </div>
+  </a>
+</header>
+
+<main>
+  <div class="card">
+
+    <!-- Loading state -->
+    <div id="state-loading" class="state-loading">
+      <h1>Loading your plan...</h1>
+    </div>
+
+    <!-- Error state (invalid/expired token) -->
+    <div id="state-error" style="display:none;" class="state-error">
+      <h1>This link isn't valid</h1>
+      <p>It may have expired, or the URL is mistyped. If you think this is an error, email <a href="mailto:mark@alongsideai.ai" style="color:var(--sage);">mark@alongsideai.ai</a> and we'll sort it out.</p>
+    </div>
+
+    <!-- Expired state -->
+    <div id="state-expired" style="display:none;" class="state-expired">
+      <h1>Your revision window has closed</h1>
+      <p>The 14-day revision window for this plan has passed. If you'd like changes, reply to your plan delivery email or reach out to <a href="mailto:mark@alongsideai.ai" style="color:var(--sage);">mark@alongsideai.ai</a>.</p>
+    </div>
+
+    <!-- Exhausted state (0 revisions left) -->
+    <div id="state-exhausted" style="display:none;" class="state-exhausted">
+      <h1>You've used both revisions</h1>
+      <p>Your two free revisions have been applied. If you need further changes, reply to your plan delivery email or reach out to <a href="mailto:mark@alongsideai.ai" style="color:var(--sage);">mark@alongsideai.ai</a>.</p>
+    </div>
+
+    <!-- Success state (revision submitted) -->
+    <div id="state-success" style="display:none;" class="state-success">
+      <div class="check-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h1>Revision submitted</h1>
+      <p>We're updating your plan now. You'll receive the revised version by email within the next few minutes.</p>
+      <p id="success-remaining" style="margin-top:16px;font-size:14px;color:var(--gray);"></p>
+    </div>
+
+    <!-- Form state (ready to revise) -->
+    <div id="state-form" style="display:none;">
+      <h1>Revise your plan</h1>
+      <p class="subtitle">Tell us what to change and we'll send you an updated version by email.</p>
+
+      <div class="meta">
+        <div class="meta-item"><span class="meta-label">Plan for</span> <span id="meta-name"></span></div>
+        <div class="meta-item"><span class="meta-label">Created</span> <span id="meta-date"></span></div>
+        <div class="meta-item"><span id="meta-badge" class="revisions-badge"></span></div>
+      </div>
+
+      <div id="revision-history" class="history" style="display:none;">
+        <div class="history-title">Previous revisions</div>
+        <div id="history-list"></div>
+      </div>
+
+      <label for="revision-input">What needs to change?</label>
+      <p class="hint">Mention anything you forgot, got wrong, or want adjusted. For example: "I already use HubSpot for CRM — update the plan to account for that," or "My budget should be $200/month, not $100."</p>
+      <textarea id="revision-input" placeholder="Describe what you'd like changed..."></textarea>
+
+      <div class="actions">
+        <div id="status-msg" class="status-msg"></div>
+        <button id="submit-btn" class="btn btn-primary" type="button">Submit revision</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  var TOKEN = location.pathname.replace(/^\/revise\//, "").replace(/\/+$/, "");
+  if (!TOKEN || !/^[A-Za-z0-9_-]+$/.test(TOKEN)) {
+    show("state-error");
+    return;
+  }
+
+  var stateLoading = document.getElementById("state-loading");
+  var stateError = document.getElementById("state-error");
+  var stateExpired = document.getElementById("state-expired");
+  var stateExhausted = document.getElementById("state-exhausted");
+  var stateSuccess = document.getElementById("state-success");
+  var stateForm = document.getElementById("state-form");
+  var input = document.getElementById("revision-input");
+  var submitBtn = document.getElementById("submit-btn");
+  var statusMsg = document.getElementById("status-msg");
+
+  function show(id) {
+    [stateLoading, stateError, stateExpired, stateExhausted, stateSuccess, stateForm].forEach(function (el) {
+      el.style.display = "none";
+    });
+    document.getElementById(id).style.display = "";
+  }
+
+  fetch("/.netlify/functions/validate-revision-token?token=" + encodeURIComponent(TOKEN))
+    .then(function (r) {
+      if (r.status === 404 || r.status === 400) { show("state-error"); return null; }
+      if (!r.ok) { show("state-error"); return null; }
+      return r.json();
+    })
+    .then(function (data) {
+      if (!data) return;
+
+      if (data.expired) { show("state-expired"); return; }
+      if (data.remaining <= 0) { show("state-exhausted"); return; }
+
+      document.getElementById("meta-name").textContent = data.firstName;
+      document.getElementById("meta-date").textContent = data.createdAt;
+
+      var badge = document.getElementById("meta-badge");
+      if (data.remaining === 2) {
+        badge.textContent = "2 revisions available";
+        badge.className = "revisions-badge available";
+      } else {
+        badge.textContent = "1 revision remaining";
+        badge.className = "revisions-badge last";
+      }
+
+      if (data.priorRevisions && data.priorRevisions.length > 0) {
+        document.getElementById("revision-history").style.display = "";
+        var list = document.getElementById("history-list");
+        data.priorRevisions.forEach(function (rev) {
+          var div = document.createElement("div");
+          div.className = "history-item";
+          div.innerHTML =
+            "<div>" + escapeHtml(rev.instruction) + "</div>" +
+            "<div class=\"when\">" + escapeHtml(rev.at) + "</div>";
+          list.appendChild(div);
+        });
+      }
+
+      show("state-form");
+      input.focus();
+    })
+    .catch(function () { show("state-error"); });
+
+  submitBtn.addEventListener("click", submit);
+  input.addEventListener("keydown", function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); submit(); }
+  });
+
+  function submit() {
+    var instruction = (input.value || "").trim();
+    if (!instruction) { input.focus(); return; }
+    if (instruction.length < 10) {
+      statusMsg.textContent = "Please provide a bit more detail so we can get the revision right.";
+      input.focus();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+    statusMsg.textContent = "";
+
+    fetch("/.netlify/functions/revise-plan-customer-background", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ token: TOKEN, instruction: instruction })
+    })
+      .then(function (r) {
+        if (r.status === 410) {
+          show("state-exhausted");
+          return null;
+        }
+        if (r.status === 403) {
+          show("state-expired");
+          return null;
+        }
+        if (!r.ok) return r.text().then(function (t) { throw new Error(t); });
+        return r.json();
+      })
+      .then(function (data) {
+        if (!data) return;
+        show("state-success");
+        var remaining = document.getElementById("success-remaining");
+        if (data.remaining > 0) {
+          remaining.textContent = "You have " + data.remaining + " revision" + (data.remaining === 1 ? "" : "s") + " remaining.";
+        } else {
+          remaining.textContent = "That was your last free revision.";
+        }
+      })
+      .catch(function (err) {
+        statusMsg.textContent = "Something went wrong. Please try again, or email mark@alongsideai.ai.";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit revision";
+      });
+  }
+
+  function escapeHtml(s) {
+    var d = document.createElement("div");
+    d.textContent = s || "";
+    return d.innerHTML;
+  }
+})();
+</script>
+</body>
+</html>

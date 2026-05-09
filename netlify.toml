@@ -9,6 +9,13 @@
   status = 404
   force = true
 
+# Customer revision page: /revise/TOKEN serves the static HTML page.
+# The page itself calls the validation + revision functions via fetch.
+[[redirects]]
+  from = "/revise/*"
+  to = "/revise/index.html"
+  status = 200
+
 # Pretty URL for plan previews: /plans/abc123 serves the rendered draft.
 # Uses a splat (*) rather than :id because Netlify doesn't always interpolate
 # named placeholders into the query string portion of the "to" URL.
@@ -36,6 +43,15 @@
   ]
 
 [functions."revise-plan-background"]
+  included_files = [
+    "netlify/plan-template/template.html",
+    "netlify/plan-template/prompt.md",
+    "netlify/lib/reference-plans/gold-standard.html",
+    "netlify/lib/reference-plans/semi-retired.html",
+    "assets/plan.css"
+  ]
+
+[functions."revise-plan-customer-background"]
   included_files = [
     "netlify/plan-template/template.html",
     "netlify/plan-template/prompt.md",

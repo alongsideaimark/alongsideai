@@ -2,6 +2,7 @@
 // to the customer, and flip the stored record status to "sent". Called from
 // the review bar on /plans/:id when Mark clicks "Approve & send to customer".
 
+const crypto = require("crypto");
 const { connectLambda, getStore } = require("@netlify/blobs");
 
 const PDFSHIFT_URL = "https://api.pdfshift.io/v3/convert/pdf";
@@ -38,7 +39,7 @@ async function convertToPdf({ url, apiKey }) {
   return buffer;
 }
 
-async function emailCustomer({ apiKey, firstName, toEmail, pdfBuffer }) {
+async function emailCustomer({ apiKey, firstName, toEmail, pdfBuffer, revisionUrl }) {
   const subject = `Your plan — ${firstName}`;
   const text =
 `${firstName},
@@ -51,7 +52,11 @@ It's yours to keep, whether you decide to act on any of it or not. Every recomme
 
 If you'd like help setting any of this up, the implementation package is optional — details are in section 7 of the plan. Just reply to this email and we'll take it from there.
 
-If something in the plan is wrong, or if there's a part that doesn't make sense, same deal — reply to this email. It comes straight to me.
+If something in the plan is wrong — a tool you already use that we didn't account for, a budget that should be different, a detail you forgot to mention — you can revise it. Click the link below, tell us what to change, and we'll send you an updated plan:
+
+${revisionUrl}
+
+You have two free revisions available for the next 14 days.
 
 — Mark
 Alongside AI`;
@@ -64,7 +69,11 @@ Alongside AI`;
     <p style="margin:0 0 18px;">Your plan's attached. Read it at your own pace — there's no rush.</p>
     <p style="margin:0 0 18px;">It's yours to keep, whether you decide to act on any of it or not. Every recommendation is grounded in what you wrote on the questionnaire; if something doesn't fit, trust your read over ours and skip it.</p>
     <p style="margin:0 0 18px;">If you'd like help setting any of this up, the implementation package is optional — details are in section 7 of the plan. Just reply to this email and we'll take it from there.</p>
-    <p style="margin:0 0 18px;">If something in the plan is wrong, or if there's a part that doesn't make sense, same deal — reply to this email. It comes straight to me.</p>
+    <p style="margin:0 0 18px;">If something in the plan is wrong — a tool you already use that we didn't account for, a budget that should be different, a detail you forgot to mention — you can revise it:</p>
+    <p style="margin:0 0 24px;">
+      <a href="${revisionUrl}" style="display:inline-block;padding:14px 24px;background:#9E7B84;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Revise your plan</a>
+    </p>
+    <p style="margin:0 0 18px;color:#8A8780;font-size:14px;">Two free revisions available for the next 14 days.</p>
     <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Alongside AI</span></p>
   </div>
 </body></html>`;
@@ -137,16 +146,24 @@ exports.handler = async (event) => {
     const pdf = await convertToPdf({ url: planUrl, apiKey: pdfshiftKey });
     console.log("[approve-plan] pdf size:", pdf.length, "bytes");
 
+    const revisionToken = crypto.randomBytes(24).toString("base64url");
+    const revisionWindowDays = 14;
+
     await emailCustomer({
       apiKey: resendKey,
       firstName: record.customer_first_name,
       toEmail: record.customer_email,
       pdfBuffer: pdf,
+      revisionUrl: `${baseUrl}/revise/${revisionToken}`,
     });
     console.log("[approve-plan] sent to", record.customer_email);
 
     record.status = "sent";
     record.sent_at = new Date().toISOString();
+    record.revision_token = revisionToken;
+    record.customer_revisions_remaining = 2;
+    record.revision_window_expires_at = new Date(Date.now() + revisionWindowDays * 24 * 60 * 60 * 1000).toISOString();
+    record.customer_revisions = [];
     await store.set(`${id}.json`, JSON.stringify(record));
 
     return {

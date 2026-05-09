@@ -18,7 +18,7 @@ const INTERNAL_TO = "mark@alongsideai.ai";
 const CUSTOMER_FROM = "Mark <mark@alongsideai.ai>";
 const CUSTOMER_REPLY_TO = "mark@alongsideai.ai";
 
-async function emailCustomer({ apiKey, firstName, toEmail, planUrl }) {
+async function emailCustomer({ apiKey, firstName, toEmail, planUrl, revisionUrl }) {
   const subject = `Your plan is ready — ${firstName}`;
   const text =
 `${firstName},
@@ -35,7 +35,11 @@ Section 05 has a custom tool we designed just for you — it's the most personal
 
 There's a "Print / Save as PDF" button at the top of the page if you'd like a copy on your computer.
 
-If something in the plan is wrong, or if there's a part that doesn't make sense, same deal — reply to this email. It comes straight to me.
+If something in the plan is wrong — a tool you already use that we didn't account for, a budget that should be different, a detail you forgot to mention — you can revise it. Click the link below, tell us what to change, and we'll send you an updated plan:
+
+${revisionUrl}
+
+You have two free revisions available for the next 14 days.
 
 — Mark
 Alongside AI`;
@@ -52,7 +56,11 @@ Alongside AI`;
     <p style="margin:0 0 18px;">It's yours to keep, whether you decide to act on any of it or not. Every recommendation is grounded in what you wrote on the questionnaire; if something doesn't fit, trust your read over ours and skip it.</p>
     <p style="margin:0 0 18px;">Section 05 has a custom tool we designed just for you — it's the most personal part of the plan. If you try building it and get stuck, reply to this email and I'll help.</p>
     <p style="margin:0 0 18px;">There's a "Print / Save as PDF" button at the top if you'd like a copy on your computer.</p>
-    <p style="margin:0 0 18px;">If something in the plan is wrong, or if there's a part that doesn't make sense, same deal — reply to this email. It comes straight to me.</p>
+    <p style="margin:0 0 18px;">If something in the plan is wrong — a tool you already use that we didn't account for, a budget that should be different, a detail you forgot to mention — you can revise it:</p>
+    <p style="margin:0 0 24px;">
+      <a href="${revisionUrl}" style="display:inline-block;padding:14px 24px;background:#9E7B84;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Revise your plan</a>
+    </p>
+    <p style="margin:0 0 18px;color:#8A8780;font-size:14px;">Two free revisions available for the next 14 days.</p>
     <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Alongside AI</span></p>
   </div>
 </body></html>`;
@@ -297,16 +305,24 @@ exports.handler = async (event) => {
 
     // Auto-send to customer ONLY if no hard fails. Hard fails route to Mark.
     if (!hasHardFails && email && resendKey) {
+      const revisionToken = crypto.randomBytes(24).toString("base64url");
+      const revisionWindowDays = 14;
+
       await emailCustomer({
         apiKey: resendKey,
         firstName,
         toEmail: email,
         planUrl,
+        revisionUrl: `${baseUrl}/revise/${revisionToken}`,
       });
       console.log("[generate-plan] sent to", email);
 
       record.status = "sent";
       record.sent_at = new Date().toISOString();
+      record.revision_token = revisionToken;
+      record.customer_revisions_remaining = 2;
+      record.revision_window_expires_at = new Date(Date.now() + revisionWindowDays * 24 * 60 * 60 * 1000).toISOString();
+      record.customer_revisions = [];
       await store.set(`${id}.json`, JSON.stringify(record));
     } else if (hasHardFails) {
       console.warn("[generate-plan] customer send blocked by critic — manual review required");
