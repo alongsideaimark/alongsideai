@@ -28,6 +28,8 @@ function renderInline(md) {
     .replace(/<b>([\s\S]*?)<\/b>/gi, "**$1**")
     .replace(/<em>([\s\S]*?)<\/em>/gi, "*$1*")
     .replace(/<i>([\s\S]*?)<\/i>/gi, "*$1*")
+    // Strip citation tags from web search results that leak into plan text.
+    .replace(/<\/?cite\b[^>]*>/gi, "")
     // Strip remaining HTML tags that would otherwise render as literal text.
     .replace(/<br\s*\/?>/gi, " ")
     .replace(/<\/?(p|div|span|ul|ol|li|code|pre|h[1-6]|blockquote)\b[^>]*>/gi, " ")

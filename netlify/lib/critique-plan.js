@@ -98,6 +98,14 @@ function checkRules(plan) {
         detail: `Contains literal placeholder "${bracketMatch[0]}"`,
       });
     }
+    // Citation markup from web search leaking into plan text.
+    if (/<\/?cite\b/i.test(text)) {
+      hardFails.push({
+        rule: "citation_leak",
+        path,
+        detail: "Contains web search citation markup (<cite> tags) — must be removed",
+      });
+    }
     // HTML tags in text fields — the renderer strips these defensively, but
     // they signal the model is ignoring the markdown-only instruction.
     // Skip system_prompt (it's code, not prose).
