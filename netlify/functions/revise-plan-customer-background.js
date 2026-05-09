@@ -48,7 +48,7 @@ async function convertToPdf({ url, apiKey }) {
       format: "Letter",
       margin: "18mm",
       use_print: true,
-      delay: 800,
+      delay: 2000,
     }),
   });
   if (!res.ok) {

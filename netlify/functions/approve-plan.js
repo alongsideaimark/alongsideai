@@ -28,7 +28,7 @@ async function convertToPdf({ url, apiKey }) {
       use_print: true,
       // Give the page a short beat to finish painting (custom fonts, logo SVG)
       // before the capture fires. PDFShift v3 uses plain delay in ms.
-      delay: 800,
+      delay: 2000,
     }),
   });
   if (!res.ok) {
