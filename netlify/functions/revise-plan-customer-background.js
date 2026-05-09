@@ -9,6 +9,7 @@
 const { connectLambda, getStore } = require("@netlify/blobs");
 const { revisePlan } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
+const { critique } = require("../lib/critique-plan");
 
 const PDFSHIFT_URL = "https://api.pdfshift.io/v3/convert/pdf";
 const CUSTOMER_FROM = "Mark <mark@alongsideai.ai>";
@@ -104,17 +105,28 @@ Alongside AI`;
   }
 }
 
-async function notifyMark({ apiKey, firstName, email, instruction, revisionNumber, remaining, planUrl, usage }) {
-  const subject = `Customer revision #${revisionNumber} — ${firstName}`;
+async function notifyMark({ apiKey, firstName, email, instruction, revisionNumber, remaining, planUrl, usage, blocked, hardFails }) {
+  const wasBlocked = blocked && Array.isArray(hardFails) && hardFails.length > 0;
+  const subject = wasBlocked
+    ? `Revision blocked — ${firstName} (#${revisionNumber})`
+    : `Customer revision #${revisionNumber} — ${firstName}`;
   const cost = usage && usage.input_tokens
     ? `${usage.input_tokens} in / ${usage.output_tokens} out`
     : "—";
 
+  const issuesText = wasBlocked
+    ? `\n\nCRITIC HARD FAILS (blocked customer email):\n${hardFails.map((i) => `  - [${i.rule}] ${i.path} — ${i.detail}`).join("\n")}\n`
+    : "";
+
+  const statusLine = wasBlocked
+    ? `${firstName}${email ? ` (${email})` : ""} submitted revision #${revisionNumber}, but the critic flagged hard issues. The revised plan was NOT emailed to the customer. Review and send manually.`
+    : `${firstName}${email ? ` (${email})` : ""} submitted revision #${revisionNumber}.`;
+
   const text =
-`${firstName}${email ? ` (${email})` : ""} submitted revision #${revisionNumber}.
+`${statusLine}
 
 What they asked to change:
-"${instruction}"
+"${instruction}"${issuesText}
 
 Revisions remaining: ${remaining}
 
@@ -122,18 +134,29 @@ View the updated plan: ${planUrl}
 
 Tokens: ${cost}`;
 
+  const issuesHtml = wasBlocked
+    ? `<div style="margin:0 0 18px;padding:14px 18px;background:#FDF2F2;border-radius:10px;border-left:3px solid #9E4444;">
+        <div style="font-size:12px;font-weight:600;color:#9E4444;margin-bottom:8px;">CRITIC HARD FAILS (customer email blocked)</div>
+        <ul style="padding-left:18px;margin:0;font-size:14px;color:#2C3330;line-height:1.6;">${hardFails.map((i) => `<li><code style="background:#F3EDE3;padding:1px 5px;border-radius:3px;font-size:12px;">${escapeHtml(i.rule)}</code> ${escapeHtml(i.path)} — ${escapeHtml(i.detail)}</li>`).join("")}</ul>
+      </div>`
+    : "";
+
+  const btnColor = wasBlocked ? "#9E4444" : "#7A8B6F";
+  const btnLabel = wasBlocked ? "Review revised plan" : "View updated plan";
+
   const html =
 `<!doctype html>
 <html><body style="margin:0;padding:32px 16px;background:#FAF6F1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#2C3330;line-height:1.65;">
   <div style="max-width:560px;margin:0 auto;font-size:16px;">
-    <p style="margin:0 0 18px;"><strong>${escapeHtml(firstName)}</strong>${email ? ` (${escapeHtml(email)})` : ""} submitted revision #${revisionNumber}.</p>
+    <p style="margin:0 0 18px;">${escapeHtml(statusLine)}</p>
     <div style="margin:0 0 18px;padding:14px 18px;background:#F3EDE3;border-radius:10px;border-left:3px solid #9E7B84;">
       <div style="font-size:12px;font-weight:600;color:#8A8780;margin-bottom:6px;">WHAT THEY ASKED TO CHANGE</div>
       <div style="font-size:15px;line-height:1.55;color:#2C3330;">${escapeHtml(instruction)}</div>
     </div>
+    ${issuesHtml}
     <p style="margin:0 0 18px;color:#4A5550;">Revisions remaining: <strong>${remaining}</strong></p>
     <p style="margin:0 0 24px;">
-      <a href="${planUrl}" style="display:inline-block;padding:12px 20px;background:#7A8B6F;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;">View updated plan</a>
+      <a href="${planUrl}" style="display:inline-block;padding:12px 20px;background:${btnColor};color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;">${btnLabel}</a>
     </p>
     <p style="margin:0;font-size:12px;color:#8A8780;">Tokens: ${cost}</p>
   </div>
@@ -231,6 +254,20 @@ exports.handler = async (event) => {
       usage,
     });
 
+    // Critic pass — same Layer 1 + Layer 2 pipeline as initial generation.
+    // Hard fails block the customer email and route to Mark for review.
+    const { hardFails, softFails, layer2 } = await critique({ plan, briefing: record.briefing, apiKey: anthropicKey });
+    const hasHardFails = hardFails.length > 0;
+    if (hasHardFails) {
+      console.warn(`[revise-plan-customer] ${record.id} critic flagged ${hardFails.length} hard issue(s):`, hardFails.map((i) => `${i.rule}@${i.path}`).join(", "));
+    }
+    if (softFails.length > 0) {
+      console.log(`[revise-plan-customer] ${record.id} critic flagged ${softFails.length} soft issue(s):`, softFails.map((i) => `${i.rule}@${i.path}`).join(", "));
+    }
+    if (layer2) {
+      console.log(`[revise-plan-customer] ${record.id} LLM critic: verdict=${layer2.verdict} score=${layer2.score}/10 confidence=${layer2.confidence}`);
+    }
+
     const newRemaining = remaining - 1;
     const updated = {
       ...record,
@@ -239,14 +276,38 @@ exports.handler = async (event) => {
       customer_revisions: customerRevisions,
       customer_revisions_remaining: newRemaining,
       customer_revised_at: new Date().toISOString(),
+      latest_critique: { hardFails, softFails, layer2 },
     };
     await store.set(key, JSON.stringify(updated));
     console.log(`[revise-plan-customer] ${record.id} stored; ${newRemaining} revisions remaining`);
 
-    // Generate PDF and email it to the customer.
     const baseUrl = process.env.URL || "https://alongsideai.ai";
     const planUrl = `${baseUrl}/plans/${record.id}`;
 
+    if (hasHardFails) {
+      // Hard fails: don't email the customer. Notify Mark to review manually.
+      console.warn(`[revise-plan-customer] ${record.id} customer email blocked by critic`);
+      await notifyMark({
+        apiKey: resendKey,
+        firstName: record.customer_first_name,
+        email: record.customer_email,
+        instruction: trimmedInstruction,
+        revisionNumber,
+        remaining: newRemaining,
+        planUrl,
+        usage,
+        blocked: true,
+        hardFails,
+      });
+
+      return {
+        statusCode: 200,
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ok: true, remaining: newRemaining }),
+      };
+    }
+
+    // No hard fails — generate PDF and email the customer.
     const pdf = await convertToPdf({ url: planUrl, apiKey: pdfshiftKey });
     console.log(`[revise-plan-customer] ${record.id} pdf: ${pdf.length} bytes`);
 
@@ -261,7 +322,6 @@ exports.handler = async (event) => {
       console.log(`[revise-plan-customer] ${record.id} emailed to ${record.customer_email}`);
     }
 
-    // Notify Mark.
     await notifyMark({
       apiKey: resendKey,
       firstName: record.customer_first_name,
