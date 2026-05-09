@@ -21,7 +21,12 @@ function escapeHtml(s) {
 // strip the anchor markup down to its visible text before escaping so the
 // customer doesn't see raw HTML in their plan.
 function renderInline(md) {
-  const stripped = String(md == null ? "" : md).replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, "$1");
+  const stripped = String(md == null ? "" : md)
+    .replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, "$1")
+    .replace(/<strong>([\s\S]*?)<\/strong>/gi, "**$1**")
+    .replace(/<b>([\s\S]*?)<\/b>/gi, "**$1**")
+    .replace(/<em>([\s\S]*?)<\/em>/gi, "*$1*")
+    .replace(/<i>([\s\S]*?)<\/i>/gi, "*$1*");
   const esc = escapeHtml(stripped);
   return esc
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
