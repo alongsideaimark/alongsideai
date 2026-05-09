@@ -6,6 +6,10 @@
 //      prompt or parsed programmatically once the plan-drafting pipeline is built.
 // If anything fails, we log and return 200 so Netlify doesn't retry.
 
+const { connectLambda, getStore } = require("@netlify/blobs");
+
+const DEDUP_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
+
 const INTERNAL_TO = "mark@alongsideai.ai";
 const INTERNAL_FROM = "Alongside AI Intake <intake@alongsideai.ai>";
 const AUTOREPLY_FROM = "Mark <mark@alongsideai.ai>";
@@ -447,6 +451,8 @@ Reply to this email to respond directly to ${firstName}.`;
 
 exports.handler = async (event) => {
   try {
+    connectLambda(event);
+
     const body = JSON.parse(event.body || "{}");
     const payload = body.payload || {};
 
@@ -457,6 +463,28 @@ exports.handler = async (event) => {
     const data = payload.data || {};
     const email = String(data.contact || "").trim();
     const firstName = String(data.name || "").trim().split(/\s+/)[0] || "there";
+
+    // Dedup: if we already processed a submission for this email in the last
+    // 5 minutes, skip. Prevents the backup path from double-firing when the
+    // primary Netlify Forms POST succeeds server-side but fails client-side
+    // validation (middlebox / content blocker returning a synthetic response).
+    if (email) {
+      try {
+        const dedup = getStore("submission-dedup");
+        const key = email.toLowerCase().replace(/[^a-z0-9@._-]/g, "");
+        const existing = await dedup.get(key);
+        if (existing) {
+          const ts = Number(existing);
+          if (Date.now() - ts < DEDUP_WINDOW_MS) {
+            console.log(`[submission] dedup: skipping duplicate for ${email} (${Math.round((Date.now() - ts) / 1000)}s after first)`);
+            return { statusCode: 200, body: "skipped: duplicate" };
+          }
+        }
+        await dedup.set(key, String(Date.now()));
+      } catch (err) {
+        console.warn("[submission] dedup check failed, proceeding anyway:", err.message);
+      }
+    }
 
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
