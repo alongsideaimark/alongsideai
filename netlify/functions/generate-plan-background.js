@@ -12,6 +12,7 @@ const { buildAiBriefing } = require("../lib/briefing");
 const { draftPlan } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
 const { critique } = require("../lib/critique-plan");
+const { convertToPdf, archivePdf } = require("../lib/pdf");
 
 const INTERNAL_FROM = "Alongside AI <intake@alongsideai.ai>";
 const INTERNAL_TO = "mark@alongsideai.ai";
@@ -300,11 +301,18 @@ exports.handler = async (event) => {
     await store.set(`${id}.json`, JSON.stringify(record));
     console.log("[generate-plan] stored plan", id, "status:", record.status);
 
+    const isTest = data._test === true || data._test === "true";
     const baseUrl = process.env.URL || "https://alongsideai.ai";
     const planUrl = `${baseUrl}/plans/${id}`;
 
-    // Auto-send to customer ONLY if no hard fails. Hard fails route to Mark.
-    if (!hasHardFails && email && resendKey) {
+    // Auto-send to customer ONLY if no hard fails and not a test submission.
+    if (isTest) {
+      console.log("[generate-plan] test submission — skipping customer email");
+      record.status = "sent";
+      record.sent_at = new Date().toISOString();
+      record.test = true;
+      await store.set(`${id}.json`, JSON.stringify(record));
+    } else if (!hasHardFails && email && resendKey) {
       const revisionToken = crypto.randomBytes(24).toString("base64url");
       const revisionWindowDays = 14;
 
@@ -328,6 +336,20 @@ exports.handler = async (event) => {
       console.warn("[generate-plan] customer send blocked by critic — manual review required");
     } else {
       console.warn("[generate-plan] skipping auto-send —", !email ? "no email" : "no RESEND_API_KEY");
+    }
+
+    // Archive PDF for admin review. Non-fatal — plan delivery is already done.
+    const pdfshiftKey = process.env.PDFSHIFT_API_KEY;
+    if (pdfshiftKey) {
+      try {
+        const pdf = await convertToPdf({ url: planUrl, apiKey: pdfshiftKey });
+        await archivePdf(store, id, pdf);
+        console.log(`[generate-plan] archived pdf for ${id} (${pdf.length} bytes)`);
+      } catch (pdfErr) {
+        console.error(`[generate-plan] pdf archival failed (non-fatal): ${pdfErr.message}`);
+      }
+    } else {
+      console.warn("[generate-plan] PDFSHIFT_API_KEY not set — skipping pdf archival");
     }
 
     // Notify Mark — pass the issue lists so the email surfaces them inline.

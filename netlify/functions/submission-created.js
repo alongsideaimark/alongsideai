@@ -502,7 +502,11 @@ exports.handler = async (event) => {
     );
 
     // Auto-reply to the submitter — only if we have a valid email.
-    if (email && /^\S+@\S+\.\S+$/.test(email)) {
+    // Skip for test submissions so we don't spam during seed runs.
+    const isTest = data._test === true || data._test === "true";
+    if (isTest) {
+      console.log("[submission] test submission — skipping auto-reply");
+    } else if (email && /^\S+@\S+\.\S+$/.test(email)) {
       jobs.push(
         sendEmail(apiKey, buildAutoReply(firstName, email))
           .then(() => console.log("[submission] auto-reply sent to", email))

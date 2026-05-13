@@ -4,40 +4,10 @@
 
 const crypto = require("crypto");
 const { connectLambda, getStore } = require("@netlify/blobs");
+const { convertToPdf, archivePdf } = require("../lib/pdf");
 
-const PDFSHIFT_URL = "https://api.pdfshift.io/v3/convert/pdf";
 const FROM = "Mark <mark@alongsideai.ai>";
 const REPLY_TO = "mark@alongsideai.ai";
-
-async function convertToPdf({ url, apiKey }) {
-  const auth = "Basic " + Buffer.from(`api:${apiKey}`).toString("base64");
-  const res = await fetch(PDFSHIFT_URL, {
-    method: "POST",
-    headers: {
-      "Authorization": auth,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      // Passing the public URL (not raw HTML) lets PDFShift fetch the page
-      // itself, so relative asset paths (/assets/plan.css, fonts, logo) all
-      // resolve naturally. The review bar is hidden via @media print.
-      source: url,
-      sandbox: false,
-      format: "Letter",
-      margin: "18mm",
-      use_print: true,
-      // Give the page a short beat to finish painting (custom fonts, logo SVG)
-      // before the capture fires. PDFShift v3 uses plain delay in ms.
-      delay: 2000,
-    }),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`PDFShift ${res.status}: ${body}`);
-  }
-  const buffer = Buffer.from(await res.arrayBuffer());
-  return buffer;
-}
 
 async function emailCustomer({ apiKey, firstName, toEmail, pdfBuffer, revisionUrl }) {
   const subject = `Your plan — ${firstName}`;
@@ -145,6 +115,9 @@ exports.handler = async (event) => {
     console.log("[approve-plan] converting to pdf:", planUrl);
     const pdf = await convertToPdf({ url: planUrl, apiKey: pdfshiftKey });
     console.log("[approve-plan] pdf size:", pdf.length, "bytes");
+
+    await archivePdf(store, id, pdf);
+    console.log("[approve-plan] archived pdf for", id);
 
     const revisionToken = crypto.randomBytes(24).toString("base64url");
     const revisionWindowDays = 14;

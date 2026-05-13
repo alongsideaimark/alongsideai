@@ -10,8 +10,8 @@ const { connectLambda, getStore } = require("@netlify/blobs");
 const { revisePlan } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
 const { critique } = require("../lib/critique-plan");
+const { convertToPdf, archivePdf } = require("../lib/pdf");
 
-const PDFSHIFT_URL = "https://api.pdfshift.io/v3/convert/pdf";
 const CUSTOMER_FROM = "Mark <mark@alongsideai.ai>";
 const CUSTOMER_REPLY_TO = "mark@alongsideai.ai";
 const INTERNAL_FROM = "Alongside AI <intake@alongsideai.ai>";
@@ -35,27 +35,6 @@ async function findRecordByToken(store, token) {
     } catch (_) {}
   }
   return null;
-}
-
-async function convertToPdf({ url, apiKey }) {
-  const auth = "Basic " + Buffer.from(`api:${apiKey}`).toString("base64");
-  const res = await fetch(PDFSHIFT_URL, {
-    method: "POST",
-    headers: { "Authorization": auth, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      source: url,
-      sandbox: false,
-      format: "Letter",
-      margin: "18mm",
-      use_print: true,
-      delay: 2000,
-    }),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`PDFShift ${res.status}: ${body}`);
-  }
-  return Buffer.from(await res.arrayBuffer());
 }
 
 async function emailRevisedPlan({ apiKey, firstName, toEmail, pdfBuffer, revisionNumber }) {
@@ -307,9 +286,10 @@ exports.handler = async (event) => {
       };
     }
 
-    // No hard fails — generate PDF and email the customer.
+    // No hard fails — generate PDF, archive it, and email the customer.
     const pdf = await convertToPdf({ url: planUrl, apiKey: pdfshiftKey });
-    console.log(`[revise-plan-customer] ${record.id} pdf: ${pdf.length} bytes`);
+    await archivePdf(store, record.id, pdf);
+    console.log(`[revise-plan-customer] ${record.id} pdf: ${pdf.length} bytes (archived)`);
 
     if (record.customer_email) {
       await emailRevisedPlan({
