@@ -31,7 +31,10 @@ exports.handler = async (event) => {
   }
 
   // Forward to submission-created in the Netlify Forms event shape it expects.
+  // Spread the original event so Netlify context (headers, blob token, etc.)
+  // propagates — only override the body with the Forms-shaped payload.
   const wrappedEvent = {
+    ...event,
     body: JSON.stringify({
       payload: {
         form_name: "questionnaire",
