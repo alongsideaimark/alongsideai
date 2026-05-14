@@ -664,9 +664,63 @@ Use `**bold**` for emphasis inside text fields (the pipeline converts it to `<st
     "month3": "One sentence: what to do at month 3.",
     "month6": "One sentence: what to do at month 6.",
     "month12": "One sentence: what to do at month 12."
-  }
+  },
+  "coverage_map": [
+    {
+      "named_friction": "Matching deposits to invoices in QuickBooks",
+      "source": "manual_tasks[0]",
+      "tool_or_section": "Dext",
+      "specific_feature": "Receipt/bill extraction + auto-categorization sync to QuickBooks Online",
+      "where_addressed": "ai_tools[1]"
+    },
+    {
+      "named_friction": "Tracking my hours",
+      "source": "manual_tasks[2]",
+      "tool_or_section": "Toggl Track + Time Triage Project",
+      "specific_feature": "Auto-tracking via calendar event capture with manual override",
+      "where_addressed": "ai_tools[2] + custom_build"
+    }
+  ],
+  "verification_log": [
+    {
+      "claim": "Claude Team is $25/user/month annual with a 5-seat minimum (~$125/mo total)",
+      "source": "anthropic.com/team",
+      "verified_on": "2026-05-14"
+    },
+    {
+      "claim": "Homebase AI Scheduling lives on the Plus tier at $70/mo per location, not Essentials",
+      "source": "joinhomebase.com/pricing",
+      "verified_on": "2026-05-14"
+    }
+  ],
+  "existing_subscriptions_reviewed": [
+    {
+      "subscription": "QuickBooks Online",
+      "ai_features_2024_25": ["Intuit Assist for bill capture from photos/PDFs/emails", "Accounting AI categorization"],
+      "retires_named_friction": "manual_tasks[0] — matching deposits to invoices",
+      "decision": "Recommend turning on Intuit Assist instead of subscribing to a new tool"
+    },
+    {
+      "subscription": "Later",
+      "ai_features_2024_25": ["AI Caption Writer powered by generative AI"],
+      "retires_named_friction": "manual_tasks[0] — writing Instagram captions",
+      "decision": "Use Later's existing AI Caption Writer rather than recommending ChatGPT for captions"
+    }
+  ]
 }
 ```
+
+## The three internal audit fields — required, not rendered
+
+The last three fields above (`coverage_map`, `verification_log`, `existing_subscriptions_reviewed`) are required but never shown to the customer. They exist to force the work into the artifact so the final self-check can actually bind. Treat them as the audit's evidence, not as content.
+
+- **`coverage_map`** — one entry per item in `manual_tasks`, `friction`, `inbox` (when overwhelmed/surrendered), `wish`. Every named friction gets a row. Every row must be filled to the same depth — "addressed in the savings table" is a thin row and a fail. This is the structural mechanism that defeats serial-position drop on manual_task #3.
+
+- **`verification_log`** — every price, tier-feature claim, vendor policy statement, or integration claim that's load-bearing for a recommendation gets a row. If you state "Homebase Plus includes AI scheduling at $70/mo," there must be a verification_log entry for it. If you can't write the entry honestly (you didn't actually search, the source moved), revise the claim or hedge it.
+
+- **`existing_subscriptions_reviewed`** — one row per paid subscription the respondent already names in their briefing. Empty array is valid ONLY when the briefing names zero existing paid subscriptions. For every existing subscription, audit its 2024-25 AI features (search if you don't know them) and decide whether to recommend turning them on instead of layering a new tool on top.
+
+These fields are how the final self-check binds on what would otherwise be invisible process. Treat them as part of submitting, not part of writing.
 
 ## The briefing you'll receive
 

@@ -353,6 +353,51 @@ const toolSchema = {
       },
       required: ["month3", "month6", "month12"],
     },
+    // Internal audit fields — not rendered to the customer. These force the writer
+    // to expose work in the artifact so the final self-check can actually bind.
+    // See: external reviewer feedback on artifact-visible vs invisible-process audits.
+    coverage_map: {
+      type: "array",
+      description: "One entry per named friction/manual_task/wish/inbox-overwhelm in the briefing. Required parallelism across items — each row must be filled to the same depth. Empty or thin rows are failures.",
+      items: {
+        type: "object",
+        required: ["named_friction", "source", "tool_or_section", "specific_feature", "where_addressed"],
+        properties: {
+          named_friction: { type: "string", description: "The friction in the respondent's exact words from the briefing." },
+          source: { type: "string", description: "Where in the briefing this came from (e.g., 'manual_tasks[2]', 'friction', 'wish', 'inbox')." },
+          tool_or_section: { type: "string", description: "The specific tool or plan section that retires this friction." },
+          specific_feature: { type: "string", description: "The specific feature/workflow inside that tool. Not 'Claude handles it' — 'Claude Projects feature lets her drop PDFs in and ask X.'" },
+          where_addressed: { type: "string", description: "Section reference (e.g., 'ai_tools[1]', 'custom_build', 'foundation_tools[0]')." },
+        },
+      },
+    },
+    verification_log: {
+      type: "array",
+      description: "Every price, tier-feature claim, vendor policy statement, or integration claim that's load-bearing for a recommendation. Forces verification work into the artifact so the audit can check it.",
+      items: {
+        type: "object",
+        required: ["claim", "source", "verified_on"],
+        properties: {
+          claim: { type: "string", description: "The exact claim being made (e.g., 'Homebase Essentials is $30/mo, AI Scheduling is on Plus at $70/mo per location')." },
+          source: { type: "string", description: "Where you verified it (e.g., 'homebase.com/pricing', 'anthropic.com/claude-pro', 'JAMA Open 2026-03 study')." },
+          verified_on: { type: "string", description: "ISO date you ran the search (e.g., '2026-05-14')." },
+        },
+      },
+    },
+    existing_subscriptions_reviewed: {
+      type: "array",
+      description: "One row per paid subscription the respondent already names in their briefing. Forces an explicit audit of whether that subscription's 2024-25 AI features could retire a named friction before recommending a new tool. Empty array is valid ONLY if the respondent named zero existing paid subscriptions.",
+      items: {
+        type: "object",
+        required: ["subscription", "ai_features_2024_25", "retires_named_friction", "decision"],
+        properties: {
+          subscription: { type: "string", description: "The subscription name from the briefing (e.g., 'QuickBooks Online', 'Canva', 'Later')." },
+          ai_features_2024_25: { type: "array", items: { type: "string" }, description: "AI features this product added in 2024-25 you verified via search. Empty array if you verified there are no relevant AI features." },
+          retires_named_friction: { type: "string", description: "If the AI features retire a named friction, name the friction. Empty string if not applicable." },
+          decision: { type: "string", description: "Your decision — e.g., 'Recommend turning on Intuit Assist for supply-order capture instead of a new Dext subscription', or 'No relevant AI features — proceed with new tool recommendation', or 'Recommend the existing Later AI Caption Writer instead of ChatGPT for captions.'" },
+        },
+      },
+    },
   },
   required: [
     "first_name", "prepared_for_name", "prepared_for_tagline",
@@ -363,6 +408,7 @@ const toolSchema = {
     "custom_build", "ruled_out", "practice",
     "rollout", "guardrails", "numbers",
     "team_handoffs", "day30_worksheet", "milestones",
+    "coverage_map", "verification_log", "existing_subscriptions_reviewed",
   ],
 };
 
