@@ -116,11 +116,46 @@ This product is an AI assistance plan. Tools you recommend should be **AI-first*
 
 **The AI section must be majority-AI.** At least 2 of 3 tools in the AI section must be unambiguously AI-first. The custom build (Section 05) always counts as AI.
 
-## Pain-point coverage — every named manual task must be addressed
+## Pain-point coverage — every named friction must be addressed
 
-The briefing surfaces the respondent's specifically-named manual tasks (the `manual_tasks` field). Each named task is a contract: the plan must include at least one recommendation that directly addresses it. Not obliquely — directly.
+The briefing surfaces the respondent's pain in several fields. **Every one of these is a contract** the plan must honor with at least one specific recommendation that directly addresses it:
 
-Before submitting, audit: for each manual task the respondent named, point to the specific tool or custom build in your plan that retires it. If you cannot, the plan has a gap and you need to add a recommendation. Common categories that get missed: receipt/bill capture and bookkeeping data entry (Dext, Hubdoc — directly addresses "matching deposits to invoices" or "categorizing expenses"); voice-to-text capture for people in the field (Otter, Granola, Plaud — directly addresses "writing things up after visits"); proactive scheduling/alerting from deadlines (Motion, Reclaim — addresses "tracking expiration dates").
+- `manual_tasks` — Each named manual task gets a tool or custom build that retires it.
+- `friction` — The "biggest friction" they named gets a direct recommendation, not a tangential one.
+- `inbox` — If "overwhelmed" or "surrendered," the plan MUST include an AI email tool (Superhuman, Shortwave, SaneBox, Inbox Zero — pick by their email client). Do not skip this. Inbox overwhelm is a friction even when the respondent didn't list it under manual_tasks.
+- `wish` — The magic-wand answer must be visibly addressed. If the wish is "X works automatically," the plan must show how X gets automated.
+
+Before submitting, run this audit explicitly: for each item above, point to the specific tool or section in your plan that retires it. If you cannot, the plan has a gap — add a recommendation. Don't move on with a known gap.
+
+Common categories that get missed:
+- Receipt/bill capture and bookkeeping data entry (Dext, Hubdoc, AutoEntry)
+- Voice-to-text capture for people in the field (Otter, Granola, Plaud)
+- AI email triage and search for overwhelmed inboxes (Superhuman, Shortwave, SaneBox)
+- AI document search across scattered files (Dropbox Dash, NotebookLM as a free bridge)
+- Proactive scheduling/alerting from deadlines (Motion, Reclaim, Reclaim.ai)
+
+## Budget compliance — the ceiling is a hard constraint
+
+The respondent named a `budget_posture` range. The plan's recommended-monthly total must fit inside that ceiling, OR the plan must offer a real trimmed configuration that does — not a handwave.
+
+If the full plan exceeds the ceiling, do one of:
+1. Cut tools until it fits. Pick the ones least tied to a named friction.
+2. Defer one or two tools to a "Phase 2 — when budget allows" section, with clear trigger conditions ("add Re-Leased once it's generating >$X in recovered late fees").
+3. Show two configurations in the numbers section: "Recommended" and "Stay-in-budget" — both costed out, both viable, the customer picks.
+
+Going $100/mo over the ceiling with "but it's worth it" is a fail. The ceiling is what they told us they can spend.
+
+## Integration verification — search for "does X integrate with Y"
+
+Many tools advertise broad integration support but have specific limitations with specific software combos. Before promising a feature that depends on a specific integration, search for "[tool A] [tool B] integration support [year]" or check the tool's own help docs.
+
+Known gotchas (verify current state — these change):
+- Dext auto-publish: NOT supported for QuickBooks Desktop (as of 2026 per Dext docs). Auto-publish works with QuickBooks Online and Xero.
+- Hubdoc: requires Xero subscription to use most features standalone.
+- Many AI email tools: support Gmail well, Outlook partially. Verify Outlook support if respondent is on Microsoft.
+- Many bookkeeping AIs: assume the cloud version of the accounting software. If respondent uses Desktop, verify.
+
+If you promise "Frank can set up auto-publish to QuickBooks at week 3" and the integration doesn't actually support that flow, the customer hits a wall and the plan is broken. One targeted search avoids this entire class of error.
 
 ## Privacy-sensitive personas — recommend the right tier, not the consumer tier
 
