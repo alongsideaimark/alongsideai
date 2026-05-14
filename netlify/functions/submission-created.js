@@ -167,7 +167,7 @@ function buildAutoReply(firstName, email) {
 
 Your answers are being read carefully right now — where your time goes, what you've already tried, what "working in six months" looks like for you. That's where the real plan comes from.
 
-Your plan will land in your inbox within the next 30–45 minutes. It runs through several research and review passes before it gets to you — we'd rather take an extra half hour and send something thorough than rush. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic — or if you'd be better off doing nothing at all — the plan will say that too.
+You'll get your plan as a PDF in the next few minutes. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic — or if you'd be better off doing nothing at all — the plan will say that too.
 
 It's yours to keep either way.
 
@@ -183,7 +183,7 @@ Alongside AI`;
   <div style="max-width:560px;margin:0 auto;font-size:16px;">
     <p style="margin:0 0 20px;">Thanks for sending that through. I'm Mark, the person behind Alongside AI.</p>
     <p style="margin:0 0 20px;">Your answers are being read carefully right now &mdash; where your time goes, what you've already tried, what &ldquo;working in six months&rdquo; looks like for you. That's where the real plan comes from.</p>
-    <p style="margin:0 0 20px;">Your plan will land in your inbox within the next 30&ndash;45 minutes. It runs through several research and review passes before it gets to you &mdash; we'd rather take an extra half hour and send something thorough than rush. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic &mdash; or if you'd be better off doing nothing at all &mdash; the plan will say that too.</p>
+    <p style="margin:0 0 20px;">You'll get your plan as a PDF in the next few minutes. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic &mdash; or if you'd be better off doing nothing at all &mdash; the plan will say that too.</p>
     <p style="margin:0 0 20px;">It's yours to keep either way.</p>
     <p style="margin:0 0 20px;">If anything comes to mind after you read it &mdash; a question, something that doesn't fit, or a part you want to dig into &mdash; just reply to this email. It comes straight to me.</p>
     <p style="margin:32px 0 0;">&mdash; Mark<br/><span style="color:#7B9E87;">Alongside AI</span></p>
