@@ -17,14 +17,20 @@ You are completely agnostic. You favor no vendor, no ecosystem, no model family 
 
 You are evaluating a plan that was written by another AI. Your job is to find what's wrong, what's missing, and what's weak — not to defend the work. Skepticism is the default stance.
 
+THE PLAN STRUCTURE YOU'RE EVALUATING:
+The plan has TWO tool sections that serve different jobs and have different rules:
+1. "AI tools" (ai_tools in the JSON) — the core promise. These MUST be genuinely AI-first. Strict.
+2. "Other useful picks" (foundation_tools in the JSON) — optional non-AI tools that directly address a specific named friction from the briefing. Allowed to be non-AI; required to be tied to something the respondent explicitly named.
+
+Do NOT penalize the plan for having non-AI tools in foundation_tools — that is by design. DO penalize the plan if (a) tools in ai_tools aren't actually AI, or (b) tools in foundation_tools are generic padding not tied to a named briefing item.
+
 For every tool the plan recommends, you must:
 1. Verify the tool exists and is currently maintained (web search).
-2. Verify it is genuinely AI-first — its primary value must come from generative AI or LLMs, not from being a generic SaaS that happens to have an "AI feature" tacked on.
-3. Identify at least one credible alternative and assess whether the plan's pick is actually the strongest match for this specific person.
+2. For tools in ai_tools: verify it is genuinely AI-first — core value from generative AI / LLMs (2023+ transformer-era), not pre-LLM ML reskinned as "AI" (SaneBox, Boomerang's smart features), not template-based extraction (TripIt), not generic SaaS with a bolted-on AI feature.
+3. For tools in foundation_tools: verify the why_it_helps_you connects the tool to something specifically named in the briefing. If you can't find that connection, the pick is padding.
+4. Identify at least one credible alternative and assess whether the plan's pick is the strongest match for this specific person.
 
-An "AI tool" for this evaluation means: a tool whose core utility is generative AI (LLMs, voice-to-text powered by transformers, image generation, AI agents, AI-augmented research). Password managers, generic cloud storage, traditional task managers, and most pre-2023 SaaS are NOT AI tools — even if they're useful.
-
-Search the web aggressively. You have a generous search budget. Use it. Do not score any tool from memory; memory is where bias lives. If you find yourself thinking "I know this tool is good," stop and search.
+Search the web aggressively. You have a generous search budget. Use it. Do not score any tool from memory; memory is where bias lives.
 
 Output your evaluation as structured JSON via the submit_evaluation tool. Be specific. Cite concrete passages from the plan. Name specific alternatives. Vague critiques are useless.`;
 
@@ -42,7 +48,8 @@ const EVAL_SCHEMA = {
       type: "object",
       description: "Score each dimension 1-10. Calibration anchors: 1-3 = fails the customer; 4-6 = mediocre, has real issues; 7 = passable but not what we promise; 8 = good, what we should be shipping; 9 = exemplary, a clear win; 10 = best-in-class, nothing to improve. Do NOT grade on a curve. Reserve 9-10 for plans that are genuinely without flaw on that dimension. A plan with even one significant defect on a dimension cannot score above 7 on it.",
       required: [
-        "ai_tool_purity",
+        "ai_section_integrity",
+        "other_picks_relevance",
         "tool_currency",
         "vendor_agnosticism",
         "persona_fit",
@@ -50,14 +57,25 @@ const EVAL_SCHEMA = {
         "specificity",
       ],
       properties: {
-        ai_tool_purity: {
+        ai_section_integrity: {
           type: "object",
           required: ["score", "reason"],
           properties: {
             score: { type: "integer", minimum: 1, maximum: 10 },
             reason: {
               type: "string",
-              description: "% of recommendations that are genuinely AI-first. Cite specific tools that don't qualify.",
+              description: "Of the tools the plan classifies in ai_tools, what percentage are actually AI-first by the strict definition (core value from generative AI / LLMs, 2023+ transformer-era, not pre-LLM ML reskinned)? Cite any tool in ai_tools that fails the test. Tools in foundation_tools are NOT evaluated here — that section is allowed to be non-AI.",
+            },
+          },
+        },
+        other_picks_relevance: {
+          type: "object",
+          required: ["score", "reason"],
+          properties: {
+            score: { type: "integer", minimum: 1, maximum: 10 },
+            reason: {
+              type: "string",
+              description: "Are the tools in foundation_tools each tied to a specific named friction, manual_task, wish, or pain point from the briefing? Or are they generic padding (1Password 'because everyone needs one', a note-taking app 'for organization', cloud storage 'because they have files')? Score 10 if foundation_tools is empty OR every tool clearly addresses a named briefing item. Score 5 if some are tied to the briefing and some are padding. Score 1-3 if foundation_tools is mostly padding. Cite specific briefing items.",
             },
           },
         },
@@ -319,7 +337,7 @@ ${JSON.stringify(plan, null, 2)}`;
 function meetsBar(evaluation) {
   if (!evaluation || !evaluation.scores) return false;
   if (evaluation.verdict !== "strong") return false;
-  const dims = ["ai_tool_purity", "tool_currency", "vendor_agnosticism", "persona_fit", "coverage", "specificity"];
+  const dims = ["ai_section_integrity", "other_picks_relevance", "tool_currency", "vendor_agnosticism", "persona_fit", "coverage", "specificity"];
   for (const d of dims) {
     const s = evaluation.scores[d];
     if (!s || typeof s.score !== "number" || s.score < 8) return false;
@@ -339,7 +357,8 @@ function formatEvalAsInstruction(evaluation) {
 
   // Per-dimension issues — only include dimensions that scored < 7
   const dims = [
-    ["ai_tool_purity", "AI tool purity"],
+    ["ai_section_integrity", "AI section integrity (tools in ai_tools must be AI)"],
+    ["other_picks_relevance", "Other useful picks relevance (must tie to named frictions)"],
     ["tool_currency", "Tool currency / factual accuracy"],
     ["vendor_agnosticism", "Vendor agnosticism"],
     ["persona_fit", "Persona fit"],

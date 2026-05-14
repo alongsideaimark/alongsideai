@@ -313,10 +313,17 @@ function renderPlan(plan, opts = {}) {
     PICKING_EXTRA_PARAGRAPH: extraParagraph,
 
     TOOLS_LEDE: renderInline(plan.tools_lede || ""),
-    FOUNDATION_TALLY: escapeHtml(plan.foundation_tally || `${(plan.foundation_tools || []).length} items`),
-    FOUNDATION_TOOLS: (plan.foundation_tools || []).map(renderToolSummary).join("\n"),
     AI_TALLY: escapeHtml(plan.ai_tally || `${(plan.ai_tools || []).length} items`),
     AI_TOOLS: (plan.ai_tools || []).map(renderToolSummary).join("\n"),
+    // Optional "other useful picks" section — render an empty string if the
+    // plan has zero non-AI recommendations. Better to ship a tight AI-only
+    // plan than to pad with generic non-AI suggestions.
+    OTHER_SECTION: (plan.foundation_tools && plan.foundation_tools.length > 0)
+      ? `<div class="rec-group">
+      <div class="rec-group-head sage">Other useful picks <span class="tally">${escapeHtml(plan.foundation_tally || `${plan.foundation_tools.length} items`)}</span></div>
+      ${plan.foundation_tools.map(renderToolSummary).join("\n")}
+    </div>`
+      : "",
 
     CUSTOM_BUILD_TITLE: renderInline(plan.custom_build?.title || "A custom tool, <em>built for your exact situation.</em>"),
     CUSTOM_BUILD_LEDE: renderInline(plan.custom_build?.lede || ""),

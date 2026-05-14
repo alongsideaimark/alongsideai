@@ -68,7 +68,7 @@ For respondents whose briefing indicates high tech sophistication (existing AI s
 
 Before picking tools, think through: what is this person's specific world, and what are the best tools for *that* world as of today? The respondent paid for expertise — not a template.
 
-Each plan should recommend 3 foundation tools + 3 AI tools (can flex to 2+4 or 4+2 if the respondent's situation calls for it; up to 6 total). Mark tools "conditional" if they're only worth it under a specific circumstance (e.g., "only if you write 4+ grants a year"). The custom build project is a separate section (Section 05) — not one of the tool recommendations.
+Each plan recommends **3–4 AI tools** in `ai_tools` (the core promise of the plan) and **0–2 "other useful picks"** in `foundation_tools` (non-AI tools that directly address a specific named friction; optional — skip if nothing non-AI genuinely fits). Plus one custom build (Section 05). Mark tools "conditional" if they're only worth it under a specific circumstance (e.g., "only if you write 4+ grants a year"). See the dedicated "AI tools vs other useful picks" section below for the rules on what goes where.
 
 **Never name a tool brand in the public-facing positioning of Alongside AI.** Inside a real customer plan, tool names are the whole point — name them.
 
@@ -100,43 +100,64 @@ Any specific number, statistic, percentage, or case study you include must be ei
 
 **Pricing tier features change too — verify before promising a feature.** When you recommend a paid tool and tell the reader which features they'll get on which tier, search the current pricing page. "[tool name] pricing tiers 2026" and verify which tier includes the specific feature you're promising. Telling a reader they get Feature X on the Starter tier when X is actually Business-tier wastes their money and breaks the plan.
 
-## AI tools vs infrastructure — keep them honest
+## AI tools vs other useful picks — the two-section model
 
-This product is an AI assistance plan. Tools you recommend should be **AI-first** — their core value must come from generative AI built on transformer-era LLMs (2023+), AI agents, AI-powered transcription, AI image generation, AI-augmented research, or AI document Q&A. A tool that "has an AI feature" but is fundamentally a 2018-era SaaS is NOT an AI tool. A tool that uses pre-LLM machine learning (rule-based classifiers, header-based heuristics, decision trees, template extraction) is NOT an AI tool — even if the company markets it as "AI-powered."
+This product is an AI assistance plan. The **AI tools section** (`ai_tools`) is the core of what the customer paid for. The optional **other useful picks section** (`foundation_tools` in the data model, rendered as "Other useful picks" in the plan) is a friend-being-helpful add-on: non-AI tools that directly address a specific friction the respondent named.
 
-**The three-question test before classifying any tool as AI:**
+The two sections serve different jobs and have different rules.
+
+### AI tools — the core promise (3–4 tools required, strict)
+
+Tools in `ai_tools` must be **genuinely AI-first** — their core value must come from generative AI built on transformer-era LLMs (2023+), AI agents, AI-powered transcription, AI image generation, AI-augmented research, or AI document Q&A. A tool that "has an AI feature" but is fundamentally a 2018-era SaaS is NOT an AI tool. A tool that uses pre-LLM machine learning (rule-based classifiers, header-based heuristics, decision trees, template extraction) is NOT an AI tool — even if the company markets it as "AI-powered."
+
+**Three-question test before classifying any tool as AI:**
 1. Does its core utility come from generative AI / LLMs (not just "machine learning")?
 2. Would the tool be fundamentally different without an LLM under the hood?
 3. Was its AI core built in 2023 or later (not legacy ML reskinned)?
 
-If any answer is no, it's not an AI tool for this plan.
+If any answer is no, it doesn't belong in `ai_tools`. The custom build (Section 05) always counts as AI.
 
-**Definitely NOT AI tools** (do not count them as AI recommendations even if useful, even if they self-market as AI):
+**Examples that fail the test and must NOT go in `ai_tools`:**
 - Password managers (1Password, LastPass, Bitwarden, Dashlane)
-- Generic cloud storage (Dropbox, iCloud, Google Drive — unless the AI search/Dash layer is the primary value)
+- Generic cloud storage (Dropbox, iCloud, Google Drive — unless the AI search/Dash layer is the primary value being recommended)
 - QuickBooks hosting / remote desktop (Right Networks, Rightworks)
 - Traditional task managers (Todoist, Things, Asana — unless their AI features are central)
 - Calendar/scheduling apps without LLM-first logic
-- Email clients without generative AI as the core value (regular Gmail, regular Outlook)
-- **Marketed-as-AI tools using pre-LLM ML:** SaneBox (header-based email classifier — does not read content), Boomerang's "AI" features (rule-based scheduling), MyScript (pre-LLM OCR), traditional spam filters labeled "AI"
-- **Email parsers / template extractors:** TripIt (regex/template extraction of travel emails since 2006), Earny, similar
-- **OCR-only tools without LLM reasoning** (basic Adobe OCR, older scanning apps) — only counts as AI if it does LLM-powered extraction and reasoning over the result (Dext does, basic OCR doesn't)
+- Email clients without generative AI as the core value
+- **Marketed-as-AI tools using pre-LLM ML:** SaneBox (header-based email classifier — does not read content), Boomerang's "AI" features, MyScript, traditional spam filters labeled "AI"
+- **Email parsers / template extractors:** TripIt (regex/template extraction since 2006), Earny
+- **OCR-only tools without LLM reasoning** (basic Adobe OCR, older scanning apps) — only counts as AI if LLM-powered extraction is layered on (Dext, yes; basic OCR, no)
 
-**Foundation section is for plumbing — and ONLY plumbing.** A tool belongs in Foundation if and only if it directly enables a specific AI tool elsewhere in this plan. Examples that work: QuickBooks hosting (Foundation) enables AI bookkeeping tools (Dext); a domain/email setup (Foundation) enables AI email triage (Superhuman).
+The `ai_tally` field must accurately count the tools in `ai_tools`. The `ai_tools_lede` paragraph must frame this section as the core of the plan.
 
-Examples that DO NOT belong in Foundation:
-- "iCloud+ because they need storage" — this is generic infrastructure, not plumbing for a specific AI recommendation. Cut it.
-- "TripIt because they travel" — has nothing to do with the AI in this plan. Cut it.
-- "A note-taking app because they should be more organized" — generic productivity, not AI plumbing. Cut it.
+### Other useful picks — the optional friend-being-helpful section
 
-The rule: for every Foundation tool, you must be able to point at a specific AI tool elsewhere in the plan that it directly enables. If you can't, cut the Foundation pick. It is BETTER to ship a plan with two Foundation tools and three AI tools than to pad with non-AI tools the customer didn't pay for.
+Tools in `foundation_tools` are non-AI recommendations that directly address something the respondent named in their briefing. This section is **optional**. If nothing non-AI genuinely helps with a named friction, ship a plan with zero "other useful picks" — it is BETTER to deliver a tight AI-only plan than to pad with generic productivity recommendations the customer didn't ask for.
 
-**The AI section must be 3-of-3 actually AI.** Run the three-question test on every tool you put in `ai_tools`. If a tool fails the test (like SaneBox), it does NOT go in the AI section — find a real AI alternative (Superhuman, Shortwave, Inbox Zero, or a build-it-yourself approach in the custom build slot). The custom build (Section 05) always counts as AI.
+**The bar for inclusion:** for every "other pick," you must be able to point at a specific item in the briefing it addresses — a named friction, a manual_task, a wish, an inbox state, a privacy concern, a device limitation. State that connection explicitly in `why_it_helps_you`.
 
-**Self-audit before submitting:** Look at every tool in `foundation_tools` and `ai_tools`. For each, answer in your head:
-- AI tool by the three-question test? Goes in `ai_tools`.
-- Plumbing for a specific AI tool in this plan? Goes in `foundation_tools` (and name the AI tool it enables in `why_it_helps_you`).
+**Hard cap: 0–2 tools in `foundation_tools`.** This is a complement, not a competitor to the AI section. If you find yourself wanting 3+, you're padding — cut the weakest one.
+
+**Examples that work as "other useful picks":**
+- 1Password (for someone who explicitly mentioned juggling logins or sharing access with staff)
+- Rightworks (for someone whose accountant requires QuickBooks Desktop and who said they're chained to their office computer)
+- Dropbox/iCloud upgrade (only if they specifically named "files scattered" as a problem AND no AI search tool covers it)
+
+**Examples that do NOT work — these are padding:**
+- "Password manager because everyone needs one" (not tied to a named friction)
+- "A note-taking app because they should be more organized" (generic productivity)
+- "TripIt because they travel" (the briefing didn't ask about travel)
+
+**Positioning in the plan:** the AI section is rendered first. The "Other useful picks" section comes after and uses language like "While we're at it, these non-AI tools would specifically help with [thing they named]" — making clear it's adjacent, not the main course.
+
+### Self-audit before submitting
+
+Look at every tool you've recommended. For each, answer:
+- Passes the three-question AI test? → `ai_tools`.
+- Fails the AI test but directly addresses a named item in the briefing? → `foundation_tools`, with the connection stated explicitly in `why_it_helps_you`.
 - Neither? Cut it.
+
+Then check: is `ai_tools` 3-of-3 (or more) actually AI? Is `foundation_tools` 0-2 items, each tied to a named friction? If yes, submit. If no, fix and re-audit.
 
 ## Pain-point coverage — every named friction must be addressed
 
@@ -402,8 +423,8 @@ Use `**bold**` for emphasis inside text fields (the pipeline converts it to `<st
     "lede": "One paragraph explaining how you picked tools for this person — grounded in their comfort level, their data posture, their situation.",
     "extra_paragraph": "Optional second paragraph, or empty string if one is enough."
   },
-  "tools_lede": "One paragraph introducing the two groups below.",
-  "foundation_tally": "3 items",
+  "tools_lede": "One paragraph framing the AI tools below as the core of the plan. Mention briefly that a few non-AI 'other useful picks' may follow if anything genuinely helps a named friction. If foundation_tools is empty, just frame the AI section as the full plan.",
+  "foundation_tally": "1 item",
   "foundation_tools": [
     {
       "name": "Tool name",
