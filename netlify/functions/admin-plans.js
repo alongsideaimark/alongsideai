@@ -15,7 +15,8 @@ function checkAuth(event) {
 
 exports.handler = async (event) => {
   try {
-    if (event.httpMethod !== "GET") {
+    const method = event.httpMethod;
+    if (method !== "GET" && method !== "POST") {
       return { statusCode: 405, body: "method not allowed" };
     }
 
@@ -25,14 +26,15 @@ exports.handler = async (event) => {
     const store = getStore("plans");
     const params = event.queryStringParameters || {};
 
-    // Mode 1: List all plans
+    // Mode 1: List all plans (filters out .eval.json entries)
     if (params.list === "1") {
       const listing = await store.list();
-      const keys = (listing && listing.blobs) ? listing.blobs.map((b) => b.key) : [];
+      const allKeys = (listing && listing.blobs) ? listing.blobs.map((b) => b.key) : [];
+      const planKeys = allKeys.filter((k) => k.endsWith(".json") && !k.endsWith(".eval.json"));
+      const evalKeys = new Set(allKeys.filter((k) => k.endsWith(".eval.json")));
       const summaries = [];
 
-      for (const key of keys) {
-        if (!key.endsWith(".json")) continue;
+      for (const key of planKeys) {
         const raw = await store.get(key);
         if (!raw) continue;
         try {
@@ -50,6 +52,7 @@ exports.handler = async (event) => {
             hard_fails: (r.critique && r.critique.hardFails && r.critique.hardFails.length) || 0,
             soft_fails: (r.critique && r.critique.softFails && r.critique.softFails.length) || 0,
             revision_count: Array.isArray(r.customer_revisions) ? r.customer_revisions.length : 0,
+            has_eval: evalKeys.has(`${r.id}.eval.json`),
           });
         } catch (_) {}
       }
@@ -69,7 +72,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // Mode 2 & 3: Get a specific plan
+    // Mode 2 & 3 & 4 & 5: Get a specific plan / pdf / eval / trigger eval
     const id = params.id;
     if (!id || !/^[A-Za-z0-9_-]+$/.test(id)) {
       return { statusCode: 400, body: "missing or invalid id" };
@@ -89,6 +92,58 @@ exports.handler = async (event) => {
         },
         body: pdfBuffer.toString("base64"),
         isBase64Encoded: true,
+      };
+    }
+
+    // Mode 4: Get evaluation JSON
+    if (params.eval === "1") {
+      const evalRaw = await store.get(`${id}.eval.json`);
+      if (!evalRaw) {
+        return { statusCode: 404, body: "no evaluation for this plan — trigger one with ?evaluate=1&id=" + id };
+      }
+      return {
+        statusCode: 200,
+        headers: { "content-type": "application/json" },
+        body: evalRaw,
+      };
+    }
+
+    // Mode 5: Trigger evaluation (POST or GET both accepted for convenience)
+    if (params.evaluate === "1") {
+      const planRaw = await store.get(`${id}.json`);
+      if (!planRaw) {
+        return { statusCode: 404, body: `plan ${id} not found` };
+      }
+
+      const baseUrl =
+        process.env.DEPLOY_PRIME_URL ||
+        process.env.DEPLOY_URL ||
+        process.env.URL;
+
+      if (!baseUrl) {
+        return { statusCode: 500, body: "no base url env var; cannot trigger background function" };
+      }
+
+      const triggerUrl = `${baseUrl}/.netlify/functions/evaluate-plan-background`;
+      const triggerRes = await fetch(triggerUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+
+      if (triggerRes.status !== 202 && !triggerRes.ok) {
+        const errBody = await triggerRes.text().catch(() => "(no body)");
+        return { statusCode: 500, body: `evaluator trigger returned ${triggerRes.status}: ${errBody}` };
+      }
+
+      return {
+        statusCode: 200,
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          ok: true,
+          id,
+          message: "evaluation triggered; will be available at ?eval=1&id=" + id + " in 2-5 minutes",
+        }),
       };
     }
 

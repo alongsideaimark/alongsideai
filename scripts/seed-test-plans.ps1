@@ -3,7 +3,7 @@
 # Usage: powershell -File scripts/seed-test-plans.ps1
 
 $SiteUrl = if ($env:SITE_URL) { $env:SITE_URL } else { "https://alongsideai.ai" }
-$Endpoint = "$SiteUrl/.netlify/functions/submit-questionnaire"
+$Endpoint = "$SiteUrl/.netlify/functions/generate-plan-background"
 $DelaySeconds = 5
 
 # Build persona payloads inline (PowerShell hashtables).
@@ -66,15 +66,22 @@ for ($i = 0; $i -lt $personas.Count; $i++) {
     $p = $personas[$i]
     $label = "[{0,2}/25]" -f ($i + 1)
 
-    # Build the payload - add test flag and contact email
-    $payload = @{}
+    # Build the payload in the shape generate-plan-background expects:
+    # { data: { ...form fields }, firstName, submittedAt }
+    $data = @{}
     foreach ($key in $p.Keys) {
-        $payload[$key] = $p[$key]
+        $data[$key] = $p[$key]
     }
-    $payload["contact"] = "test+$($p.name.ToLower())@alongsideai.ai"
-    $payload["_test"] = $true
+    $data["contact"] = "test+$($p.name.ToLower())@alongsideai.ai"
+    $data["_test"] = $true
 
-    $json = $payload | ConvertTo-Json -Depth 3 -Compress
+    $payload = @{
+        data = $data
+        firstName = $p.name
+        submittedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+    }
+
+    $json = $payload | ConvertTo-Json -Depth 4 -Compress
 
     Write-Host "$label Submitting $($p.name) ($($p.situation))..."
 
