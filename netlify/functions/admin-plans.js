@@ -53,6 +53,13 @@ exports.handler = async (event) => {
             soft_fails: (r.critique && r.critique.softFails && r.critique.softFails.length) || 0,
             revision_count: Array.isArray(r.customer_revisions) ? r.customer_revisions.length : 0,
             has_eval: evalKeys.has(`${r.id}.eval.json`),
+            // Self-correcting loop metadata
+            eval_iterations: Array.isArray(r.iterations) ? r.iterations.length : null,
+            eval_converged: typeof r.converged === "boolean" ? r.converged : null,
+            eval_verdict: r.final_eval && r.final_eval.verdict ? r.final_eval.verdict : null,
+            eval_scores: r.final_eval && r.final_eval.scores
+              ? Object.fromEntries(Object.entries(r.final_eval.scores).map(([k, v]) => [k, v.score]))
+              : null,
           });
         } catch (_) {}
       }

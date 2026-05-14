@@ -9,10 +9,16 @@
 const crypto = require("crypto");
 const { connectLambda, getStore } = require("@netlify/blobs");
 const { buildAiBriefing } = require("../lib/briefing");
-const { draftPlan } = require("../lib/call-claude");
+const { draftPlan, revisePlan } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
 const { critique } = require("../lib/critique-plan");
 const { convertToPdf, archivePdf } = require("../lib/pdf");
+const { evaluatePlan, meetsBar, formatEvalAsInstruction } = require("../lib/evaluator");
+
+// Cap on revision attempts. Each attempt is ~$1.50 (plan + eval), so the
+// worst-case plan costs ~$4.50. Above 3 attempts, returns are diminishing
+// and we should flag for manual review instead.
+const MAX_REVISION_ATTEMPTS = 3;
 
 const INTERNAL_FROM = "Alongside AI <intake@alongsideai.ai>";
 const INTERNAL_TO = "mark@alongsideai.ai";
@@ -240,7 +246,7 @@ exports.handler = async (event) => {
     const briefing = buildAiBriefing(firstName, data);
     console.log("[generate-plan] drafting for", firstName, "email:", email || "(none)");
 
-    const { plan, usage, searchCount } = await draftPlan({ briefing, apiKey: anthropicKey });
+    let { plan, usage, searchCount } = await draftPlan({ briefing, apiKey: anthropicKey });
     console.log(`[generate-plan] draft returned; web searches: ${searchCount || 0}; tokens:`, JSON.stringify(usage));
 
     // If Claude decided the briefing was too thin for a real plan, notify Mark
@@ -259,6 +265,95 @@ exports.handler = async (event) => {
       }
       return { statusCode: 200, body: JSON.stringify({ ok: false, reason: "insufficient_input", missing: plan.missing }) };
     }
+
+    // ----- Self-correcting loop -----
+    // After the initial draft, run the independent evaluator. If it fails the
+    // bar (any dimension <7 OR verdict="rework"), feed the eval feedback back
+    // to the writer for a revision pass. Re-evaluate. Cap at MAX_REVISION_ATTEMPTS.
+    //
+    // The evaluator stays independent across iterations — fresh prompt, fresh
+    // searches, no investment in the plan. The writer reads the eval as input
+    // but its objective stays "write a great plan," not "score yourself well."
+    //
+    // History of every attempt is stored on the record so we can see what got
+    // revised and what got better/worse.
+    let activePlan = plan;
+    let activeUsage = { ...usage };
+    let activeSearchCount = searchCount;
+    const iterations = [];
+    let converged = false;
+    let finalEval = null;
+
+    for (let attempt = 1; attempt <= MAX_REVISION_ATTEMPTS + 1; attempt++) {
+      // Evaluate the current plan
+      console.log(`[generate-plan] running evaluator (attempt ${attempt})`);
+      const evalStart = Date.now();
+      let evalResult;
+      try {
+        evalResult = await evaluatePlan({ briefing, plan: activePlan, apiKey: anthropicKey });
+      } catch (evalErr) {
+        console.error(`[generate-plan] evaluator failed on attempt ${attempt}: ${evalErr.message}`);
+        // If the eval itself fails, ship the current plan rather than loop forever.
+        break;
+      }
+      const evalElapsed = Math.round((Date.now() - evalStart) / 1000);
+      console.log(`[generate-plan] eval ${attempt} done in ${evalElapsed}s; verdict: ${evalResult.evaluation.verdict}; scores: ${Object.entries(evalResult.evaluation.scores || {}).map(([k, v]) => `${k}=${v.score}`).join(", ")}`);
+
+      iterations.push({
+        attempt,
+        plan: activePlan,
+        evaluation: evalResult.evaluation,
+        eval_usage: evalResult.usage,
+        eval_search_count: evalResult.searchCount,
+        eval_elapsed_seconds: evalElapsed,
+      });
+      finalEval = evalResult.evaluation;
+
+      if (meetsBar(evalResult.evaluation)) {
+        converged = true;
+        console.log(`[generate-plan] converged on attempt ${attempt}`);
+        break;
+      }
+
+      // Bail out if we've used all our attempts
+      if (attempt >= MAX_REVISION_ATTEMPTS + 1) {
+        console.warn(`[generate-plan] hit revision cap (${MAX_REVISION_ATTEMPTS + 1} attempts) without converging; shipping best draft and flagging for review`);
+        break;
+      }
+
+      // Revise the plan using the eval as instruction
+      console.log(`[generate-plan] revising plan based on eval feedback (next attempt: ${attempt + 1})`);
+      const revStart = Date.now();
+      try {
+        const instruction = formatEvalAsInstruction(evalResult.evaluation);
+        const revResult = await revisePlan({
+          currentPlan: activePlan,
+          briefing,
+          instruction,
+          priorTurns: [],
+          apiKey: anthropicKey,
+        });
+        activePlan = revResult.plan;
+        // Accumulate usage (additive across passes)
+        const inc = revResult.usage || {};
+        activeUsage = {
+          input_tokens: (activeUsage.input_tokens || 0) + (inc.input_tokens || 0),
+          output_tokens: (activeUsage.output_tokens || 0) + (inc.output_tokens || 0),
+          cache_read_input_tokens: (activeUsage.cache_read_input_tokens || 0) + (inc.cache_read_input_tokens || 0),
+          cache_creation_input_tokens: (activeUsage.cache_creation_input_tokens || 0) + (inc.cache_creation_input_tokens || 0),
+        };
+        activeSearchCount += revResult.searchCount || 0;
+        console.log(`[generate-plan] revision ${attempt + 1} drafted in ${Math.round((Date.now() - revStart) / 1000)}s; ${revResult.searchCount || 0} searches`);
+      } catch (revErr) {
+        console.error(`[generate-plan] revision pass failed on attempt ${attempt}: ${revErr.message}`);
+        // Couldn't revise — ship the current plan with its eval as the final.
+        break;
+      }
+    }
+
+    // Use the final plan (after possible revisions) for everything downstream.
+    plan = activePlan;
+    usage = activeUsage;
 
     // Render to final HTML.
     const html = renderPlan(plan);
@@ -281,12 +376,17 @@ exports.handler = async (event) => {
       console.log(`[generate-plan] LLM critic: verdict=${layer2.verdict} score=${layer2.score}/10 confidence=${layer2.confidence}`);
     }
 
+    // If the eval loop didn't converge, route to needs_review even if the
+    // legacy critic is happy — the eval is the source of truth for quality.
+    const evalBlocked = !converged;
+    const blockDelivery = hasHardFails || evalBlocked;
+
     // Store in Netlify Blobs so we can serve it to Mark (and later to the customer).
     const id = newPlanId();
     const record = {
       id,
       created_at: new Date().toISOString(),
-      status: hasHardFails ? "needs_review" : "draft",
+      status: blockDelivery ? "needs_review" : "draft",
       customer_first_name: firstName,
       customer_email: email,
       submission: data,
@@ -295,6 +395,9 @@ exports.handler = async (event) => {
       html,
       usage,
       critique: { hardFails, softFails, layer2 },
+      iterations,
+      converged,
+      final_eval: finalEval,
     };
 
     const store = getStore("plans");

@@ -313,4 +313,99 @@ ${JSON.stringify(plan, null, 2)}`;
   };
 }
 
-module.exports = { evaluatePlan };
+// Checks whether an evaluation result meets the quality bar for shipping.
+// Bar: every dimension scored 7+ AND verdict is not "rework".
+// "Strong" or "acceptable" with all dimensions ≥ 7 ships.
+function meetsBar(evaluation) {
+  if (!evaluation || !evaluation.scores) return false;
+  if (evaluation.verdict === "rework") return false;
+  const dims = ["ai_tool_purity", "tool_currency", "vendor_agnosticism", "persona_fit", "coverage", "specificity"];
+  for (const d of dims) {
+    const s = evaluation.scores[d];
+    if (!s || typeof s.score !== "number" || s.score < 7) return false;
+  }
+  return true;
+}
+
+// Renders an evaluation result as a plain-English instruction block the writer
+// can act on during a revise call. Lists the specific issues, not the scores.
+// The writer doesn't need to see the scores — it needs to know what to fix.
+function formatEvalAsInstruction(evaluation) {
+  if (!evaluation) return "";
+  const L = [];
+
+  L.push("An independent evaluator reviewed your draft against the customer's briefing. Address every issue below in your revision. Do not lose what's already working — preserve the recommendations and language the eval did not flag.");
+  L.push("");
+
+  // Per-dimension issues — only include dimensions that scored < 7
+  const dims = [
+    ["ai_tool_purity", "AI tool purity"],
+    ["tool_currency", "Tool currency / factual accuracy"],
+    ["vendor_agnosticism", "Vendor agnosticism"],
+    ["persona_fit", "Persona fit"],
+    ["coverage", "Coverage of named frictions"],
+    ["specificity", "Specificity to this person"],
+  ];
+  const weak = dims.filter(([key]) => {
+    const s = evaluation.scores && evaluation.scores[key];
+    return s && typeof s.score === "number" && s.score < 7;
+  });
+  if (weak.length > 0) {
+    L.push("DIMENSIONS THAT NEED WORK:");
+    for (const [key, label] of weak) {
+      const s = evaluation.scores[key];
+      L.push(`- ${label} (current ${s.score}/10): ${s.reason}`);
+    }
+    L.push("");
+  }
+
+  // Per-tool issues
+  const toolIssues = (evaluation.tool_audit || []).filter(
+    (t) => !t.is_ai_tool || !t.is_current || !t.fits_persona || (t.stronger_alternative && t.stronger_alternative.trim())
+  );
+  if (toolIssues.length > 0) {
+    L.push("TOOL-LEVEL ISSUES:");
+    for (const t of toolIssues) {
+      const flags = [];
+      if (!t.is_ai_tool) flags.push("not AI-first");
+      if (!t.is_current) flags.push("not current or has factual error");
+      if (!t.fits_persona) flags.push("doesn't fit this persona");
+      const flagStr = flags.length ? ` [${flags.join("; ")}]` : "";
+      const altStr = t.stronger_alternative && t.stronger_alternative.trim()
+        ? ` Consider: ${t.stronger_alternative}.`
+        : "";
+      L.push(`- ${t.tool_name}${flagStr}: ${t.notes}${altStr}`);
+    }
+    L.push("");
+  }
+
+  // Missed opportunities
+  const missed = evaluation.missed_opportunities || [];
+  if (missed.length > 0) {
+    L.push("RECOMMENDATIONS THE PLAN SHOULD HAVE INCLUDED:");
+    for (const m of missed) {
+      L.push(`- ${m.category}: ${m.suggested_tool} — ${m.why}`);
+    }
+    L.push("");
+  }
+
+  // Summary
+  if (evaluation.summary) {
+    L.push("EVALUATOR SUMMARY:");
+    L.push(evaluation.summary);
+    L.push("");
+  }
+
+  L.push("Your revision should:");
+  L.push("1. Fix every tool-level factual error (currency, pricing, integration support).");
+  L.push("2. Replace non-AI tools in the AI section with genuine AI tools, or move them to Foundation as plumbing.");
+  L.push("3. Add at least one of the 'missed opportunities' where it genuinely fits this person.");
+  L.push("4. Stay inside the customer's budget ceiling.");
+  L.push("5. Preserve the personalization, the voice, and the specific details the eval did NOT flag.");
+  L.push("");
+  L.push("Return the COMPLETE revised plan (every section, not just what changed). Use web_search to verify any tool claim, pricing, or integration before locking it in.");
+
+  return L.join("\n");
+}
+
+module.exports = { evaluatePlan, meetsBar, formatEvalAsInstruction };
