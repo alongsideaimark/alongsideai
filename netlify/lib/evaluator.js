@@ -40,7 +40,7 @@ const EVAL_SCHEMA = {
   properties: {
     scores: {
       type: "object",
-      description: "Score each dimension 1-10. 1 = fails completely, 5 = mediocre, 10 = exemplary.",
+      description: "Score each dimension 1-10. Calibration anchors: 1-3 = fails the customer; 4-6 = mediocre, has real issues; 7 = passable but not what we promise; 8 = good, what we should be shipping; 9 = exemplary, a clear win; 10 = best-in-class, nothing to improve. Do NOT grade on a curve. Reserve 9-10 for plans that are genuinely without flaw on that dimension. A plan with even one significant defect on a dimension cannot score above 7 on it.",
       required: [
         "ai_tool_purity",
         "tool_currency",
@@ -175,7 +175,7 @@ const EVAL_SCHEMA = {
     verdict: {
       type: "string",
       enum: ["strong", "acceptable", "weak", "rework"],
-      description: "Overall judgment. 'strong' = ship; 'acceptable' = ship but note issues; 'weak' = ship only if customer is forgiving; 'rework' = do not ship as-is.",
+      description: "Overall judgment. 'strong' = no significant issues, ready to ship to a paying customer who'll judge it hard; 'acceptable' = has minor issues that wouldn't embarrass us but the plan isn't great; 'weak' = ship only if customer is forgiving; 'rework' = do not ship as-is. The shipping bar is 'strong' — 'acceptable' is not good enough.",
     },
   },
 };
@@ -314,15 +314,15 @@ ${JSON.stringify(plan, null, 2)}`;
 }
 
 // Checks whether an evaluation result meets the quality bar for shipping.
-// Bar: every dimension scored 7+ AND verdict is not "rework".
-// "Strong" or "acceptable" with all dimensions ≥ 7 ships.
+// Bar: every dimension scored 8+ AND verdict is "strong".
+// "Acceptable" no longer ships — Mark wants great, not acceptable.
 function meetsBar(evaluation) {
   if (!evaluation || !evaluation.scores) return false;
-  if (evaluation.verdict === "rework") return false;
+  if (evaluation.verdict !== "strong") return false;
   const dims = ["ai_tool_purity", "tool_currency", "vendor_agnosticism", "persona_fit", "coverage", "specificity"];
   for (const d of dims) {
     const s = evaluation.scores[d];
-    if (!s || typeof s.score !== "number" || s.score < 7) return false;
+    if (!s || typeof s.score !== "number" || s.score < 8) return false;
   }
   return true;
 }
