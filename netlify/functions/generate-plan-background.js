@@ -281,6 +281,7 @@ exports.handler = async (event) => {
     let activeUsage = { ...usage };
     let activeSearchCount = searchCount;
     const iterations = [];
+    const loopErrors = [];
     let converged = false;
     let finalEval = null;
 
@@ -293,6 +294,7 @@ exports.handler = async (event) => {
         evalResult = await evaluatePlan({ briefing, plan: activePlan, apiKey: anthropicKey });
       } catch (evalErr) {
         console.error(`[generate-plan] evaluator failed on attempt ${attempt}: ${evalErr.message}`);
+        loopErrors.push({ phase: "evaluate", attempt, message: evalErr.message, stack: evalErr.stack });
         // If the eval itself fails, ship the current plan rather than loop forever.
         break;
       }
@@ -345,7 +347,8 @@ exports.handler = async (event) => {
         activeSearchCount += revResult.searchCount || 0;
         console.log(`[generate-plan] revision ${attempt + 1} drafted in ${Math.round((Date.now() - revStart) / 1000)}s; ${revResult.searchCount || 0} searches`);
       } catch (revErr) {
-        console.error(`[generate-plan] revision pass failed on attempt ${attempt}: ${revErr.message}`);
+        console.error(`[generate-plan] revision pass failed on attempt ${attempt}: ${revErr.message}\n${revErr.stack}`);
+        loopErrors.push({ phase: "revise", attempt, message: revErr.message, stack: revErr.stack });
         // Couldn't revise — ship the current plan with its eval as the final.
         break;
       }
@@ -396,6 +399,7 @@ exports.handler = async (event) => {
       usage,
       critique: { hardFails, softFails, layer2 },
       iterations,
+      loop_errors: loopErrors,
       converged,
       final_eval: finalEval,
     };
