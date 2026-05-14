@@ -303,6 +303,9 @@ function renderPlan(plan, opts = {}) {
     PREPARED_DATE: escapeHtml(preparedDate),
     PREPARED_DATE_UPPER: escapeHtml(preparedDate.toUpperCase()),
 
+    NOTE_HEADLINE: renderInline(plan.note_to_start?.headline || "Thank you for trusting us <em>with the honest version.</em>"),
+    NOTE_LEDE: renderInline(plan.note_to_start?.lede || "You shared where things get stuck. We read everything carefully. What follows is a plan written for you — not a template — and yours to keep whether you decide to continue or not."),
+
     OBSERVATIONS: (plan.observations || []).map(renderObservation).join("\n      "),
 
     PICKING_TITLE: renderInline(plan.picking?.title || ""),

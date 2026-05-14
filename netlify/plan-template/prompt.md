@@ -96,6 +96,36 @@ Any specific number, statistic, percentage, or case study you include must be ei
 
 **Search budget allocation:** Of your 4–8 searches, reserve at least 2 for pricing verification (current cost of recommended tools) and 1 for at least one ruled-out tool (so "considered and ruled out" is grounded in current state). Don't spend all searches on the niche — customer-facing pricing accuracy matters more.
 
+**AI vendor policies change fast — verify, don't recall.** AI companies update their data/training/privacy policies frequently. Your training data on these policies is unreliable. Before making any privacy or training-data claim about Claude, ChatGPT, Gemini, Perplexity, or any other AI vendor — search for the current policy. Specifically: "does Anthropic train on Claude Pro conversations 2026", "does OpenAI train on ChatGPT Plus conversations 2026", default opt-in vs opt-out status. As of late 2025 both Anthropic and OpenAI flipped consumer paid tiers to train-by-default-with-opt-out. Do not state these policies from memory.
+
+**Pricing tier features change too — verify before promising a feature.** When you recommend a paid tool and tell the reader which features they'll get on which tier, search the current pricing page. "[tool name] pricing tiers 2026" and verify which tier includes the specific feature you're promising. Telling a reader they get Feature X on the Starter tier when X is actually Business-tier wastes their money and breaks the plan.
+
+## AI tools vs infrastructure — keep them honest
+
+This product is an AI assistance plan. Tools you recommend should be **AI-first** — their core value must come from generative AI (LLMs, AI agents, AI-powered transcription, AI image generation, AI-augmented research, AI document Q&A). A tool that "has an AI feature" but is fundamentally a 2018-era SaaS is not an AI tool.
+
+**Not AI tools** (do not count them as AI recommendations even if useful):
+- Password managers (1Password, LastPass, Bitwarden)
+- Generic cloud storage (Dropbox, iCloud, Google Drive — unless the AI search/Dash layer is the primary value)
+- QuickBooks hosting / remote desktop (Right Networks, Rightworks)
+- Traditional task managers (Todoist, Things, Asana — unless their AI features are central)
+- Calendar/scheduling apps without AI-first scheduling logic
+- Email clients without generative AI as the core value (regular Gmail, regular Outlook)
+
+**How to handle non-AI tools:** If a non-AI tool is genuinely necessary infrastructure for the AI tools you're recommending (e.g., a hosting service to put QuickBooks in the cloud so AI bookkeeping tools can reach it), include it in the **Foundation** section, never the AI section. Be explicit in `why_it_helps_you` that this is plumbing the AI on top of. If you can't justify a non-AI tool as plumbing for an AI recommendation, cut it. Don't pad the plan with useful-but-non-AI tools.
+
+**The AI section must be majority-AI.** At least 2 of 3 tools in the AI section must be unambiguously AI-first. The custom build (Section 05) always counts as AI.
+
+## Pain-point coverage — every named manual task must be addressed
+
+The briefing surfaces the respondent's specifically-named manual tasks (the `manual_tasks` field). Each named task is a contract: the plan must include at least one recommendation that directly addresses it. Not obliquely — directly.
+
+Before submitting, audit: for each manual task the respondent named, point to the specific tool or custom build in your plan that retires it. If you cannot, the plan has a gap and you need to add a recommendation. Common categories that get missed: receipt/bill capture and bookkeeping data entry (Dext, Hubdoc — directly addresses "matching deposits to invoices" or "categorizing expenses"); voice-to-text capture for people in the field (Otter, Granola, Plaud — directly addresses "writing things up after visits"); proactive scheduling/alerting from deadlines (Motion, Reclaim — addresses "tracking expiration dates").
+
+## Privacy-sensitive personas — recommend the right tier, not the consumer tier
+
+If the briefing surfaces privacy/confidentiality concerns — attorney-client privilege, HIPAA, taxpayer data, FERPA, NDAs, financial records with SSNs, or any "my lawyer would have my head" language — do **not** recommend the consumer paid tier of a general AI tool. Recommend the Team or Business tier (Claude Team ~$25–30/user, ChatGPT Team ~$25–30/user, Gemini for Workspace) so the no-training guarantee is contractual and default, not a toggle the customer has to remember to flip. The extra cost is the entire point. Note this explicitly in `why_it_helps_you` ("Team tier so the no-training guarantee is contractual, which is what your attorney concern actually calls for").
+
 ## Section 05 — "Something only yours" (custom build — MANDATORY)
 
 Every plan MUST include a Section 05 custom build. This is the most differentiated piece of the plan — the thing no competitor offers and no one gets from asking an AI on their own. Your job is to identify something bespoke this person would benefit from building, and then give them everything they need to build it from absolute zero.
@@ -299,6 +329,10 @@ Use `**bold**` for emphasis inside text fields (the pipeline converts it to `<st
   "first_name": "Frank",
   "prepared_for_name": "Frank M.",
   "prepared_for_tagline": "Semi-retired · Altadena, CA",
+  "note_to_start": {
+    "headline": "You named the right friction — *and that's the whole game.*",
+    "lede": "You wrote candidly about the property files scattered between QuickBooks Desktop, a paper Rolodex, and your phone — and about wanting winters somewhere warm without checking the office iMac every morning. The plan below is built around exactly those two things."
+  },
   "observations": [
     "A 2-3 sentence paragraph with **strong tags** around key nouns and 'quoted phrases' from the respondent.",
     "Second observation.",

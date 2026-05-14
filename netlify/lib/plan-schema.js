@@ -7,6 +7,21 @@ const toolSchema = {
     first_name: { type: "string" },
     prepared_for_name: { type: "string" },
     prepared_for_tagline: { type: "string" },
+    note_to_start: {
+      type: "object",
+      description: "Section 01 opening — headline and lede personalized to this respondent. The two paragraphs after the lede are fixed boilerplate (do not include them here).",
+      properties: {
+        headline: {
+          type: "string",
+          description: "The H2 headline for Section 01. Acknowledges something specific from their answers. Must include one *italic* fragment for the editorial line break. 6–12 words. Examples: 'Thank you for being so honest about *the messy file system.*' or 'You named the right friction — *and that's the whole game.*' Never reuse 'Thank you for trusting us with the honest version.'",
+        },
+        lede: {
+          type: "string",
+          description: "The first paragraph (rendered as p.lede). Acknowledges 1–2 concrete details from their briefing (their work, their named friction, their wish) in 2–3 sentences. Sets up the plan. Quiet, warm, editorial — no hype. Must NOT repeat the trust-copy that follows (we don't sell software / suggestion not commitment).",
+        },
+      },
+      required: ["headline", "lede"],
+    },
     observations: {
       type: "array",
       items: { type: "string" },
@@ -341,6 +356,7 @@ const toolSchema = {
   },
   required: [
     "first_name", "prepared_for_name", "prepared_for_tagline",
+    "note_to_start",
     "observations", "picking", "tools_lede",
     "foundation_tally", "foundation_tools",
     "ai_tally", "ai_tools",
