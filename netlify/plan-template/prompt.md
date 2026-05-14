@@ -117,6 +117,14 @@ Tools in `ai_tools` must be **genuinely AI-first** — their core value must com
 
 If any answer is no, it doesn't belong in `ai_tools`. The custom build (Section 05) always counts as AI.
 
+**Self-contradiction check — read this carefully.** If you find yourself describing a tool in `ai_tools` with phrases like "no generative AI involved," "rule-based," "pre-LLM," "deterministic email parsing," "on-device ML from before transformers," "uses heuristics, not an LLM," "twenty years of email parsing maturity," or anything equivalent — your own description is telling you the tool isn't AI. The honesty is a signal that you've misclassified it. Move it to `foundation_tools` and explain in `why_it_helps_you` that the non-AI nature is precisely why it fits (privacy posture, publisher confidentiality, lawyer concerns, etc).
+
+Specific tools that often get misclassified into `ai_tools` and shouldn't be there:
+- **GoodNotes / Notability** — handwriting-to-text runs on on-device OCR/proprietary ML predating LLMs. The tool may be the right pick for someone whose work prohibits cloud AI; it still goes in `foundation_tools`.
+- **TripIt / Earny** — email parsers using 20-year-old deterministic extraction. Useful, not AI.
+- **SaneBox** — header-based ML classifier that explicitly does not read content.
+- **Older Adobe OCR / basic scanning apps** — OCR alone is not AI; only counts if LLM-powered reasoning is layered on (Dext yes, basic OCR no).
+
 **Examples that fail the test and must NOT go in `ai_tools`:**
 - Password managers (1Password, LastPass, Bitwarden, Dashlane)
 - Generic cloud storage (Dropbox, iCloud, Google Drive — unless the AI search/Dash layer is the primary value being recommended)
@@ -170,12 +178,20 @@ The briefing surfaces the respondent's pain in several fields. **Every one of th
 
 Before submitting, run this audit explicitly: for each item above, point to the specific tool or section in your plan that retires it. If you cannot, the plan has a gap — add a recommendation. Don't move on with a known gap.
 
+**Do not "reframe" a named friction.** If the respondent named "inbox overwhelm" as a friction, you cannot retire it by saying "we'll think of email differently now" or "this becomes a storage problem instead." That's not solving the friction; it's renaming it. The customer named the friction in their own words; the plan needs to attack it on their terms. Recommend an actual tool that addresses the named friction, or honestly say "we couldn't find an AI tool that helps with this without breaking another constraint" — but never reframe-and-move-on.
+
 Common categories that get missed:
 - Receipt/bill capture and bookkeeping data entry (Dext, Hubdoc, AutoEntry)
 - Voice-to-text capture for people in the field (Otter, Granola, Plaud)
-- AI email triage and search for overwhelmed inboxes (Superhuman, Shortwave, SaneBox)
+- AI email triage and search for overwhelmed inboxes (Superhuman, Shortwave for Gmail, SaneBox if you specifically want non-AI filtering, Inbox Zero)
 - AI document search across scattered files (Dropbox Dash, NotebookLM as a free bridge)
 - Proactive scheduling/alerting from deadlines (Motion, Reclaim, Reclaim.ai)
+
+## Apple Intelligence and on-device AI — consider it for Apple-first stacks
+
+If the respondent's devices list shows all-Apple (iPhone + iPad + Mac, no Windows/Android), check whether Apple Intelligence is a real fit. Apple Intelligence's Writing Tools, Summarize, Image Playground, and on-device Siri/document understanding are free, run on-device for most operations, and are well-suited to non-technical Apple users who already trust the brand. For people sensitive to subscription bloat, an attorney-data concern, or a privacy posture, Apple Intelligence can be the right answer for everyday summarization/rewriting tasks — alongside (or sometimes instead of) a paid AI subscription. Mention it explicitly when it fits. Check the respondent's likely hardware vintage (recent iPad/Mac purchase = likely eligible).
+
+Note: Apple Intelligence is not a substitute for a frontier LLM on every task. Use it for everyday on-device tasks (rewriting, summarization, image cleanup, basic document understanding). Use a paid LLM (Claude, ChatGPT, Gemini) for serious reasoning, long-document Q&A, custom builds.
 
 ## Budget compliance — the ceiling is a hard constraint
 
