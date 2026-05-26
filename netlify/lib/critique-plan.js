@@ -19,7 +19,6 @@ const BANNED_PHRASES = [
   "revolutionize",
   "game-changer",
   "level up",
-  "leverage",
   "empower",
   "harness",
   "seamless",
@@ -38,8 +37,8 @@ const REFERENCE_OPENERS = [
   /^You built\b/i,
 ];
 
-const SYSTEM_PROMPT_MAX_CHARS = 1500;
-const TARGET_PAGES_MAX = 35; // ~8750 words at 250 words/page
+const SYSTEM_PROMPT_MAX_CHARS = 2000;
+const TARGET_PAGES_MAX = 40; // ~10000 words at 250 words/page
 const WORDS_PER_PAGE = 250;
 const MIN_SETUP_STEPS_PER_TOOL = 4;
 const MIN_PROMPTS_PER_AI_TOOL = 2;
@@ -89,14 +88,18 @@ function checkRules(plan) {
       }
     }
     // Literal [bracket] placeholders that should have been filled in.
-    // Match [Word...] but skip pure numeric like [1] (JSON path artifacts won't appear in field text anyway).
-    const bracketMatch = text.match(/\[[A-Za-z][^\]]{0,80}\]/);
-    if (bracketMatch) {
-      hardFails.push({
-        rule: "bracket_placeholder",
-        path,
-        detail: `Contains literal placeholder "${bracketMatch[0]}"`,
-      });
+    // Match [Word...] but skip pure numeric like [1].
+    // Skip prompt text fields — brackets there are intentional instructions
+    // to the customer (e.g., "[paste CIM text here]").
+    if (!/\.prompts\[\d+\]\.text$/.test(path)) {
+      const bracketMatch = text.match(/\[[A-Za-z][^\]]{0,80}\]/);
+      if (bracketMatch) {
+        hardFails.push({
+          rule: "bracket_placeholder",
+          path,
+          detail: `Contains literal placeholder "${bracketMatch[0]}"`,
+        });
+      }
     }
     // Citation markup from web search leaking into plan text.
     if (/<\/?cite\b/i.test(text)) {
@@ -171,9 +174,14 @@ function checkRules(plan) {
   }
 
   // --- Per-tool: setup_steps count ---
+  // Custom GPTs are pre-built for the customer, so they naturally have fewer
+  // setup steps and no copy-paste prompts. Exempt them from the minimums.
+  const isCustomGpt = (name) => /custom gpt/i.test(name || "");
+
   for (const group of ["foundation_tools", "ai_tools"]) {
     if (Array.isArray(plan[group])) {
       plan[group].forEach((tool, i) => {
+        if (isCustomGpt(tool.name)) return;
         const steps = Array.isArray(tool.setup_steps) ? tool.setup_steps.length : 0;
         if (steps < MIN_SETUP_STEPS_PER_TOOL) {
           softFails.push({
@@ -189,6 +197,7 @@ function checkRules(plan) {
   // --- Per-AI-tool: copy-paste prompts count ---
   if (Array.isArray(plan.ai_tools)) {
     plan.ai_tools.forEach((tool, i) => {
+      if (isCustomGpt(tool.name)) return;
       const prompts = Array.isArray(tool.prompts) ? tool.prompts.length : 0;
       if (prompts < MIN_PROMPTS_PER_AI_TOOL) {
         softFails.push({

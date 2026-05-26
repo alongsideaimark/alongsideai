@@ -127,11 +127,11 @@ assert.ok(openerResult.softFails.some((i) => i.rule === "reference_opener"), "sh
 assert.strictEqual(openerResult.hardFails.filter((i) => i.rule === "reference_opener").length, 0, "reference opener should be soft, not hard");
 console.log("PASS: reference opener flagged as soft fail");
 
-// 7. system_prompt too long — hard fail
+// 7. system_prompt too long — hard fail (limit is 2000)
 const longPromptResult = checkRules(buildBasePlan({
-  custom_build: { ...buildBasePlan().custom_build, system_prompt: "x".repeat(2000) },
+  custom_build: { ...buildBasePlan().custom_build, system_prompt: "x".repeat(2500) },
 }));
-assert.ok(longPromptResult.hardFails.some((i) => i.rule === "system_prompt_too_long"), "should catch system_prompt > 1500 chars");
+assert.ok(longPromptResult.hardFails.some((i) => i.rule === "system_prompt_too_long"), "should catch system_prompt > 2000 chars");
 console.log("PASS: long system_prompt caught");
 
 // 8. Too few setup steps — soft fail
@@ -147,6 +147,45 @@ fewPromptsPlan.ai_tools[0].prompts = [{ label: "p1", text: "p", note: "n" }];
 const fewPromptsResult = checkRules(fewPromptsPlan);
 assert.ok(fewPromptsResult.softFails.some((i) => i.rule === "ai_tool_prompts_too_few"), "should flag AI tools with < 2 prompts");
 console.log("PASS: too few AI prompts flagged");
+
+// 9b. Bracket placeholders in prompt text are intentional — should NOT flag
+const promptBracketPlan = buildBasePlan();
+promptBracketPlan.ai_tools[0].prompts[0].text = "Take this CIM and [paste CIM text here] then summarize.";
+const promptBracketResult = checkRules(promptBracketPlan);
+assert.strictEqual(promptBracketResult.hardFails.filter((i) => i.rule === "bracket_placeholder" && /prompts/.test(i.path)).length, 0,
+  "bracket placeholders in prompt text should NOT trigger");
+console.log("PASS: bracket placeholder in prompt text allowed");
+
+// 9c. "leverage" is not a banned phrase (legitimate business word)
+const leverageResult = checkRules(buildBasePlan({
+  tools_lede: "Use this tool to leverage your existing client data.",
+}));
+assert.strictEqual(leverageResult.hardFails.filter((i) => i.rule === "banned_phrase" && /leverage/i.test(i.detail)).length, 0,
+  "'leverage' should NOT be banned");
+console.log("PASS: 'leverage' is not banned");
+
+// 9d. Custom GPT tools are exempt from setup_steps and prompts minimums
+const customGptPlan = buildBasePlan();
+customGptPlan.ai_tools.push({
+  name: "Your Pre-Call Briefing Custom GPT (built inside ChatGPT Business)",
+  cost: "$0",
+  conditional: false,
+  build_it_yourself: false,
+  what_it_is: "A GPT we built for you.",
+  why_it_helps_you: "Saves time.",
+  what_it_wont_fix: "Nothing.",
+  setup_steps: ["Open ChatGPT and find the GPT in your sidebar."],
+  setup_tip: "Tip.",
+  prompts: [],
+});
+const customGptResult = checkRules(customGptPlan);
+assert.strictEqual(customGptResult.softFails.filter((i) =>
+  i.rule === "tool_setup_steps_too_few" && /Custom GPT/.test(i.detail)).length, 0,
+  "Custom GPT should be exempt from setup_steps minimum");
+assert.strictEqual(customGptResult.softFails.filter((i) =>
+  i.rule === "ai_tool_prompts_too_few" && /Custom GPT/.test(i.detail)).length, 0,
+  "Custom GPT should be exempt from prompts minimum");
+console.log("PASS: Custom GPT exempt from setup/prompt minimums");
 
 // 10. insufficient_input plan — skipped
 const insufficientResult = checkRules({ insufficient_input: true, missing: ["work"], note: "thin" });
