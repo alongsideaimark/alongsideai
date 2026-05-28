@@ -442,6 +442,16 @@
     padding:6px 12px; border-radius:999px;
     font-family:var(--sans);
   }
+  .tier-example{
+    display:block; text-align:center;
+    margin-top:8px; padding-top:20px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+    font-size:15px; font-weight:600;
+    color:var(--sage); text-decoration:none;
+    transition: color .2s ease;
+  }
+  .tier-example:hover{color:var(--charcoal)}
+  .tier-example svg{display:inline; vertical-align:middle; margin-left:6px}
 
   /* ---------- voices / testimonials ---------- */
   .voices{background:var(--sage-pale)}
@@ -800,6 +810,10 @@
           <li>Guardrails — what's safe, what to avoid, how to cancel anything</li>
           <li>Honest cost and time-savings estimates</li>
         </ul>
+        <a href="/examples/" class="tier-example">
+          See what a real plan looks like
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
       </div>
     </div>
     <p style="text-align:center;margin-top:28px;font-size:15px;color:var(--charcoal-soft);">14-day full refund from delivery. No forms, no hoops — just reply to your email.</p>
