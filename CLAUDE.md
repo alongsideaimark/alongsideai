@@ -40,6 +40,26 @@ Ship to main. No branches, no PRs, no staging — unless Mark asks.
 - Logo lockup: "Lantern" in DM Serif Display + "PLAN" in Nunito 700 uppercase letter-spaced sage, baseline-aligned, inline. Never wraps. (Pre-rename, this was "alongside" + "AI" in the same pattern — the structure didn't change, only the words.) The lantern mark (sage rounded square, cream lantern outline, gold light inside) sits to the left of the wordmark. Source SVGs are `assets/logo-mark.svg` (sage bg) and `assets/logo-mark-cream.svg` (cream bg variant).
 - CTAs: "Get your custom plan" (primary), "How it works" (secondary). Never "Get Started" or "Try Free."
 
+## Anti-evangelism copy standard (codified 2026-05-28)
+
+The target reader is a skeptical, non-technical 55-year-old. They pattern-match AI-hype language to "tech keynote I didn't ask for" and close the tab. Every word on the site should sound like a smart friend who already did the research — not a guru trying to convert them.
+
+**Hard-banned words** (never in customer-facing copy): leverage, harness, unlock, transform, revolutionize, AI-powered, cutting-edge, next-generation, embrace, empower, game-changer, seamless, supercharge, elevate, robust, level up, "the future of."
+
+**Soft-evangelism test:** If a sentence explains *why AI is good* rather than *what the customer gets*, it's evangelism. Cut it or replace it with a concrete outcome. "This is the kind of thing AI is genuinely good at" → cut. "Save 4 hours a week on email" → keep.
+
+**"AI" as a noun is fine.** The product recommends AI tools — pretending otherwise is dishonest. Use "AI" when it's the accurate, natural word. Target the *framing*, not the *noun*. "A custom AI tool built for your workflow" = fine (describing a deliverable). "Harness the power of AI" = banned (evangelizing).
+
+**Replacement patterns:**
+- "Leverage AI for productivity" → "Save 4 hours a week on email"
+- "AI-powered writing assistant" → "A writing partner that sounds like you"
+- "Transform your workflow with AI" → "The pile on your desk shrinks"
+- "Embrace AI to stay competitive" → "Stop spending Saturday mornings on paperwork"
+- "Learn AI" → (only allowed in the anti-framing: "You don't need to learn AI")
+- "AI is changing everything" → Cut entirely, or: "Here's what actually changed for people like you"
+
+**The sniff test:** Read the sentence aloud. Does it sound like something you'd say to a friend at dinner, or something you'd hear from a stage? If it's from a stage, rewrite it.
+
 ## Current status (as of 2026-05-28 — rename pass complete, awaiting deploy)
 
 - **Company renamed: Alongside AI → Lantern Plan (2026-05-28).** Trigger: alongsideai.ai was too close to an existing alongside-ai.com. New name is locked. Mechanical rename pass touched ~65 files: wordmark text swapped to "Lantern PLAN" (caps-tag treatment, same structure as before), all meta/og:* tags, internal AI pipeline prompts and reference plans, eval personas, sitemap/robots.txt. Logo mark redesigned as a lantern (sage square, cream lantern outline, gold light inside) — same `assets/logo-mark.svg` filename. Favicons and og-image regenerated. Three things deliberately left untouched: (1) `© 2026 Alongside AI LLC` footer line — preserves the registered legal entity until Mark files a name-change amendment with CA SOS; (2) landing-page positioning copy (hero h1, lede) — the positioning rewrite remains queued per the freeze below; (3) the domain — Mark needs to register `lanternplan.com`, point DNS, and configure email at `mark@lanternplan.com` before the URL/email links work. Until DNS is updated, the site is still served at alongsideai.ai but says "Lantern Plan" everywhere. Brand exploration files live at `brand-explorations/lantern-plan/` for reference.
