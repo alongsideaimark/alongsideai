@@ -50,7 +50,9 @@ function callAnthropic(apiKey, body) {
       res.on("end", () => {
         const raw = Buffer.concat(chunks).toString("utf8");
         if (res.statusCode < 200 || res.statusCode >= 300) {
-          reject(new Error(`Anthropic ${res.statusCode}: ${raw}`));
+          const err = new Error(`Anthropic ${res.statusCode}: ${raw}`);
+          err.statusCode = res.statusCode;
+          reject(err);
           return;
         }
         try {
@@ -73,6 +75,47 @@ function callAnthropic(apiKey, body) {
     req.write(payload);
     req.end();
   });
+}
+
+class ClaudeUnavailableError extends Error {
+  constructor(originalError, attempts) {
+    super(`Claude API unavailable after ${attempts} attempt(s): ${originalError.message}`);
+    this.name = "ClaudeUnavailableError";
+    this.originalError = originalError;
+    this.attempts = attempts;
+  }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const TRANSIENT_STATUS_CODES = new Set([429, 500, 502, 503, 504, 529]);
+const BACKOFF_MS = [2000, 8000, 30000];
+
+async function callAnthropicWithRetry(apiKey, body) {
+  const maxAttempts = (process.env.RETRY_DISABLED === "1" || process.env.RETRY_DISABLED === "true") ? 1 : 3;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await callAnthropic(apiKey, body);
+    } catch (err) {
+      const statusCode = err.statusCode;
+      const isTransient = !statusCode || TRANSIENT_STATUS_CODES.has(statusCode);
+
+      console.error(
+        `[call-claude] attempt ${attempt}/${maxAttempts} failed — ` +
+        `${statusCode ? `HTTP ${statusCode}` : err.code || "network error"}: ${err.message}`
+      );
+
+      if (!isTransient) throw err;
+      if (attempt === maxAttempts) throw new ClaudeUnavailableError(err, attempt);
+
+      const delay = BACKOFF_MS[attempt - 1];
+      console.log(`[call-claude] retrying in ${delay / 1000}s...`);
+      await sleep(delay);
+    }
+  }
 }
 
 function parsePlanJson(text) {
@@ -183,7 +226,7 @@ ${briefing}`,
     ],
   };
 
-  let json = await callAnthropic(apiKey, body);
+  let json = await callAnthropicWithRetry(apiKey, body);
 
   const searchCount = (json.content || []).filter(
     (b) => b.type === "server_tool_use" && b.name === "web_search"
@@ -219,7 +262,7 @@ ${briefing}`,
         },
       ],
     };
-    json = await callAnthropic(apiKey, retryBody);
+    json = await callAnthropicWithRetry(apiKey, retryBody);
     toolUseBlock = (json.content || []).find(
       (b) => b.type === "tool_use" && b.name === "submit_plan"
     );
@@ -312,7 +355,7 @@ ${JSON.stringify(currentPlan, null, 2)}`,
     messages: [{ role: "user", content: userContent }],
   };
 
-  let json = await callAnthropic(apiKey, body);
+  let json = await callAnthropicWithRetry(apiKey, body);
   const searchCount = (json.content || []).filter(
     (b) => b.type === "server_tool_use" && b.name === "web_search"
   ).length;
@@ -334,7 +377,7 @@ ${JSON.stringify(currentPlan, null, 2)}`,
         },
       ],
     };
-    json = await callAnthropic(apiKey, retryBody);
+    json = await callAnthropicWithRetry(apiKey, retryBody);
     toolUseBlock = (json.content || []).find(
       (b) => b.type === "tool_use" && b.name === "submit_revision"
     );
@@ -361,4 +404,4 @@ ${JSON.stringify(currentPlan, null, 2)}`,
   return { plan, note, usage: json.usage || {}, rawText: collectText(json.content), searchCount };
 }
 
-module.exports = { draftPlan, revisePlan, parsePlanJson };
+module.exports = { draftPlan, revisePlan, parsePlanJson, ClaudeUnavailableError };

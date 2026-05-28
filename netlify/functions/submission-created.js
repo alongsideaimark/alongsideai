@@ -6,9 +6,8 @@
 //      prompt or parsed programmatically once the plan-drafting pipeline is built.
 // If anything fails, we log and return 200 so Netlify doesn't retry.
 
+const crypto = require("crypto");
 const { connectLambda, getStore } = require("@netlify/blobs");
-
-const DEDUP_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
 
 const INTERNAL_TO = "mark@alongsideai.ai";
 const INTERNAL_FROM = "Alongside AI Intake <intake@alongsideai.ai>";
@@ -464,26 +463,35 @@ exports.handler = async (event) => {
     const email = String(data.contact || "").trim();
     const firstName = String(data.name || "").trim().split(/\s+/)[0] || "there";
 
-    // Dedup: if we already processed a submission for this email in the last
-    // 5 minutes, skip. Prevents the backup path from double-firing when the
-    // primary Netlify Forms POST succeeds server-side but fails client-side
-    // validation (middlebox / content blocker returning a synthetic response).
-    if (email) {
-      try {
-        const dedup = getStore("submission-dedup");
-        const key = email.toLowerCase().replace(/[^a-z0-9@._-]/g, "");
-        const existing = await dedup.get(key);
-        if (existing) {
-          const ts = Number(existing);
-          if (Date.now() - ts < DEDUP_WINDOW_MS) {
-            console.log(`[submission] dedup: skipping duplicate for ${email} (${Math.round((Date.now() - ts) / 1000)}s after first)`);
-            return { statusCode: 200, body: "skipped: duplicate" };
-          }
-        }
-        await dedup.set(key, String(Date.now()));
-      } catch (err) {
-        console.warn("[submission] dedup check failed, proceeding anyway:", err.message);
+    const submissionId = payload.id || null;
+    let idempotencyKey;
+    if (submissionId) {
+      idempotencyKey = `sub_${submissionId}`;
+    } else {
+      const minuteTs = Math.floor(new Date(payload.created_at || Date.now()).getTime() / 60000);
+      const fallbackSeed = `${email}|${payload.form_name}|${minuteTs}`;
+      idempotencyKey = `hash_${crypto.createHash("sha256").update(fallbackSeed).digest("hex").slice(0, 16)}`;
+      console.warn("[submission] no submission ID in payload — using content hash for idempotency");
+    }
+
+    const idempotencyStore = getStore("idempotency");
+    try {
+      const existing = await idempotencyStore.get(idempotencyKey);
+      if (existing) {
+        console.log(`[submission] duplicate submission ${idempotencyKey} — skipping`);
+        return { statusCode: 200, body: "skipped: duplicate" };
       }
+    } catch (err) {
+      console.warn("[submission] idempotency read failed, proceeding anyway:", err.message);
+    }
+
+    try {
+      await idempotencyStore.set(idempotencyKey, JSON.stringify({
+        status: "processing",
+        created_at: new Date().toISOString(),
+      }));
+    } catch (err) {
+      console.warn("[submission] idempotency write failed, proceeding anyway:", err.message);
     }
 
     const apiKey = process.env.RESEND_API_KEY;
@@ -544,6 +552,14 @@ exports.handler = async (event) => {
         });
         if (triggerRes.status === 202 || triggerRes.ok) {
           console.log(`[submission] plan drafting kicked off in background (status ${triggerRes.status}, url ${triggerUrl})`);
+          try {
+            await idempotencyStore.set(idempotencyKey, JSON.stringify({
+              status: "kicked_off",
+              created_at: new Date().toISOString(),
+            }));
+          } catch (updateErr) {
+            console.warn("[submission] idempotency update failed:", updateErr.message);
+          }
         } else {
           const bodyText = await triggerRes.text().catch(() => "(no body)");
           console.error(`[submission] plan drafting trigger returned ${triggerRes.status}: ${bodyText} (url ${triggerUrl})`);
