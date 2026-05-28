@@ -5,6 +5,7 @@
 // submission-created handler in-process. Bypasses the Netlify Forms layer
 // entirely so blockers with rules against form-handler URLs don't apply.
 
+const crypto = require("crypto");
 const submissionCreated = require("./submission-created.js");
 
 exports.handler = async (event) => {
@@ -37,6 +38,7 @@ exports.handler = async (event) => {
     ...event,
     body: JSON.stringify({
       payload: {
+        id: `direct_${crypto.createHash("sha256").update(JSON.stringify(data)).digest("hex").slice(0, 16)}`,
         form_name: "questionnaire",
         data,
         created_at: new Date().toISOString(),
