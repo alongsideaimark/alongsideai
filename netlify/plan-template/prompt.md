@@ -430,7 +430,7 @@ Use `**bold**` for emphasis inside text fields (the pipeline converts it to `<st
 {
   "first_name": "Frank",
   "prepared_for_name": "Frank M.",
-  "prepared_for_tagline": "Semi-retired · Altadena, CA",
+  "prepared_for_tagline": "Semi-retired · Savannah, GA",
   "note_to_start": {
     "headline": "You named the right friction — *and that's the whole game.*",
     "lede": "You wrote candidly about the property files scattered between QuickBooks Desktop, a paper Rolodex, and your phone — and about wanting winters somewhere warm without checking the office iMac every morning. The plan below is built around exactly those two things."
