@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Pricing — Lantern Plan</title>
+<meta name="description" content="$79 for a custom AI plan written for the way you actually work. One price, no subscription, 14-day full refund. See what's included."/>
+<link rel="canonical" href="https://lanternplan.com/pricing/"/>
+
+<link rel="icon" href="/favicon.ico" sizes="any"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png"/>
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"/>
+
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Lantern Plan"/>
+<meta property="og:title" content="Pricing — Lantern Plan"/>
+<meta property="og:description" content="$79 for a custom AI plan written for the way you actually work. One price, no subscription, 14-day full refund."/>
+<meta property="og:url" content="https://lanternplan.com/pricing/"/>
+<meta property="og:image" content="https://lanternplan.com/assets/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Pricing — Lantern Plan"/>
+<meta name="twitter:description" content="$79 for a custom AI plan written for the way you actually work. One price, no subscription, 14-day full refund."/>
+<meta name="twitter:image" content="https://lanternplan.com/assets/og-image.png"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --sage:#7B9E87; --sage-light:#A8C5B2; --sage-pale:#E8F0EB;
+    --gold:#D4A853; --gold-light:#F2E6C9;
+    --charcoal:#2C3330; --charcoal-soft:#4A5550;
+    --cream:#FAF6F1; --white:#FFFFFF; --gray:#8A8780;
+    --serif:"DM Serif Display", Georgia, serif;
+    --sans:"Nunito", system-ui, Arial, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+    --maxw:1240px; --gutter:40px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--cream); color:var(--charcoal);
+    font-family:var(--sans); font-size:18px; line-height:1.55;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  img,svg{display:block; max-width:100%}
+  a{color:inherit}
+  h1,h2,h3,h4{margin:0; font-weight:400}
+  p{margin:0}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--gutter)}
+  @media (max-width:720px){ :root{ --gutter:22px } }
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in oklab, var(--cream) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+  }
+  .nav-inner{
+    display:flex; align-items:center;
+    height:82px; gap:32px;
+  }
+  .nav-spacer{flex:1}
+  .brand{display:flex; align-items:center; gap:14px; text-decoration:none; color:var(--charcoal)}
+  .brand-mark{width:34px; height:40px; flex-shrink:0}
+  .brand-lockup{display:inline-flex; align-items:baseline; gap:12px; white-space:nowrap}
+  .brand-word{font-family:var(--serif); font-size:28px; letter-spacing:-.01em; line-height:1}
+  .brand-ai{font-family:var(--sans); font-weight:700; font-size:15px; letter-spacing:.24em; color:var(--sage); line-height:1; text-transform:uppercase}
+  .nav-links{display:flex; gap:28px; align-items:center}
+  .nav-links a{
+    text-decoration:none; font-size:15px; color:var(--charcoal-soft);
+    font-weight:500; white-space:nowrap;
+  }
+  .nav-links a:hover{color:var(--charcoal)}
+  .nav-links a.nav-cta{
+    font-size:15px; font-weight:600;
+    padding:11px 20px; border-radius:999px;
+    background:var(--charcoal); color:var(--cream);
+    text-decoration:none;
+    transition:transform .2s ease;
+  }
+  .nav-cta:hover{transform:translateY(-1px)}
+  @media (max-width:820px){ .nav-links a:not(.nav-cta){display:none} }
+
+  /* ---------- hero / top ---------- */
+  .price-hero{
+    padding:88px 0 96px;
+    text-align:center;
+  }
+  @media (max-width:720px){ .price-hero{padding:56px 0 64px} }
+  .price-hero .kicker{
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--sage); margin-bottom:28px;
+  }
+  .price-hero h1{
+    font-family:var(--serif);
+    font-size:clamp(48px, 7vw, 96px);
+    line-height:1;
+    letter-spacing:-.02em;
+    color:var(--charcoal);
+    margin-bottom:8px;
+  }
+  .price-hero .one-time{
+    font-size:20px;
+    color:var(--charcoal-soft);
+    margin-bottom:32px;
+  }
+  .price-hero .lede{
+    max-width:600px;
+    margin:0 auto 40px;
+    font-size:20px;
+    line-height:1.55;
+    color:var(--charcoal-soft);
+  }
+  .btn{
+    font-family:var(--sans); font-weight:600; font-size:17px;
+    padding:18px 32px; border-radius:999px;
+    text-decoration:none;
+    display:inline-flex; align-items:center; gap:10px;
+    transition: transform .2s ease, background .2s ease;
+    cursor:pointer; border:none;
+  }
+  .btn-primary{background:var(--charcoal); color:var(--cream)}
+  .btn-primary:hover{transform:translateY(-1px); background:#1e2320}
+  .example-link{
+    display:block;
+    margin-top:18px;
+    font-size:15px; font-weight:600;
+    color:var(--sage);
+    text-decoration:none;
+    transition:color .2s ease;
+  }
+  .example-link:hover{color:var(--charcoal)}
+  .example-link svg{display:inline; vertical-align:middle; margin-left:6px}
+
+  /* ---------- anchor strip ---------- */
+  .anchor{
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+    padding:40px 0;
+    background:var(--white);
+  }
+  .anchor-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    max-width:820px;
+    margin:0 auto;
+  }
+  @media (max-width:720px){ .anchor-grid{grid-template-columns:1fr; gap:32px} }
+  .anchor-item{text-align:center}
+  .anchor-item .number{
+    font-family:var(--serif);
+    font-size:40px; line-height:1;
+    color:var(--charcoal);
+    margin-bottom:8px;
+  }
+  .anchor-item .context{
+    font-size:16px;
+    color:var(--charcoal-soft);
+    max-width:320px;
+    margin:0 auto;
+  }
+
+  /* ---------- section base ---------- */
+  section.block{padding:100px 0}
+  @media (max-width:720px){ section.block{padding:64px 0} }
+  .section-kicker{
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--sage);
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:22px;
+  }
+  .section-kicker::before{content:""; width:28px; height:1px; background:var(--sage)}
+  .section-title{
+    font-family:var(--serif);
+    font-size:clamp(32px, 4vw, 48px);
+    line-height:1.08;
+    letter-spacing:-.015em;
+    color:var(--charcoal);
+    max-width:720px;
+  }
+  .section-title em{font-style:italic; color:var(--sage); font-weight:400}
+  .section-lede{
+    margin-top:18px;
+    max-width:600px;
+    font-size:18px;
+    color:var(--charcoal-soft);
+  }
+
+  /* ---------- what's in your plan ---------- */
+  .plan-contents{background:var(--cream)}
+  .plan-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  @media (max-width:720px){ .plan-grid{grid-template-columns:1fr} }
+  .plan-item{
+    background:var(--white);
+    border:1px solid color-mix(in oklab, var(--charcoal) 7%, transparent);
+    border-radius:14px;
+    padding:28px 28px 24px;
+  }
+  .plan-item .num{
+    font-family:var(--mono);
+    font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin-bottom:10px;
+  }
+  .plan-item h3{
+    font-family:var(--serif);
+    font-size:24px;
+    color:var(--charcoal);
+    letter-spacing:-.01em;
+    line-height:1.15;
+    margin-bottom:8px;
+  }
+  .plan-item p{
+    font-size:16px;
+    color:var(--charcoal-soft);
+  }
+
+  /* ---------- questionnaire depth ---------- */
+  .depth{background:var(--white)}
+  .depth-list{
+    margin-top:48px;
+    max-width:640px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+  }
+  .depth-item{
+    display:flex; align-items:baseline; gap:20px;
+    padding:20px 0;
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+  }
+  .depth-item .step{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    color:var(--sage);
+    flex-shrink:0;
+    width:24px;
+  }
+  .depth-item .name{
+    font-family:var(--serif);
+    font-size:22px;
+    color:var(--charcoal);
+    letter-spacing:-.01em;
+  }
+
+  /* ---------- refund ---------- */
+  .refund{
+    background:var(--sage-pale);
+  }
+  .refund-inner{
+    max-width:680px;
+  }
+  .refund-inner h2{
+    font-family:var(--serif);
+    font-size:clamp(32px, 4vw, 48px);
+    line-height:1.08;
+    letter-spacing:-.015em;
+    color:var(--charcoal);
+    margin-bottom:24px;
+  }
+  .refund-inner h2 em{font-style:italic; color:var(--sage); font-weight:400}
+  .refund-inner p{
+    font-size:19px;
+    color:var(--charcoal-soft);
+    line-height:1.6;
+  }
+  .refund-inner p + p{margin-top:16px}
+
+  /* ---------- bottom CTA ---------- */
+  .bottom-cta{
+    background:var(--charcoal);
+    color:var(--cream);
+    text-align:center;
+    padding:96px 0;
+  }
+  @media (max-width:720px){ .bottom-cta{padding:64px 0} }
+  .bottom-cta h2{
+    font-family:var(--serif);
+    font-size:clamp(34px, 4.5vw, 56px);
+    line-height:1.06;
+    letter-spacing:-.015em;
+    color:var(--cream);
+    margin-bottom:18px;
+  }
+  .bottom-cta h2 em{font-style:italic; color:var(--gold-light)}
+  .bottom-cta p{
+    max-width:520px; margin:0 auto 36px;
+    font-size:18px;
+    color:color-mix(in oklab, var(--cream) 80%, transparent);
+  }
+  .btn-cream{
+    background:var(--cream); color:var(--charcoal);
+    font-family:var(--sans); font-weight:600; font-size:17px;
+    padding:18px 32px; border-radius:999px;
+    text-decoration:none;
+    display:inline-flex; align-items:center; gap:10px;
+    transition: transform .2s ease;
+    cursor:pointer; border:none;
+  }
+  .btn-cream:hover{transform:translateY(-1px)}
+  .bottom-refund{
+    margin-top:22px;
+    font-size:15px;
+    color:color-mix(in oklab, var(--cream) 60%, transparent);
+  }
+
+  /* ---------- footer ---------- */
+  footer{background:var(--charcoal); color:var(--cream); padding:0 0 36px}
+  .foot-bottom{
+    display:flex; justify-content:space-between; align-items:center;
+    padding-top:28px;
+    border-top:1px solid color-mix(in oklab, var(--cream) 14%, transparent);
+    font-size:13px; color:color-mix(in oklab, var(--cream) 60%, transparent);
+    gap:16px; flex-wrap:wrap;
+  }
+  .foot-bottom a{color:inherit; text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="/" class="brand" aria-label="Lantern Plan">
+      <img class="brand-mark" src="/assets/logo-mark.svg" alt=""/>
+      <span class="brand-lockup"><span class="brand-word">Lantern</span><span class="brand-ai">PLAN</span></span>
+    </a>
+    <div class="nav-spacer"></div>
+    <nav class="nav-links">
+      <a href="/#how">How it works</a>
+      <a href="/examples/">See an example</a>
+      <a href="/questionnaire/" class="nav-cta">Get your plan</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO: PRICE + CTA ============ -->
+<section class="price-hero">
+  <div class="wrap">
+    <div class="kicker">One plan. One price.</div>
+    <h1>$79</h1>
+    <p class="one-time">One-time. No subscription.</p>
+    <p class="lede">
+      A custom plan for the way you actually work &mdash;
+      which tools fit your situation, how to set them up,
+      and what to skip. Written for you, delivered in minutes.
+    </p>
+    <a class="btn btn-primary" href="/questionnaire/">Get your custom plan</a>
+    <a class="example-link" href="/examples/">
+      See what a real plan looks like
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ============ ANCHOR AGAINST TIME + COST ============ -->
+<div class="anchor">
+  <div class="wrap">
+    <div class="anchor-grid">
+      <div class="anchor-item">
+        <div class="number">10+ hours</div>
+        <p class="context">That's how long it takes to research AI tools yourself &mdash; watching videos, reading reviews, testing free trials. We condense that into a plan you can read in 20 minutes.</p>
+      </div>
+      <div class="anchor-item">
+        <div class="number">$150&ndash;300/hr</div>
+        <p class="context">What a technology consultant charges to do the same work. One hour of their time costs more than your entire plan.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WHAT'S IN YOUR PLAN ============ -->
+<section class="block plan-contents">
+  <div class="wrap">
+    <div class="section-kicker">What's in the plan</div>
+    <h2 class="section-title">Everything you need. <em>Nothing you don't.</em></h2>
+    <p class="section-lede">Your plan is a single PDF, written in plain English, organized into clear sections. Here's what each one covers.</p>
+
+    <div class="plan-grid">
+      <div class="plan-item">
+        <div class="num">01</div>
+        <h3>Your world today</h3>
+        <p>A plain-English summary of how you work right now, based on your answers. So you know we actually listened.</p>
+      </div>
+      <div class="plan-item">
+        <div class="num">02</div>
+        <h3>What we recommend</h3>
+        <p>The specific tools that fit your situation, why they made the cut, what each one costs, and how to set them up step by step.</p>
+      </div>
+      <div class="plan-item">
+        <div class="num">03</div>
+        <h3>What we looked at and didn't pick</h3>
+        <p>The tools we considered and ruled out, and why. So you're not left wondering.</p>
+      </div>
+      <div class="plan-item">
+        <div class="num">04</div>
+        <h3>A custom AI tool, built for you</h3>
+        <p>A ready-to-use AI assistant trained on your specific workflow. Not a generic chatbot &mdash; something that knows your context.</p>
+      </div>
+      <div class="plan-item">
+        <div class="num">05</div>
+        <h3>The honest math</h3>
+        <p>What it all costs per month, what you'll likely save, and how long until the savings cover the investment. No fuzzy estimates.</p>
+      </div>
+      <div class="plan-item">
+        <div class="num">06</div>
+        <h3>Safety and guardrails</h3>
+        <p>What never to type into an AI tool. How to tell when it's wrong. How to cancel anything we recommend, no strings attached.</p>
+      </div>
+      <div class="plan-item">
+        <div class="num">07</div>
+        <h3>Step-by-step setup walkthroughs</h3>
+        <p>Detailed instructions for every tool &mdash; which buttons to press, what to type, how to test that it's working. Follow at your own pace.</p>
+      </div>
+      <div class="plan-item">
+        <div class="num">08</div>
+        <h3>If you get stuck</h3>
+        <p>Reply to the email that delivered your plan. A real person reads it. No extra charge for a question, no upsell.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUESTIONNAIRE DEPTH ============ -->
+<section class="block depth">
+  <div class="wrap">
+    <div class="section-kicker">How we learn about you</div>
+    <h2 class="section-title">Seven sections. <em>Twenty minutes.</em></h2>
+    <p class="section-lede">The questionnaire is how we learn enough to write a plan that actually fits. Here's what we ask about.</p>
+
+    <div class="depth-list">
+      <div class="depth-item"><span class="step">01</span><span class="name">About you</span></div>
+      <div class="depth-item"><span class="step">02</span><span class="name">Your world and how you work</span></div>
+      <div class="depth-item"><span class="step">03</span><span class="name">Your current setup</span></div>
+      <div class="depth-item"><span class="step">04</span><span class="name">Where your time actually goes</span></div>
+      <div class="depth-item"><span class="step">05</span><span class="name">What you actually want</span></div>
+      <div class="depth-item"><span class="step">06</span><span class="name">AI and your data</span></div>
+      <div class="depth-item"><span class="step">07</span><span class="name">Getting started</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REFUND POLICY ============ -->
+<section class="block refund" id="refund">
+  <div class="wrap">
+    <div class="refund-inner">
+      <h2>If your plan doesn't feel worth it, <em>we don't want your money.</em></h2>
+      <p>You have 14 days from the moment your plan is delivered to ask for a full refund. No forms, no hoops. Just reply to your delivery email and say the word. We'll process it within five business days.</p>
+      <p>That's the whole policy. We'd rather give you your money back and part on good terms than keep a dollar we didn't earn.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BOTTOM CTA ============ -->
+<section class="bottom-cta">
+  <div class="wrap">
+    <h2>Twenty minutes of questions. <em>A plan that does the rest.</em></h2>
+    <p>Answer seven short sections about how you work. Your custom plan arrives by email in minutes.</p>
+    <a class="btn-cream" href="/questionnaire/">
+      Get your custom plan &mdash; $79
+      <svg width="14" height="14" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="bottom-refund">14-day full refund. No forms, no hoops.</p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-bottom">
+      <div>&copy; 2026 Alongside AI LLC &middot; California</div>
+      <div><a href="/legal/#privacy">Privacy</a> &nbsp;&middot;&nbsp; <a href="/legal/#terms">Terms</a></div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
