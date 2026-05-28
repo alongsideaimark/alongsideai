@@ -609,12 +609,6 @@ const SECTIONS = [
     intro: "This is the part we'll quote back to you in your plan. Be specific.",
     questions: [
       {
-        id: "friction",
-        label: "What takes way longer than it should?",
-        help: "The tasks you dread. The thing you keep meaning to fix. Write whatever comes to mind.",
-        field: { kind: "textarea", placeholder: "Keeping track of lease expirations, bill pay, paper everywhere…" }
-      },
-      {
         id: "manual_tasks",
         label: "Name two or three specific things you still do by hand that you suspect could be automated.",
         help: "Examples: typing up meeting notes, sending the same five-line follow-up email, copying numbers between two spreadsheets, remembering to invoice on the 15th. Just list what you actually do.",
@@ -886,7 +880,7 @@ function renderDone(){
       </div>
       <div class="step-kicker">All set</div>
       <h1 class="section-title">Thank you, ${escapeHtml(firstName)}. Your plan is on the way.</h1>
-      <p class="section-intro">Your answers are being read carefully right now. Your custom plan will arrive by email in the next few minutes — check the inbox you gave us. If anything comes to mind after you read it, just reply to that email. It comes straight to a real person.</p>
+      <p class="section-intro">Your answers are being read carefully right now. Your custom plan will arrive by email within two business days — check the inbox you gave us. If anything comes to mind after you read it, just reply to that email. It comes straight to a real person.</p>
 
       <div class="done-detail">
         <h4>What's in the plan</h4>
