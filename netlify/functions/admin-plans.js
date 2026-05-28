@@ -43,6 +43,7 @@ exports.handler = async (event) => {
             id: r.id,
             name: r.customer_first_name,
             email: r.customer_email,
+            state: r.state || r.status || null,
             status: r.status,
             created_at: r.created_at,
             sent_at: r.sent_at || null,

@@ -10,6 +10,7 @@
 const { connectLambda, getStore } = require("@netlify/blobs");
 const { revisePlan } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
+const { transition, IllegalTransitionError } = require("../lib/plan-state");
 
 exports.handler = async (event) => {
   try {
@@ -35,9 +36,21 @@ exports.handler = async (event) => {
     if (!raw) return { statusCode: 404, body: "plan not found" };
 
     const record = JSON.parse(raw);
-    if (record.status === "sent") {
+
+    const effectiveState = record.state || record.status;
+    if (effectiveState === "sent") {
       return { statusCode: 409, body: "plan already sent — can't revise" };
     }
+
+    try {
+      transition(record, "revising", { reason: "Mark requested revision" });
+    } catch (err) {
+      if (err instanceof IllegalTransitionError) {
+        return { statusCode: 409, body: `can't revise from state "${record.state}"` };
+      }
+      throw err;
+    }
+    await store.set(`${id}.json`, JSON.stringify(record));
 
     const priorTurns = Array.isArray(record.revisions) ? record.revisions : [];
     console.log(`[revise-plan] ${id} chat turn ${priorTurns.length + 1} (instruction ${instruction.length} chars)`);
@@ -50,9 +63,6 @@ exports.handler = async (event) => {
     });
     console.log(`[revise-plan] ${id} revision returned; web searches: ${searchCount || 0}; note: "${(note || "").slice(0, 120)}"; tokens:`, JSON.stringify(usage));
 
-    // Re-render HTML and overwrite the stored record. Keep the revision
-    // history in a small array so we can see what's been changed + what
-    // Claude reported doing.
     const html = renderPlan(plan);
     const revisions = Array.isArray(record.revisions) ? record.revisions.slice() : [];
     revisions.push({
@@ -63,14 +73,12 @@ exports.handler = async (event) => {
       usage,
     });
 
-    const updated = {
-      ...record,
-      plan,
-      html,
-      revisions,
-      revised_at: new Date().toISOString(),
-    };
-    await store.set(`${id}.json`, JSON.stringify(updated));
+    record.plan = plan;
+    record.html = html;
+    record.revisions = revisions;
+    record.revised_at = new Date().toISOString();
+    transition(record, "review", { reason: "revision complete" });
+    await store.set(`${id}.json`, JSON.stringify(record));
 
     return {
       statusCode: 200,

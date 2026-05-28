@@ -5,6 +5,7 @@
 const crypto = require("crypto");
 const { connectLambda, getStore } = require("@netlify/blobs");
 const { convertToPdf, archivePdf } = require("../lib/pdf");
+const { transition, IllegalTransitionError } = require("../lib/plan-state");
 
 const FROM = "Mark <mark@lanternplan.com>";
 const REPLY_TO = "mark@lanternplan.com";
@@ -28,6 +29,8 @@ ${revisionUrl}
 
 You have two free revisions available for the next 14 days.
 
+One more thing: if the plan doesn't feel worth it, you have 14 days from today to reply to this email and ask for a full refund. No forms, no hoops. We'll process it within five business days.
+
 — Mark
 Lantern Plan`;
 
@@ -44,6 +47,7 @@ Lantern Plan`;
       <a href="${revisionUrl}" style="display:inline-block;padding:14px 24px;background:#9E7B84;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Revise your plan</a>
     </p>
     <p style="margin:0 0 18px;color:#8A8780;font-size:14px;">Two free revisions available for the next 14 days.</p>
+    <p style="margin:0 0 18px;">One more thing: if the plan doesn't feel worth it, you have 14 days from today to reply to this email and ask for a full refund. No forms, no hoops. We'll process it within five business days.</p>
     <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Lantern Plan</span></p>
   </div>
 </body></html>`;
@@ -99,12 +103,24 @@ exports.handler = async (event) => {
     if (!raw) return { statusCode: 404, body: "plan not found" };
 
     const record = JSON.parse(raw);
-    if (record.status === "sent") {
+
+    const effectiveState = record.state || record.status;
+    if (effectiveState === "sent") {
       return { statusCode: 409, body: "plan already sent" };
     }
     if (!record.customer_email) {
       return { statusCode: 400, body: "no customer email on record" };
     }
+
+    try {
+      transition(record, "approved", { reason: "Mark approved" });
+    } catch (err) {
+      if (err instanceof IllegalTransitionError) {
+        return { statusCode: 409, body: `can't approve from state "${record.state}"` };
+      }
+      throw err;
+    }
+    await store.set(`${id}.json`, JSON.stringify(record));
 
     const baseUrl =
       process.env.URL ||
@@ -122,22 +138,31 @@ exports.handler = async (event) => {
     const revisionToken = crypto.randomBytes(24).toString("base64url");
     const revisionWindowDays = 14;
 
-    await emailCustomer({
-      apiKey: resendKey,
-      firstName: record.customer_first_name,
-      toEmail: record.customer_email,
-      pdfBuffer: pdf,
-      revisionUrl: `${baseUrl}/revise/${revisionToken}`,
-    });
-    console.log("[approve-plan] sent to", record.customer_email);
+    try {
+      await emailCustomer({
+        apiKey: resendKey,
+        firstName: record.customer_first_name,
+        toEmail: record.customer_email,
+        pdfBuffer: pdf,
+        revisionUrl: `${baseUrl}/revise/${revisionToken}`,
+      });
+      console.log("[approve-plan] sent to", record.customer_email);
 
-    record.status = "sent";
-    record.sent_at = new Date().toISOString();
-    record.revision_token = revisionToken;
-    record.customer_revisions_remaining = 2;
-    record.revision_window_expires_at = new Date(Date.now() + revisionWindowDays * 24 * 60 * 60 * 1000).toISOString();
-    record.customer_revisions = [];
+      transition(record, "sent", { reason: "customer email sent" });
+      record.sent_at = new Date().toISOString();
+      record.revision_token = revisionToken;
+      record.customer_revisions_remaining = 2;
+      record.revision_window_expires_at = new Date(Date.now() + revisionWindowDays * 24 * 60 * 60 * 1000).toISOString();
+      record.customer_revisions = [];
+    } catch (emailErr) {
+      console.error("[approve-plan] customer email failed:", emailErr.message);
+      transition(record, "failed", { reason: `customer email failed: ${emailErr.message}` });
+    }
     await store.set(`${id}.json`, JSON.stringify(record));
+
+    if (record.state === "failed") {
+      return { statusCode: 502, body: `plan approved but email failed — record marked failed` };
+    }
 
     return {
       statusCode: 200,

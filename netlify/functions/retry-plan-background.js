@@ -11,6 +11,7 @@ const { draftPlan } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
 const { critique } = require("../lib/critique-plan");
 const { convertToPdf, archivePdf } = require("../lib/pdf");
+const { transition, initRecord } = require("../lib/plan-state");
 
 const INTERNAL_FROM = "Lantern Plan <intake@lanternplan.com>";
 const INTERNAL_TO = "mark@lanternplan.com";
@@ -88,20 +89,25 @@ exports.handler = async (event) => {
     const hasHardFails = hardFails.length > 0;
 
     const id = newPlanId();
-    const record = {
+    const record = initRecord({
       id,
       created_at: new Date().toISOString(),
-      status: hasHardFails ? "needs_review" : "draft",
       customer_first_name: firstName,
       customer_email: email,
       submission: data,
       briefing,
-      plan,
-      html,
-      usage,
-      critique: { hardFails, softFails, layer2 },
       retried_from_dead_letter: dlId,
-    };
+    });
+    // Walk through the expected path: pending → generating → review
+    transition(record, "generating", { reason: `retrying dead-letter ${dlId}` });
+    transition(record, "review", { reason: hasHardFails ? "critic flagged hard issues" : "generation succeeded" });
+    record.plan = plan;
+    record.html = html;
+    record.usage = usage;
+    record.critique = { hardFails, softFails, layer2 };
+    if (hasHardFails) {
+      record.flags = { ...record.flags, hasHardFails: true };
+    }
 
     const store = getStore("plans");
     await store.set(`${id}.json`, JSON.stringify(record));
@@ -112,11 +118,13 @@ exports.handler = async (event) => {
     const planUrl = `${baseUrl}/plans/${id}`;
 
     if (isTest) {
-      record.status = "sent";
-      record.sent_at = new Date().toISOString();
+      transition(record, "approved", { reason: "test submission auto-approve" });
       record.test = true;
+      transition(record, "sent", { reason: "test submission auto-sent" });
+      record.sent_at = new Date().toISOString();
       await store.set(`${id}.json`, JSON.stringify(record));
     } else if (!hasHardFails && email && resendKey) {
+      transition(record, "approved", { reason: "no hard fails — auto-approve" });
       const revisionToken = crypto.randomBytes(24).toString("base64url");
       const revisionWindowDays = 14;
 
@@ -132,16 +140,17 @@ exports.handler = async (event) => {
       if (!res.ok) {
         const errBody = await res.text();
         console.error(`[retry-plan] customer email failed: Resend ${res.status}: ${errBody}`);
+        transition(record, "failed", { reason: `customer email failed: Resend ${res.status}` });
       } else {
         console.log(`[retry-plan] sent plan to ${email}`);
-        record.status = "sent";
+        transition(record, "sent", { reason: "customer email sent" });
         record.sent_at = new Date().toISOString();
         record.revision_token = revisionToken;
         record.customer_revisions_remaining = 2;
         record.revision_window_expires_at = new Date(Date.now() + revisionWindowDays * 24 * 60 * 60 * 1000).toISOString();
         record.customer_revisions = [];
-        await store.set(`${id}.json`, JSON.stringify(record));
       }
+      await store.set(`${id}.json`, JSON.stringify(record));
     }
 
     const pdfshiftKey = process.env.PDFSHIFT_API_KEY;
@@ -156,7 +165,7 @@ exports.handler = async (event) => {
 
     if (resendKey) {
       try {
-        await sendRetryNotification({ apiKey: resendKey, firstName, email, planUrl, usage, sent: record.status === "sent", hasHardFails, dlId });
+        await sendRetryNotification({ apiKey: resendKey, firstName, email, planUrl, usage, sent: record.state === "sent", hasHardFails, dlId });
       } catch (notifErr) {
         console.error(`[retry-plan] notification failed: ${notifErr.message}`);
       }
@@ -168,7 +177,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       headers: { "content-type": "text/html" },
-      body: `<h2>Retry succeeded</h2><p>Plan for ${escapeHtml(firstName)} generated and stored.</p><p><a href="${planUrl}">View the plan</a></p><p>${record.status === "sent" ? "Customer email sent." : hasHardFails ? "Critic flagged hard issues — customer email NOT sent." : "Customer email not sent (no email or Resend key)."}</p>`,
+      body: `<h2>Retry succeeded</h2><p>Plan for ${escapeHtml(firstName)} generated and stored.</p><p><a href="${planUrl}">View the plan</a></p><p>${record.state === "sent" ? "Customer email sent." : hasHardFails ? "Critic flagged hard issues — customer email NOT sent." : "Customer email not sent (no email or Resend key)."}</p>`,
     };
   } catch (err) {
     console.error("[retry-plan] failed:", err.stack || err.message);

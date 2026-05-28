@@ -13,6 +13,7 @@ const { draftPlan, ClaudeUnavailableError } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
 const { critique } = require("../lib/critique-plan");
 const { convertToPdf, archivePdf } = require("../lib/pdf");
+const { STATES, transition, initRecord, IllegalTransitionError } = require("../lib/plan-state");
 
 const INTERNAL_FROM = "Lantern Plan <intake@lanternplan.com>";
 const INTERNAL_TO = "mark@lanternplan.com";
@@ -290,11 +291,31 @@ exports.handler = async (event) => {
     const briefing = buildAiBriefing(firstName, data);
     console.log("[generate-plan] drafting for", firstName, "email:", email || "(none)");
 
+    // Pre-create the plan record at "pending" so we have an id for dead-letter
+    // references; transition to "generating" before the Claude call.
+    const id = newPlanId();
+    const record = initRecord({
+      id,
+      created_at: new Date().toISOString(),
+      customer_first_name: firstName,
+      customer_email: email,
+      submission: data,
+      briefing,
+    });
+    transition(record, "generating", { reason: "invoking Claude draftPlan" });
+
+    const store = getStore("plans");
+    await store.set(`${id}.json`, JSON.stringify(record));
+    console.log("[generate-plan] stored plan", id, "state:", record.state);
+
     let plan, usage, searchCount;
     try {
       ({ plan, usage, searchCount } = await draftPlan({ briefing, apiKey: anthropicKey }));
     } catch (err) {
       if (!(err instanceof ClaudeUnavailableError)) throw err;
+
+      transition(record, "failed", { reason: `dead-lettered: ${err.message}` });
+      await store.set(`${id}.json`, JSON.stringify(record));
 
       const dlId = crypto.randomBytes(9).toString("base64url");
       const retrySecret = process.env.RETRY_SECRET;
@@ -306,6 +327,7 @@ exports.handler = async (event) => {
       const dlStore = getStore("dead-letters");
       await dlStore.set(`${dlId}.json`, JSON.stringify({
         submission_id: dlId,
+        plan_id: id,
         briefing,
         customer_first_name: firstName,
         customer_email: email,
@@ -335,7 +357,7 @@ exports.handler = async (event) => {
         }
       }
 
-      return { statusCode: 200, body: JSON.stringify({ ok: false, reason: "dead_lettered", id: dlId }) };
+      return { statusCode: 200, body: JSON.stringify({ ok: false, reason: "dead_lettered", id: dlId, planId: id }) };
     }
     console.log(`[generate-plan] draft returned; web searches: ${searchCount || 0}; tokens:`, JSON.stringify(usage));
 
@@ -377,25 +399,17 @@ exports.handler = async (event) => {
       console.log(`[generate-plan] LLM critic: verdict=${layer2.verdict} score=${layer2.score}/10 confidence=${layer2.confidence}`);
     }
 
-    // Store in Netlify Blobs so we can serve it to Mark (and later to the customer).
-    const id = newPlanId();
-    const record = {
-      id,
-      created_at: new Date().toISOString(),
-      status: hasHardFails ? "needs_review" : "draft",
-      customer_first_name: firstName,
-      customer_email: email,
-      submission: data,
-      briefing,
-      plan,
-      html,
-      usage,
-      critique: { hardFails, softFails, layer2 },
-    };
-
-    const store = getStore("plans");
+    // Update the record with generation results and transition to "review".
+    record.plan = plan;
+    record.html = html;
+    record.usage = usage;
+    record.critique = { hardFails, softFails, layer2 };
+    if (hasHardFails) {
+      record.flags = { ...record.flags, hasHardFails: true };
+    }
+    transition(record, "review", { reason: hasHardFails ? "critic flagged hard issues" : "generation succeeded" });
     await store.set(`${id}.json`, JSON.stringify(record));
-    console.log("[generate-plan] stored plan", id, "status:", record.status);
+    console.log("[generate-plan] stored plan", id, "state:", record.state);
 
     const isTest = data._test === true || data._test === "true";
     const baseUrl = process.env.URL || "https://lanternplan.com";
@@ -404,29 +418,36 @@ exports.handler = async (event) => {
     // Auto-send to customer ONLY if no hard fails and not a test submission.
     if (isTest) {
       console.log("[generate-plan] test submission — skipping customer email");
-      record.status = "sent";
-      record.sent_at = new Date().toISOString();
+      transition(record, "approved", { reason: "test submission auto-approve" });
       record.test = true;
+      transition(record, "sent", { reason: "test submission auto-sent" });
+      record.sent_at = new Date().toISOString();
       await store.set(`${id}.json`, JSON.stringify(record));
     } else if (!hasHardFails && email && resendKey) {
+      transition(record, "approved", { reason: "no hard fails — auto-approve" });
       const revisionToken = crypto.randomBytes(24).toString("base64url");
       const revisionWindowDays = 14;
 
-      await emailCustomer({
-        apiKey: resendKey,
-        firstName,
-        toEmail: email,
-        planUrl,
-        revisionUrl: `${baseUrl}/revise/${revisionToken}`,
-      });
-      console.log("[generate-plan] sent to", email);
+      try {
+        await emailCustomer({
+          apiKey: resendKey,
+          firstName,
+          toEmail: email,
+          planUrl,
+          revisionUrl: `${baseUrl}/revise/${revisionToken}`,
+        });
+        console.log("[generate-plan] sent to", email);
 
-      record.status = "sent";
-      record.sent_at = new Date().toISOString();
-      record.revision_token = revisionToken;
-      record.customer_revisions_remaining = 2;
-      record.revision_window_expires_at = new Date(Date.now() + revisionWindowDays * 24 * 60 * 60 * 1000).toISOString();
-      record.customer_revisions = [];
+        transition(record, "sent", { reason: "customer email sent" });
+        record.sent_at = new Date().toISOString();
+        record.revision_token = revisionToken;
+        record.customer_revisions_remaining = 2;
+        record.revision_window_expires_at = new Date(Date.now() + revisionWindowDays * 24 * 60 * 60 * 1000).toISOString();
+        record.customer_revisions = [];
+      } catch (emailErr) {
+        console.error("[generate-plan] customer email failed:", emailErr.message);
+        transition(record, "failed", { reason: `customer email failed: ${emailErr.message}` });
+      }
       await store.set(`${id}.json`, JSON.stringify(record));
     } else if (hasHardFails) {
       console.warn("[generate-plan] customer send blocked by critic — manual review required");
@@ -456,7 +477,7 @@ exports.handler = async (event) => {
         email,
         planUrl,
         usage,
-        sent: record.status === "sent",
+        sent: record.state === "sent",
         hardFails,
         softFails,
         layer2,
@@ -464,7 +485,7 @@ exports.handler = async (event) => {
       console.log("[generate-plan] notification sent to Mark");
     }
 
-    return { statusCode: 200, body: JSON.stringify({ ok: true, id, planUrl, sent: record.status === "sent", needs_review: hasHardFails }) };
+    return { statusCode: 200, body: JSON.stringify({ ok: true, id, planUrl, sent: record.state === "sent", needs_review: hasHardFails }) };
   } catch (err) {
     console.error("[generate-plan] failed:", err.stack || err.message);
     return { statusCode: 500, body: `error: ${err.message}` };
