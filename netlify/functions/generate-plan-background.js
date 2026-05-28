@@ -9,7 +9,7 @@
 const crypto = require("crypto");
 const { connectLambda, getStore } = require("@netlify/blobs");
 const { buildAiBriefing } = require("../lib/briefing");
-const { draftPlan } = require("../lib/call-claude");
+const { draftPlan, ClaudeUnavailableError } = require("../lib/call-claude");
 const { renderPlan } = require("../lib/render-plan");
 const { critique } = require("../lib/critique-plan");
 const { convertToPdf, archivePdf } = require("../lib/pdf");
@@ -203,6 +203,56 @@ Tokens: ${cost}`;
   }
 }
 
+async function sendDeadLetterEmail({ apiKey, firstName, email, errorType, errorMessage, retryUrl, briefing }) {
+  const subject = "AAI: plan generation failed — manual retry needed";
+
+  const text =
+`Plan generation failed for ${firstName}${email ? ` (${email})` : ""}.
+
+Error: ${errorType} — ${errorMessage}
+
+Retry: ${retryUrl}
+
+--- BRIEFING ---
+
+${briefing}`;
+
+  const html =
+`<!doctype html>
+<html><body style="margin:0;padding:32px 16px;background:#FAF6F1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#2C3330;line-height:1.65;">
+  <div style="max-width:560px;margin:0 auto;font-size:16px;">
+    <p style="margin:0 0 18px;">Plan generation failed for <strong>${escapeHtml(firstName)}</strong>${email ? ` (<a href="mailto:${escapeHtml(email)}" style="color:#4A5550;">${escapeHtml(email)}</a>)` : ""}.</p>
+    <p style="margin:0 0 8px;font-size:13px;color:#9E4444;"><strong>Error:</strong> ${escapeHtml(errorType)}</p>
+    <p style="margin:0 0 24px;font-size:14px;color:#4A5550;">${escapeHtml(errorMessage)}</p>
+    <p style="margin:0 0 24px;">
+      <a href="${retryUrl}" style="display:inline-block;padding:12px 20px;background:#9E4444;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;">Retry plan generation</a>
+    </p>
+    <div style="margin:24px 0 8px;font-size:13px;font-weight:600;color:#4A5550;">Briefing</div>
+    <pre style="white-space:pre-wrap;word-wrap:break-word;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.55;background:#F3EDE3;color:#2C3330;border-radius:10px;padding:18px 20px;margin:0;">${escapeHtml(briefing)}</pre>
+  </div>
+</body></html>`;
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: INTERNAL_FROM,
+      to: [INTERNAL_TO],
+      reply_to: email || INTERNAL_TO,
+      subject,
+      text,
+      html,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Resend ${res.status}: ${body}`);
+  }
+}
+
 exports.handler = async (event) => {
   try {
     if (event.httpMethod !== "POST") {
@@ -240,7 +290,53 @@ exports.handler = async (event) => {
     const briefing = buildAiBriefing(firstName, data);
     console.log("[generate-plan] drafting for", firstName, "email:", email || "(none)");
 
-    const { plan, usage, searchCount } = await draftPlan({ briefing, apiKey: anthropicKey });
+    let plan, usage, searchCount;
+    try {
+      ({ plan, usage, searchCount } = await draftPlan({ briefing, apiKey: anthropicKey }));
+    } catch (err) {
+      if (!(err instanceof ClaudeUnavailableError)) throw err;
+
+      const dlId = crypto.randomBytes(9).toString("base64url");
+      const retrySecret = process.env.RETRY_SECRET;
+      const baseUrl = process.env.URL || "https://alongsideai.ai";
+      const retryUrl = retrySecret
+        ? `${baseUrl}/.netlify/functions/retry-plan-background?id=${dlId}&secret=${retrySecret}`
+        : "(RETRY_SECRET not configured)";
+
+      const dlStore = getStore("dead-letters");
+      await dlStore.set(`${dlId}.json`, JSON.stringify({
+        submission_id: dlId,
+        briefing,
+        customer_first_name: firstName,
+        customer_email: email,
+        submission_data: data,
+        error_type: err.name,
+        error_message: err.message,
+        attempts: err.attempts,
+        failed_at: new Date().toISOString(),
+        retry_url: retryUrl,
+      }));
+      console.error(`[generate-plan] dead-lettered ${dlId} for ${firstName}: ${err.message}`);
+
+      if (resendKey) {
+        try {
+          await sendDeadLetterEmail({
+            apiKey: resendKey,
+            firstName,
+            email,
+            errorType: err.name,
+            errorMessage: err.message,
+            retryUrl,
+            briefing,
+          });
+          console.log("[generate-plan] dead-letter notification sent to Mark");
+        } catch (emailErr) {
+          console.error("[generate-plan] dead-letter email failed:", emailErr.message);
+        }
+      }
+
+      return { statusCode: 200, body: JSON.stringify({ ok: false, reason: "dead_lettered", id: dlId }) };
+    }
     console.log(`[generate-plan] draft returned; web searches: ${searchCount || 0}; tokens:`, JSON.stringify(usage));
 
     // If Claude decided the briefing was too thin for a real plan, notify Mark
