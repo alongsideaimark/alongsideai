@@ -292,10 +292,6 @@ exports.handler = async (event) => {
 
     let plan, usage, searchCount;
     try {
-      // SMOKE TEST HOOK — remove after dead-letter testing
-      if (data._force_dead_letter === "true" || data._force_dead_letter === true) {
-        throw new ClaudeUnavailableError(new Error("forced 529 for smoke test"), 1);
-      }
       ({ plan, usage, searchCount } = await draftPlan({ briefing, apiKey: anthropicKey }));
     } catch (err) {
       if (!(err instanceof ClaudeUnavailableError)) throw err;
