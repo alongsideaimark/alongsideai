@@ -280,6 +280,28 @@ exports.handler = async (event) => {
       };
     }
 
+    // Plan is still being generated — show a friendly waiting page instead of blank.
+    if (!record.plan && !record.html) {
+      const firstName = record.customer_first_name || "there";
+      return {
+        statusCode: 200,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store",
+          "refresh": "15",
+        },
+        body: `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Writing your plan — Lantern Plan</title>
+<style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#FAF6F1;color:#1F1F1D;padding:80px 24px;text-align:center;line-height:1.6}
+h1{font-family:Georgia,serif;font-size:28px;margin-bottom:12px}p{color:#4A5550;max-width:440px;margin:0 auto 16px}
+.spinner{display:inline-block;width:28px;height:28px;border:3px solid #E5DED3;border-top-color:#7A8B6F;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:24px}
+@keyframes spin{to{transform:rotate(360deg)}}</style>
+<div class="spinner"></div>
+<h1>Writing your plan, ${escapeForHtml(firstName)}.</h1>
+<p>This usually takes two to four minutes. This page will refresh automatically — no need to reload.</p>`,
+      };
+    }
+
     // Re-render from stored plan JSON so CSS/template changes apply immediately
     // without needing to regenerate every plan.
     const freshHtml = record.plan ? renderPlan(record.plan, {

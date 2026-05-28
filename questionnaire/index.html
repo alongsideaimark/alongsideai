@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Get your plan — Lantern Plan</title>
-<meta name="description" content="Seven short sections of plain-English questions — around 20 to 25 minutes. Skip any question you'd rather not answer. We'll send back a plan written for your specific situation within two business days — no call required, no commitment."/>
+<meta name="description" content="Seven short sections of plain-English questions — around 20 to 25 minutes. Skip any question you'd rather not answer. We'll send back a plan written for your specific situation in the next few minutes — no call required, no commitment."/>
 <link rel="canonical" href="https://lanternplan.com/questionnaire/"/>
 
 <link rel="icon" href="/favicon.ico" sizes="any"/>
@@ -779,7 +779,7 @@ const SECTIONS = [
       {
         id: "contact",
         label: "Where should we send your plan?",
-        help: "We'll email you within two business days. We won't add you to anything, and we don't sell contact info.",
+        help: "We'll email your plan in the next few minutes. We won't add you to anything, and we don't sell contact info.",
         required: true,
         field: { kind: "email", placeholder: "you@example.com" }
       }
@@ -853,7 +853,7 @@ function renderIntro(){
     <div class="card intro-card view">
       <div class="step-kicker">Before we begin</div>
       <h1 class="section-title">Tell us about how you work. We'll write you a plan.</h1>
-      <p class="section-intro">Seven short sections of plain-English questions. Most people take about 20 to 25 minutes. You can skip any question that doesn't feel right, and we'll save your place if you need to step away. When you're done, we'll email you a plan written for your situation within two business days — no call required, no obligation.</p>
+      <p class="section-intro">Seven short sections of plain-English questions. Most people take about 20 to 25 minutes. You can skip any question that doesn't feel right, and we'll save your place if you need to step away. When you're done, we'll email you a plan written for your situation in the next few minutes — no call required, no obligation.</p>
       <div class="intro-bullets">
         <div class="intro-bullet"><div class="n">—</div><div>No account to create. No password to remember.</div></div>
         <div class="intro-bullet"><div class="n">—</div><div>Skip anything that doesn't feel right. Only your first name and an email at the end are required.</div></div>
@@ -881,7 +881,7 @@ function renderDone(){
       </div>
       <div class="step-kicker">All set</div>
       <h1 class="section-title">Thank you, ${escapeHtml(firstName)}. Your plan is on the way.</h1>
-      <p class="section-intro">Your answers are being read carefully right now. Your custom plan will arrive by email within two business days — check the inbox you gave us. If anything comes to mind after you read it, just reply to that email. It comes straight to a real person.</p>
+      <p class="section-intro">Your answers are being read carefully right now. Your custom plan will arrive by email in the next few minutes — check the inbox you gave us. If anything comes to mind after you read it, just reply to that email. It comes straight to a real person.</p>
 
       <div class="done-detail">
         <h4>What's in the plan</h4>

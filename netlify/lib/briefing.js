@@ -127,6 +127,7 @@ function buildAiBriefing(firstName, data) {
 
   L.push("## Work context");
   L.push(`- What they do: ${textOrDash(data.work)}`);
+  L.push(`- What they create most: ${textOrDash(data.creates)}`);
   L.push(`- Team: ${label("team", data.team)}`);
   L.push(`- Typical week: ${textOrDash(data.typical_week)}`);
   L.push(`- Works from today: ${label("location_today", data.location_today)}`);
@@ -152,11 +153,13 @@ function buildAiBriefing(firstName, data) {
   L.push(`- Biggest friction: ${textOrDash(data.friction)}`);
   L.push(`- Manual tasks they named: ${textOrDash(data.manual_tasks)}`);
   L.push(`- What they've tried before: ${textOrDash(data.already_tried)}`);
+  L.push(`- Problem they've given up on: ${textOrDash(data.given_up_on)}`);
   L.push(`- Inbox state: ${label("inbox", data.inbox)}`);
   if (raw(data, "inbox_note")) {
     L.push(`  Inbox detail: ${raw(data, "inbox_note")}`);
   }
   L.push(`- Magic wand: ${textOrDash(data.wish)}`);
+  L.push(`- What they'd teach an assistant once: ${textOrDash(data.explain_once)}`);
   L.push(`- Six-month success picture: ${textOrDash(data.success_6mo)}`);
   L.push(`- Priority (time / money / peace): ${label("priority", data.priority)}`);
   L.push("");

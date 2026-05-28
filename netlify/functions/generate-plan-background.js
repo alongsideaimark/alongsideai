@@ -272,7 +272,7 @@ exports.handler = async (event) => {
 
     // Gate: don't burn Claude credits on empty or near-empty submissions.
     // A real questionnaire fills in at least work, friction, and wish.
-    const requiredFields = ["work", "friction", "wish"];
+    const requiredFields = ["work", "manual_tasks", "wish"];
     const filledCount = requiredFields.filter((f) => String(data[f] || "").trim().length > 10).length;
     if (filledCount < 2) {
       console.warn(`[generate-plan] skipping — only ${filledCount}/${requiredFields.length} required fields filled for ${firstName}`);
