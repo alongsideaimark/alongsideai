@@ -5,7 +5,7 @@
 // Usage: node scripts/seed-test-plans.js
 // Optional: SITE_URL=https://your-deploy.netlify.app node scripts/seed-test-plans.js
 
-const SITE_URL = process.env.SITE_URL || "https://alongsideai.ai";
+const SITE_URL = process.env.SITE_URL || "https://lanternplan.com";
 const ENDPOINT = `${SITE_URL}/.netlify/functions/submit-questionnaire`;
 const DELAY_BETWEEN_MS = 5000;
 
@@ -739,7 +739,7 @@ const PERSONAS = [
 async function submit(persona, index) {
   const payload = {
     ...persona,
-    contact: "mark@alongsideai.ai",
+    contact: "mark@lanternplan.com",
     _test: true,
   };
 

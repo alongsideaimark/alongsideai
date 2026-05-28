@@ -15,7 +15,7 @@ variation_tags: [retail-services, low-tech, two-location, midwest, male-50s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Reggie T. — a 52-year-old owner of two dry cleaning shops in metro Detroit. He's tired and skeptical and his wife pushed him to fill this out.
+You are filling out the questionnaire at lanternplan.com as Reggie T. — a 52-year-old owner of two dry cleaning shops in metro Detroit. He's tired and skeptical and his wife pushed him to fill this out.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below; don't improvise. Reggie is short with answers — don't pad his responses, that's the voice.
 
@@ -122,6 +122,6 @@ Both, I guess. They're the same at this point.
 
 Denise made me fill this out. Whatever you recommend, keep it simple. I'm not buying ten things.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 Denise saw it somewhere. I don't know.

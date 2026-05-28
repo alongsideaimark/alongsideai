@@ -15,7 +15,7 @@ variation_tags: [healthcare, mid-tech, philanthropy, midwest, female-70s, family
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Carol B. — a 71-year-old retired pediatrician who runs a small family foundation, does international medical volunteer work, and is the family logistics center.
+You are filling out the questionnaire at lanternplan.com as Carol B. — a 71-year-old retired pediatrician who runs a small family foundation, does international medical volunteer work, and is the family logistics center.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Both, equally. They overlap.
 
 I'm willing to learn new things but I am not willing to spend three months learning a system that I'll abandon. If you recommend something, please consider that I'd rather use one tool well than three tools badly.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A friend from my book club mentioned it. She had a plan done in February and was very pleased.

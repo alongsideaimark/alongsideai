@@ -13,7 +13,7 @@ function notFound() {
 <style>body{font-family:-apple-system,sans-serif;background:#FAF6F1;color:#1F1F1D;padding:80px 24px;text-align:center}
 a{color:#7A8B6F}</style>
 <h1 style="font-family:Georgia,serif;">This plan link is no longer valid.</h1>
-<p>It may have been sent already, or the link is mistyped. If you think this is an error, email <a href="mailto:mark@alongsideai.ai">mark@alongsideai.ai</a>.</p>`,
+<p>It may have been sent already, or the link is mistyped. If you think this is an error, email <a href="mailto:mark@lanternplan.com">mark@lanternplan.com</a>.</p>`,
   };
 }
 

@@ -15,7 +15,7 @@ variation_tags: [retail, mid-tech, family-business, southeast, male-40s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Vincent A. — a 49-year-old owner of a 2-location independent jewelry store in Tampa, run originally by his father.
+You are filling out the questionnaire at lanternplan.com as Vincent A. — a 49-year-old owner of a 2-location independent jewelry store in Tampa, run originally by his father.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Business.
 
 The customer relationships are everything in this business. I don't want anything that gets between me and them. Anything you recommend, that's the test.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A guy I play tennis with mentioned it. He runs an insurance brokerage.

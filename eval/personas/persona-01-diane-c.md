@@ -15,7 +15,7 @@ variation_tags: [healthcare, mid-tech, multi-location, suburban, female-50s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Diane C. — a 58-year-old physical therapy practice owner in metro Atlanta.
+You are filling out the questionnaire at lanternplan.com as Diane C. — a 58-year-old physical therapy practice owner in metro Atlanta.
 
 For each form field, type the answer below **verbatim**. Do not rephrase, do not smooth out the voice, do not add transitions. The voice variation across personas is intentional — this is a calibration input for the plan generator and rewording defeats the purpose.
 
@@ -126,6 +126,6 @@ Business primarily. Personal stuff I've got under control.
 
 My daughter is having my first grandbaby in July. I'd like to be the kind of grandmother who can leave the office for a long lunch and not wonder what's burning. That's the real goal here, even if it's not a tech question.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 My brother-in-law mentioned you — he runs a small architecture firm in Phoenix and said you helped him think through what to use.

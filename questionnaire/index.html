@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Get your plan — Alongside AI</title>
+<title>Get your plan — Lantern Plan</title>
 <meta name="description" content="Seven short sections of plain-English questions — around 20 to 25 minutes. Skip any question you'd rather not answer. We'll send back a plan written for your specific situation within two business days — no call required, no commitment."/>
-<link rel="canonical" href="https://alongsideai.ai/questionnaire/"/>
+<link rel="canonical" href="https://lanternplan.com/questionnaire/"/>
 
 <link rel="icon" href="/favicon.ico" sizes="any"/>
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"/>
@@ -13,18 +13,18 @@
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"/>
 
 <meta property="og:type" content="website"/>
-<meta property="og:site_name" content="Alongside AI"/>
-<meta property="og:title" content="Get your custom AI plan — Alongside AI"/>
+<meta property="og:site_name" content="Lantern Plan"/>
+<meta property="og:title" content="Get your custom AI plan — Lantern Plan"/>
 <meta property="og:description" content="Seven short sections of plain-English questions. Around 20 to 25 minutes. A custom plan written for your situation — no call required, no commitment."/>
-<meta property="og:url" content="https://alongsideai.ai/questionnaire/"/>
-<meta property="og:image" content="https://alongsideai.ai/assets/og-image.png"/>
+<meta property="og:url" content="https://lanternplan.com/questionnaire/"/>
+<meta property="og:image" content="https://lanternplan.com/assets/og-image.png"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
-<meta property="og:image:alt" content="Alongside AI — You don't need to learn AI. You just need someone to set it up for you."/>
+<meta property="og:image:alt" content="Lantern Plan — You don't need to learn AI. You just need someone to set it up for you."/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Get your custom AI plan — Alongside AI"/>
+<meta name="twitter:title" content="Get your custom AI plan — Lantern Plan"/>
 <meta name="twitter:description" content="Seven short sections of plain-English questions. Around 20 to 25 minutes. A custom plan, no call required."/>
-<meta name="twitter:image" content="https://alongsideai.ai/assets/og-image.png"/>
+<meta name="twitter:image" content="https://lanternplan.com/assets/og-image.png"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -380,9 +380,9 @@
 </form>
 
 <header class="bar">
-  <a href="/" class="brand" aria-label="Alongside AI home">
+  <a href="/" class="brand" aria-label="Lantern Plan home">
     <img class="brand-mark" src="/assets/logo-mark.svg" alt=""/>
-    <span class="brand-lockup"><span class="brand-word">alongside</span><span class="brand-ai">AI</span></span>
+    <span class="brand-lockup"><span class="brand-word">Lantern</span><span class="brand-ai">PLAN</span></span>
   </a>
   <a href="/" class="exit">Save &amp; finish later</a>
 </header>
@@ -1113,7 +1113,7 @@ async function submitToNetlify(){
       btn.disabled = false;
       btn.innerHTML = `Try again <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     }
-    alert("Sorry — something went wrong sending your answers. If you have an ad blocker or content blocker enabled, please disable it and try again. If it still won't go through, email mark@alongsideai.ai and we'll take it from there.");
+    alert("Sorry — something went wrong sending your answers. If you have an ad blocker or content blocker enabled, please disable it and try again. If it still won't go through, email mark@lanternplan.com and we'll take it from there.");
   };
 
   // Try primary (direct function call — reliable, no middlebox issues).
@@ -1148,7 +1148,7 @@ async function submitToNetlify(){
     console.log("[questionnaire] fallback submit status:", fallbackRes.status);
     if(fallbackRes.ok){
       const body = await fallbackRes.text();
-      if(body && body.length >= 500 && body.includes("Alongside AI")){
+      if(body && body.length >= 500 && body.includes("Lantern Plan")){
         finishSuccess();
         return;
       }

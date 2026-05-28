@@ -1,11 +1,11 @@
-# Alongside AI — Canonical Test Personas (v1)
+# Lantern Plan — Canonical Test Personas (v1)
 
 25 persona files for the plan-generator quality validation pipeline.
 
 ## Workflow
 
 1. Hand a persona file to Claude Chrome.
-2. Chrome navigates to alongsideai.ai/questionnaire.
+2. Chrome navigates to lanternplan.com/questionnaire.
 3. Chrome fills out the questionnaire **typing answers verbatim** (instructions inside each file).
 4. The submission becomes a canonical input for the eval harness.
 

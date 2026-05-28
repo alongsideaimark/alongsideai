@@ -9,10 +9,10 @@
 const crypto = require("crypto");
 const { connectLambda, getStore } = require("@netlify/blobs");
 
-const INTERNAL_TO = "mark@alongsideai.ai";
-const INTERNAL_FROM = "Alongside AI Intake <intake@alongsideai.ai>";
-const AUTOREPLY_FROM = "Mark <mark@alongsideai.ai>";
-const REPLY_TO = "mark@alongsideai.ai";
+const INTERNAL_TO = "mark@lanternplan.com";
+const INTERNAL_FROM = "Lantern Plan Intake <intake@lanternplan.com>";
+const AUTOREPLY_FROM = "Mark <mark@lanternplan.com>";
+const REPLY_TO = "mark@lanternplan.com";
 
 // Labels mirror the radio/checkbox option labels rendered in the form,
 // so the email reads in plain English instead of raw enum values.
@@ -162,7 +162,7 @@ function buildAutoReply(firstName, email) {
   const subject = `We got it, ${firstName} — your plan is on the way`;
 
   const text =
-`Thanks for sending that through. I'm Mark, the person behind Alongside AI.
+`Thanks for sending that through. I'm Mark, the person behind Lantern Plan.
 
 Your answers are being read carefully right now — where your time goes, what you've already tried, what "working in six months" looks like for you. That's where the real plan comes from.
 
@@ -173,19 +173,19 @@ It's yours to keep either way.
 If anything comes to mind after you read it — a question, something that doesn't fit, or a part you want to dig into — just reply to this email. It comes straight to me.
 
 — Mark
-Alongside AI`;
+Lantern Plan`;
 
   const html =
 `<!doctype html>
 <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
 <body style="margin:0;padding:32px 16px;background:#FAF6F1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#2C3330;line-height:1.65;">
   <div style="max-width:560px;margin:0 auto;font-size:16px;">
-    <p style="margin:0 0 20px;">Thanks for sending that through. I'm Mark, the person behind Alongside AI.</p>
+    <p style="margin:0 0 20px;">Thanks for sending that through. I'm Mark, the person behind Lantern Plan.</p>
     <p style="margin:0 0 20px;">Your answers are being read carefully right now &mdash; where your time goes, what you've already tried, what &ldquo;working in six months&rdquo; looks like for you. That's where the real plan comes from.</p>
     <p style="margin:0 0 20px;">You'll get your plan as a PDF in the next few minutes. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic &mdash; or if you'd be better off doing nothing at all &mdash; the plan will say that too.</p>
     <p style="margin:0 0 20px;">It's yours to keep either way.</p>
     <p style="margin:0 0 20px;">If anything comes to mind after you read it &mdash; a question, something that doesn't fit, or a part you want to dig into &mdash; just reply to this email. It comes straight to me.</p>
-    <p style="margin:32px 0 0;">&mdash; Mark<br/><span style="color:#7B9E87;">Alongside AI</span></p>
+    <p style="margin:32px 0 0;">&mdash; Mark<br/><span style="color:#7B9E87;">Lantern Plan</span></p>
   </div>
 </body></html>`;
 
@@ -203,7 +203,7 @@ Alongside AI`;
 // AI agent prompt to draft a plan. Stable keys, line-oriented, no HTML.
 function buildAiBriefing(firstName, data) {
   const L = [];
-  L.push("=== ALONGSIDE AI BRIEFING (FOR AGENT INPUT) ===");
+  L.push("=== LANTERN PLAN BRIEFING (FOR AGENT INPUT) ===");
   L.push("");
 
   L.push("## Respondent");

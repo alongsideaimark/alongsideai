@@ -16,7 +16,7 @@ variation_tags: [tech, very-high-tech, FAANG, AI-power-user, edge-case-self-prom
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Mike J. — a 56-year-old Senior Product Manager at a major tech company in Mountain View. Started his career as a software engineer in the late 90s, transitioned to PM around 2008. He has been using LLMs heavily since 2022.
+You are filling out the questionnaire at lanternplan.com as Mike J. — a 56-year-old Senior Product Manager at a major tech company in Mountain View. Started his career as a software engineer in the late 90s, transitioned to PM around 2008. He has been using LLMs heavily since 2022.
 
 This persona is intentionally testing whether the plan generator over-promotes basic tools to a sophisticated user. He should NOT be sold on "have you tried ChatGPT?" The right plan for him is opinionated curation — what's actually worth integrating into his stack at his level — not introductory recommendations.
 
@@ -125,6 +125,6 @@ Honestly, I'm filling this out because I'm curious what an opinionated outside p
 
 If your output is "have you tried ChatGPT" or "use Notion for tasks," we're not a match. I'm looking for the recommendation a thoughtful practitioner with deep field knowledge would give a peer who has tried most of the obvious things.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A former colleague mentioned it on LinkedIn. I clicked because the framing was unusual — "done-for-you" for a sophisticated user is an interesting positioning that I wanted to interrogate.

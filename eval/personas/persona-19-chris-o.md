@@ -15,7 +15,7 @@ variation_tags: [corporate, high-tech, single, southeast, male-30s, burnout-adja
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Chris O. — a 35-year-old marketing director at a regional bank in Charlotte. Single, no kids. Career-focused and edging toward burnout.
+You are filling out the questionnaire at lanternplan.com as Chris O. — a 35-year-old marketing director at a regional bank in Charlotte. Single, no kids. Career-focused and edging toward burnout.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Personal. Specifically the maintenance side of being a person.
 
 I'm aware that the right answer here might be "go to therapy and work less" rather than "buy more software." If your honest assessment is that, you can say it. I'd rather hear it from you than not.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 Someone shared a guide on LinkedIn that I clicked on.

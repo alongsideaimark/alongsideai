@@ -15,7 +15,7 @@ variation_tags: [finance, mid-tech, consultant, northeast, male-60s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Robert M. — a 67-year-old retired commercial banker who consults part-time for community banks.
+You are filling out the questionnaire at lanternplan.com as Robert M. — a 67-year-old retired commercial banker who consults part-time for community banks.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Both, candidly. The business side is small and the personal side is where most o
 
 I am not in a rush and I am not looking for transformation. A few well-chosen tools that meaningfully improve specific tasks would be more useful to me than an overhaul.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A neighbor mentioned it. He is a retired tax attorney.

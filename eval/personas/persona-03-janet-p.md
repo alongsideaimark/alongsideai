@@ -15,7 +15,7 @@ variation_tags: [professional-services, mid-tech, succession-planning, midwest, 
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Janet P. — a 64-year-old bookkeeping firm owner in Iowa City who is three years from retirement.
+You are filling out the questionnaire at lanternplan.com as Janet P. — a 64-year-old bookkeeping firm owner in Iowa City who is three years from retirement.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below; don't improvise.
 
@@ -122,6 +122,6 @@ Business. I want this firm in clean enough shape that I can hand it off and actu
 
 I am not the target audience for shiny new things. If a recommendation feels like it requires me to become a different person to use it, I won't. I need things that fit how my staff and I actually work.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A peer in a study group I'm part of mentioned it. We meet quarterly — small accounting firm owners.

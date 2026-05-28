@@ -12,10 +12,10 @@ const { renderPlan } = require("../lib/render-plan");
 const { critique } = require("../lib/critique-plan");
 const { convertToPdf, archivePdf } = require("../lib/pdf");
 
-const INTERNAL_FROM = "Alongside AI <intake@alongsideai.ai>";
-const INTERNAL_TO = "mark@alongsideai.ai";
-const CUSTOMER_FROM = "Mark <mark@alongsideai.ai>";
-const CUSTOMER_REPLY_TO = "mark@alongsideai.ai";
+const INTERNAL_FROM = "Lantern Plan <intake@lanternplan.com>";
+const INTERNAL_TO = "mark@lanternplan.com";
+const CUSTOMER_FROM = "Mark <mark@lanternplan.com>";
+const CUSTOMER_REPLY_TO = "mark@lanternplan.com";
 
 function newPlanId() {
   return crypto.randomBytes(9).toString("base64url");
@@ -108,7 +108,7 @@ exports.handler = async (event) => {
     console.log(`[retry-plan] stored plan ${id} from dead-letter ${dlId}`);
 
     const isTest = data._test === true || data._test === "true";
-    const baseUrl = process.env.URL || "https://alongsideai.ai";
+    const baseUrl = process.env.URL || "https://lanternplan.com";
     const planUrl = `${baseUrl}/plans/${id}`;
 
     if (isTest) {
@@ -186,7 +186,7 @@ exports.handler = async (event) => {
           body: JSON.stringify({
             from: INTERNAL_FROM,
             to: [INTERNAL_TO],
-            subject: `AAI: retry also failed — dead-letter ${params.id || "unknown"}`,
+            subject: `LP: retry also failed — dead-letter ${params.id || "unknown"}`,
             text: `Retry of dead-letter ${params.id || "unknown"} failed.\n\nError: ${err.message}\n\nDead-letter record preserved — you can try again later.`,
             html: `<p>Retry of dead-letter <code>${escapeHtml(params.id || "unknown")}</code> failed.</p><p><strong>Error:</strong> ${escapeHtml(err.message)}</p><p>Dead-letter record preserved — you can try again later.</p>`,
           }),
@@ -226,7 +226,7 @@ ${revisionUrl}
 You have two free revisions available for the next 14 days.
 
 — Mark
-Alongside AI`,
+Lantern Plan`,
     html:
 `<!doctype html>
 <html><body style="margin:0;padding:32px 16px;background:#FAF6F1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#2C3330;line-height:1.65;">
@@ -244,7 +244,7 @@ Alongside AI`,
       <a href="${revisionUrl}" style="display:inline-block;padding:14px 24px;background:#9E7B84;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Revise your plan</a>
     </p>
     <p style="margin:0 0 18px;color:#8A8780;font-size:14px;">Two free revisions available for the next 14 days.</p>
-    <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Alongside AI</span></p>
+    <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Lantern Plan</span></p>
   </div>
 </body></html>`,
   };

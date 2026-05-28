@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-seed-personas.py — submit eval personas to the live Alongside AI pipeline
+seed-personas.py — submit eval personas to the live Lantern Plan pipeline
 
 Usage:
   python scripts/seed-personas.py --dry-run           # print all payloads, submit nothing
@@ -19,7 +19,7 @@ import urllib.request
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PERSONAS_DIR = os.path.join(SCRIPT_DIR, "..", "eval", "personas")
-SUBMIT_URL = "https://alongsideai.ai/"
+SUBMIT_URL = "https://lanternplan.com/"
 DELAY_S = 25
 
 # ---------------------------------------------------------------------------
@@ -274,7 +274,7 @@ def build_payload(fm, qa):
 
     urgency_text = get_qa(qa, "How soon are you looking to get started")
     anything_else = get_qa(qa, "Is there anything else you'd like us to know")
-    referral = get_qa(qa, "How did you hear about Alongside AI")
+    referral = get_qa(qa, "How did you hear about Lantern Plan")
 
     anything_else_combined = anything_else
     if referral:
@@ -359,8 +359,8 @@ def submit_payload(payload):
             "Content-Type": content_type,
             "Accept": "*/*",
             "Accept-Language": "en-US,en;q=0.9",
-            "Origin": "https://alongsideai.ai",
-            "Referer": "https://alongsideai.ai/questionnaire/",
+            "Origin": "https://lanternplan.com",
+            "Referer": "https://lanternplan.com/questionnaire/",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
         },
         method="POST",
@@ -376,8 +376,10 @@ def submit_payload(payload):
 def main():
     parser = argparse.ArgumentParser(description="Submit eval personas to the live pipeline")
     parser.add_argument("--dry-run", action="store_true", help="Print payloads without submitting")
-    parser.add_argument("--only", type=str, default=None, help="Submit only persona NN (e.g. --only=01)")
+    parser.add_argument("--only", type=str, default=None, help="Submit only persona NN (e.g. --only=01 or --only=01,03,05)")
+    parser.add_argument("--delay", type=int, default=DELAY_S, help=f"Seconds between submissions (default {DELAY_S})")
     args = parser.parse_args()
+    delay_s = args.delay
 
     only_ids = None
     if args.only:
@@ -435,8 +437,8 @@ def main():
                 failed += 1
 
             if i < len(selected) - 1:
-                print(f"  Waiting {DELAY_S}s...", end="", flush=True)
-                time.sleep(DELAY_S)
+                print(f"  Waiting {delay_s}s...", end="", flush=True)
+                time.sleep(delay_s)
                 print(" ok")
 
     print(f"\nDone. {submitted} submitted, {failed} failed.")

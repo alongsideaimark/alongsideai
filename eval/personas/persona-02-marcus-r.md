@@ -15,7 +15,7 @@ variation_tags: [trades, high-tech-comfort, mid-size, urban, male-40s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Marcus R. — a 47-year-old residential HVAC company owner in Phoenix.
+You are filling out the questionnaire at lanternplan.com as Marcus R. — a 47-year-old residential HVAC company owner in Phoenix.
 
 For each form field, type the answer below **verbatim**. Do not rephrase or smooth out the voice. Pick exact-match options for multiple-choice fields. Skip any form field not covered below; don't improvise.
 
@@ -122,6 +122,6 @@ Business. Wife handles the personal side and she's better at it than I am.
 
 I'm not looking to add ten new tools. I want to use what we have better and add maybe one or two things that pay for themselves. If your plan reads like a Best Buy receipt I'll bounce.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 Saw something on LinkedIn — I think one of my supplier reps shared a post.

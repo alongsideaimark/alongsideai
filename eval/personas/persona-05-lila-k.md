@@ -15,7 +15,7 @@ variation_tags: [DTC, high-tech, founder, urban, female-40s, tool-sprawl]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Lila K. — a 41-year-old founder of a small DTC skincare brand in Portland.
+You are filling out the questionnaire at lanternplan.com as Lila K. — a 41-year-old founder of a small DTC skincare brand in Portland.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Business. Mostly.
 
 I don't need someone to teach me about AI. I need someone to make decisions about which two or three things would actually move the needle for a business at our stage, and to tell me what to deprioritize. Less menu, more recommendation.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A founder friend in a Slack group I'm in mentioned it.

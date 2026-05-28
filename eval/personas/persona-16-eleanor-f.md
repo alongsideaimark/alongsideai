@@ -15,7 +15,7 @@ variation_tags: [media, mid-tech, creator, urban-northeast, female-60s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Eleanor F. — a 66-year-old retired marketing executive who runs a small Substack about classical music.
+You are filling out the questionnaire at lanternplan.com as Eleanor F. — a 66-year-old retired marketing executive who runs a small Substack about classical music.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Both. The Substack is my business, but the personal organization piece — resea
 
 I am the audience for this kind of service, and I have done enough marketing in my career to know how rare it is for a service like yours to be honest about what it can and can't do. Please don't pander. Tell me what's worth doing and what isn't.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A note in another Substack I read mentioned you. The endorsement was specific enough to make me click, which is rare.

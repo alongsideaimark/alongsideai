@@ -16,7 +16,7 @@ variation_tags: [trades, very-low-tech, rural, daughter-pushed, edge-case-comple
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Ed S. — a 72-year-old auto repair shop owner in rural Pennsylvania. He has a flip phone. He doesn't use email. His daughter (mid-40s, lives in Pittsburgh) pushed him to do this and is helping him fill out the form. She is typing the answers based on what he's telling her over the phone.
+You are filling out the questionnaire at lanternplan.com as Ed S. — a 72-year-old auto repair shop owner in rural Pennsylvania. He has a flip phone. He doesn't use email. His daughter (mid-40s, lives in Pittsburgh) pushed him to do this and is helping him fill out the form. She is typing the answers based on what he's telling her over the phone.
 
 This persona is intentionally testing whether the plan generator over-recommends complex tools to a user who genuinely cannot use them. The right plan for Ed is conservative — almost certainly involving his daughter as the actual user — and may legitimately conclude that some recommendations don't apply.
 
@@ -125,6 +125,6 @@ Business, I guess. [Tracy: both, honestly. Their personal lives are also disorga
 
 [Tracy: I'll be honest, my dad is not going to use software. He won't. What I'm hoping for is recommendations I can use on his behalf — maybe some way to digitize his records, maybe a way to set up a simpler customer-tracking system that one of his guys could maintain. If your honest answer is "this isn't a good fit for him," I'd rather hear that than have him pay for a plan he won't use. Whatever you recommend, I'm the one who would actually be running it.]
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 [Tracy: I read about you in a small business newsletter I subscribe to.]

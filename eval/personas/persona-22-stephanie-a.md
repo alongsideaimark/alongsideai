@@ -15,7 +15,7 @@ variation_tags: [creative-freelance, high-tech, single-parent, southeast, female
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Stephanie A. — a 36-year-old freelance graphic designer in Nashville. Single mom of one (an 8-year-old daughter).
+You are filling out the questionnaire at lanternplan.com as Stephanie A. — a 36-year-old freelance graphic designer in Nashville. Single mom of one (an 8-year-old daughter).
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Business primarily. The personal side is small enough that it's manageable.
 
 Whatever you recommend, please consider that my business is small. Tools that work great for an agency of 20 are not what I need. I'd rather use one or two well-chosen things deeply than a stack of stuff I half-adopt.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A friend in a designer Slack community I'm in mentioned it.

@@ -15,7 +15,7 @@ variation_tags: [education, mid-tech, creative, northeast, female-60s, memoir-pr
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Susan H. — a 69-year-old retired teacher and middle school principal. She is working on a memoir about her career.
+You are filling out the questionnaire at lanternplan.com as Susan H. — a 69-year-old retired teacher and middle school principal. She is working on a memoir about her career.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Personal life. Specifically the writing project.
 
 I will not use anything that requires me to give up the way I think about writing. I'm willing to use technology to organize and protect my work. I'm not interested in technology that does the work for me.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A friend in my writing group mentioned it. She had a plan done last month for organizing her family genealogy research and said it was helpful.

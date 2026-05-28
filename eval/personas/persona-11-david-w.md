@@ -15,7 +15,7 @@ variation_tags: [tech, high-tech, board-investor, southwest, male-60s, AI-skepti
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as David W. — a 63-year-old former enterprise sales VP who now does board work and angel investing.
+You are filling out the questionnaire at lanternplan.com as David W. — a 63-year-old former enterprise sales VP who now does board work and angel investing.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Both. Honestly the business and personal are deeply interleaved at this stage of
 
 If your recommendation is an AI tool that's a thin wrapper around GPT-4 or Claude, save us both time and just tell me to use the underlying model. I'd rather hear "use Claude Projects this way" than "use this $40/month startup that uses Claude under the hood."
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A founder I advise mentioned you. Said the plan was unusually opinionated, which is what got me to look.

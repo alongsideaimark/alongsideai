@@ -15,7 +15,7 @@ variation_tags: [creative-professional, mid-tech, solo, southwest, male-60s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Joaquin N. — a 65-year-old semi-retired residential architect in Santa Fe.
+You are filling out the questionnaire at lanternplan.com as Joaquin N. — a 65-year-old semi-retired residential architect in Santa Fe.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Both. Probably leaning personal — there's the sketchbook archive, and we trave
 
 I am not interested in tools that try to do the design thinking for me. I am interested in tools that handle the things I'm not paid to do, so that I can do the things I am.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A former client of mine sent me a link. He's a retired tech executive in Austin.

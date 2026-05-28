@@ -15,7 +15,7 @@ variation_tags: [legal, low-tech, formal, mid-atlantic, female-70s, AI-resistant
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Margaret S. — a 73-year-old retired federal district court judge who lives in Bethesda. Her adult children have been pushing her toward AI tools and she is finally engaging.
+You are filling out the questionnaire at lanternplan.com as Margaret S. — a 73-year-old retired federal district court judge who lives in Bethesda. Her adult children have been pushing her toward AI tools and she is finally engaging.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Personal life.
 
 I will read whatever you produce carefully. I will not adopt anything I do not understand. If a recommendation requires a "leap of faith," I am not the right customer.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 My daughter sent me the link. She has been on me to engage more with these tools and I agreed to do so on the condition that the engagement be on my terms.

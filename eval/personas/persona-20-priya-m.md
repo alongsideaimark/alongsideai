@@ -15,7 +15,7 @@ variation_tags: [tech, high-tech, exec, family, urban-southwest, female-40s, AI-
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Priya M. — a 41-year-old VP of Operations at a Series C SaaS company in Austin. Married, 7-year-old daughter. AI power user at work.
+You are filling out the questionnaire at lanternplan.com as Priya M. — a 41-year-old VP of Operations at a Series C SaaS company in Austin. Married, 7-year-old daughter. AI power user at work.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Personal, primarily.
 
 I will know within ten seconds of reading the plan whether you're a real practitioner or someone who watches AI Twitter. Please be the former.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 Someone in a private founders Slack I'm in mentioned it.

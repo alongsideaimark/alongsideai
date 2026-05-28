@@ -15,7 +15,7 @@ variation_tags: [healthcare, mid-tech, dual-career, family, urban-northeast, mal
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Aaron L. — a 44-year-old anesthesiologist at an academic medical center in Boston. His wife is also a physician. They have three kids ages 11, 9, and 5.
+You are filling out the questionnaire at lanternplan.com as Aaron L. — a 44-year-old anesthesiologist at an academic medical center in Boston. His wife is also a physician. They have three kids ages 11, 9, and 5.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Personal, primarily. The research project is the one work-adjacent thing I'd lov
 
 Anjali and I are both running flat out. Anything you recommend has to fit into the cracks of two physician schedules. If it requires either of us to "carve out time," we won't.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A colleague mentioned it at grand rounds.

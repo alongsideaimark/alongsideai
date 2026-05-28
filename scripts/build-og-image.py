@@ -1,4 +1,4 @@
-"""Generate the Alongside AI Open Graph / social share image at 1200x630.
+"""Generate the Lantern Plan Open Graph / social share image at 1200x630.
 Run from repo root: python scripts/build-og-image.py
 Writes to assets/og-image.png.
 This is a build tool, not a runtime dependency. Run once when the image needs to change.
@@ -39,30 +39,52 @@ GRAY = (138, 135, 128)
 W, H = 1200, 630
 
 def draw_logo_mark(canvas, x, y, size=64):
-    # Matches assets/logo-mark.svg — viewBox 120x140.
-    # So a square-ish mark with vertical lines.
+    """Lantern mark — matches assets/logo-mark.svg (viewBox 120x140)."""
     w = size
     h = int(size * 140 / 120)
     overlay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(overlay)
-    # Rounded rect background
+
+    # Sage rounded square background
     radius = int(w * 18 / 120)
     d.rounded_rectangle([0, 0, w - 1, h - 1], radius=radius, fill=SAGE)
-    # First vertical line (cream) + dot
-    sx1 = w * 42 / 120
-    sy_top1 = h * 34 / 140
-    sy_bot1 = h * 112 / 140
-    stroke_w = max(3, int(w * 7 / 120))
-    d.line([(sx1, sy_top1), (sx1, sy_bot1)], fill=CREAM, width=stroke_w)
-    r1 = w * 11 / 120
-    d.ellipse([sx1 - r1, h * 38 / 140 - r1, sx1 + r1, h * 38 / 140 + r1], fill=CREAM)
-    # Second line (gold) + dot
-    sx2 = w * 78 / 120
-    sy_top2 = h * 52 / 140
-    sy_bot2 = h * 112 / 140
-    d.line([(sx2, sy_top2), (sx2, sy_bot2)], fill=GOLD, width=stroke_w)
-    r2 = w * 11 / 120
-    d.ellipse([sx2 - r2, h * 56 / 140 - r2, sx2 + r2, h * 56 / 140 + r2], fill=GOLD)
+
+    stroke = max(2, int(w * 3 / 120))
+
+    # Lantern body (rect outline)
+    body_x1 = w * 34 / 120
+    body_x2 = w * 86 / 120
+    body_y1 = h * 44 / 140
+    body_y2 = h * 104 / 140
+    d.rounded_rectangle([body_x1, body_y1, body_x2, body_y2], radius=int(w * 4 / 120), outline=CREAM, width=stroke)
+
+    # Glowing light (gold circle)
+    cx = w * 60 / 120
+    cy = h * 74 / 140
+    r = w * 11 / 120
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=GOLD)
+
+    # Top cap
+    cap_x1 = w * 40 / 120
+    cap_x2 = w * 80 / 120
+    cap_y1 = h * 32 / 140
+    cap_y2 = h * 38 / 140
+    d.rounded_rectangle([cap_x1, cap_y1, cap_x2, cap_y2], radius=int(w * 2 / 120), fill=CREAM)
+
+    # Bottom base
+    base_x1 = w * 40 / 120
+    base_x2 = w * 80 / 120
+    base_y1 = h * 106 / 140
+    base_y2 = h * 112 / 140
+    d.rounded_rectangle([base_x1, base_y1, base_x2, base_y2], radius=int(w * 2 / 120), fill=CREAM)
+
+    # Handle (semicircle arc)
+    handle_x1 = w * 50 / 120
+    handle_x2 = w * 70 / 120
+    handle_y1 = h * 18 / 140
+    handle_y2 = h * 36 / 140
+    d.arc([handle_x1, handle_y1, handle_x2, handle_y2], start=180, end=360, fill=CREAM, width=stroke)
+
     canvas.paste(overlay, (x, y), overlay)
     return w, h
 
@@ -82,26 +104,28 @@ def main():
     mark_w, mark_h = draw_logo_mark(img, mark_x, mark_y, size=64)
 
     wordmark_serif = ImageFont.truetype(font_path("serif"), 48)
-    wordmark_ai = ImageFont.truetype(font_path("sans-bold"), 24)
+    wordmark_plan = ImageFont.truetype(font_path("sans-bold"), 24)
     word_x = mark_x + mark_w + 20
     # Place serif wordmark using the font's ascent to nail baseline math.
     serif_ascent, serif_descent = wordmark_serif.getmetrics()
     wordmark_top = mark_y + (mark_h - (serif_ascent + serif_descent)) // 2 + 2
-    draw.text((word_x, wordmark_top), "alongside", font=wordmark_serif, fill=CHARCOAL)
-    serif_bbox = draw.textbbox((word_x, wordmark_top), "alongside", font=wordmark_serif)
+    draw.text((word_x, wordmark_top), "Lantern", font=wordmark_serif, fill=CHARCOAL)
+    serif_bbox = draw.textbbox((word_x, wordmark_top), "Lantern", font=wordmark_serif)
     serif_right = serif_bbox[2]
     serif_baseline = wordmark_top + serif_ascent
-    # AI lockup — no space between letters, uppercase, sage, baseline-aligned with "alongside"
-    ai_ascent, ai_descent = wordmark_ai.getmetrics()
-    ai_top = serif_baseline - ai_ascent
-    draw.text((serif_right + 16, ai_top), "AI", font=wordmark_ai, fill=SAGE)
+    # PLAN — uppercase letter-spaced sage, baseline-aligned with "Lantern"
+    plan_ascent, plan_descent = wordmark_plan.getmetrics()
+    plan_top = serif_baseline - plan_ascent
+    # Manually space the letters for a wider tracking effect (PIL has no letter-spacing)
+    plan_text = "P L A N"
+    draw.text((serif_right + 16, plan_top), plan_text, font=wordmark_plan, fill=SAGE)
 
     # Eyebrow
     eyebrow_font = ImageFont.truetype(font_path("sans-bold"), 18)
     eyebrow_text = "A   C U S T O M   A I   P L A N"
     draw.text((80, 230), eyebrow_text, font=eyebrow_font, fill=SAGE)
 
-    # Headline — break across 3 lines
+    # Headline — break across 3 lines (positioning copy unchanged; brand name doesn't appear here)
     head_font = ImageFont.truetype(font_path("serif"), 64)
     head_italic = ImageFont.truetype(font_path("serif-italic"), 64)
     line1 = "You don't need to learn AI."
@@ -127,7 +151,7 @@ def main():
     tag_font = ImageFont.truetype(font_path("serif-italic"), 26)
 
     bottom_y = H - 68
-    draw.text((80, bottom_y), "alongsideai.ai", font=url_font, fill=CHARCOAL)
+    draw.text((80, bottom_y), "lanternplan.com", font=url_font, fill=CHARCOAL)
 
     tag_text = '"Technology, on your terms."'
     tw2, th2, toff2 = text_size(draw, tag_text, tag_font)

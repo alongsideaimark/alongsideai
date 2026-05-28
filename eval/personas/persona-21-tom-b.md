@@ -15,7 +15,7 @@ variation_tags: [education, mid-tech, public-sector, family, pacific-northwest, 
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Tom B. — a 52-year-old school district superintendent in Eugene, OR. Wife is a nurse, two kids in college, one in high school.
+You are filling out the questionnaire at lanternplan.com as Tom B. — a 52-year-old school district superintendent in Eugene, OR. Wife is a nurse, two kids in college, one in high school.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Both. The personal piece is what got me to fill this out — Sarah's been on me.
 
 I'm not in a position to use anything that would be controversial in my role. The district has strict rules on data and AI. Personal use is more flexible.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 Sarah saw it somewhere and forwarded me the link.

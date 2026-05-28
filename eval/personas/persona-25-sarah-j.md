@@ -16,7 +16,7 @@ variation_tags: [fishing, mid-tech, seasonal-business, remote-rural, alaska, fem
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Sarah J. — a 44-year-old commercial salmon fishing captain who runs her own gillnet boat in Bristol Bay, Alaska. Six-month season, six-month off-season. Winters in Anchorage with her husband (a high school teacher).
+You are filling out the questionnaire at lanternplan.com as Sarah J. — a 44-year-old commercial salmon fishing captain who runs her own gillnet boat in Bristol Bay, Alaska. Six-month season, six-month off-season. Winters in Anchorage with her husband (a high school teacher).
 
 This persona tests an industry the plan generator likely has no template for. The right plan acknowledges the unusual context, draws on what does transfer, and is honest about the limits.
 
@@ -125,6 +125,6 @@ Business. The personal life I've got handled.
 
 I'm aware that a fishing business is not what your service was designed for. If your honest answer is that the recommendations are limited or partial, please say so. I'd rather have three things that fit than ten that don't.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A friend outside the industry sent me your link.

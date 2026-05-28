@@ -15,7 +15,7 @@ variation_tags: [post-exit, mid-tech, in-transition, southeast, male-60s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Bill K. — a 60-year-old who recently sold his small manufacturing business, is in a 2-year non-compete, and is restless.
+You are filling out the questionnaire at lanternplan.com as Bill K. — a 60-year-old who recently sold his small manufacturing business, is in a 2-year non-compete, and is restless.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Both. They've blurred since I sold.
 
 I have time, I have money, and I'm willing to invest in tools that make sense. What I don't have is patience for things that overpromise and don't deliver.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A guy at my country club mentioned it. He sold his company a year before I did and is in a similar situation.

@@ -14,10 +14,10 @@ const { renderPlan } = require("../lib/render-plan");
 const { critique } = require("../lib/critique-plan");
 const { convertToPdf, archivePdf } = require("../lib/pdf");
 
-const INTERNAL_FROM = "Alongside AI <intake@alongsideai.ai>";
-const INTERNAL_TO = "mark@alongsideai.ai";
-const CUSTOMER_FROM = "Mark <mark@alongsideai.ai>";
-const CUSTOMER_REPLY_TO = "mark@alongsideai.ai";
+const INTERNAL_FROM = "Lantern Plan <intake@lanternplan.com>";
+const INTERNAL_TO = "mark@lanternplan.com";
+const CUSTOMER_FROM = "Mark <mark@lanternplan.com>";
+const CUSTOMER_REPLY_TO = "mark@lanternplan.com";
 
 async function emailCustomer({ apiKey, firstName, toEmail, planUrl, revisionUrl }) {
   const subject = `Your plan is ready — ${firstName}`;
@@ -43,7 +43,7 @@ ${revisionUrl}
 You have two free revisions available for the next 14 days.
 
 — Mark
-Alongside AI`;
+Lantern Plan`;
 
   const html =
 `<!doctype html>
@@ -62,7 +62,7 @@ Alongside AI`;
       <a href="${revisionUrl}" style="display:inline-block;padding:14px 24px;background:#9E7B84;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Revise your plan</a>
     </p>
     <p style="margin:0 0 18px;color:#8A8780;font-size:14px;">Two free revisions available for the next 14 days.</p>
-    <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Alongside AI</span></p>
+    <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Lantern Plan</span></p>
   </div>
 </body></html>`;
 
@@ -204,7 +204,7 @@ Tokens: ${cost}`;
 }
 
 async function sendDeadLetterEmail({ apiKey, firstName, email, errorType, errorMessage, retryUrl, briefing }) {
-  const subject = "AAI: plan generation failed — manual retry needed";
+  const subject = "LP: plan generation failed — manual retry needed";
 
   const text =
 `Plan generation failed for ${firstName}${email ? ` (${email})` : ""}.
@@ -298,7 +298,7 @@ exports.handler = async (event) => {
 
       const dlId = crypto.randomBytes(9).toString("base64url");
       const retrySecret = process.env.RETRY_SECRET;
-      const baseUrl = process.env.URL || "https://alongsideai.ai";
+      const baseUrl = process.env.URL || "https://lanternplan.com";
       const retryUrl = retrySecret
         ? `${baseUrl}/.netlify/functions/retry-plan-background?id=${dlId}&secret=${retrySecret}`
         : "(RETRY_SECRET not configured)";
@@ -398,7 +398,7 @@ exports.handler = async (event) => {
     console.log("[generate-plan] stored plan", id, "status:", record.status);
 
     const isTest = data._test === true || data._test === "true";
-    const baseUrl = process.env.URL || "https://alongsideai.ai";
+    const baseUrl = process.env.URL || "https://lanternplan.com";
     const planUrl = `${baseUrl}/plans/${id}`;
 
     // Auto-send to customer ONLY if no hard fails and not a test submission.

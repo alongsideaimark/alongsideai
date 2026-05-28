@@ -2,7 +2,7 @@
 # Reads persona data from seed-test-plans.js (the JS array is valid JSON-ish).
 # Usage: powershell -File scripts/seed-test-plans.ps1
 
-$SiteUrl = if ($env:SITE_URL) { $env:SITE_URL } else { "https://alongsideai.ai" }
+$SiteUrl = if ($env:SITE_URL) { $env:SITE_URL } else { "https://lanternplan.com" }
 $Endpoint = "$SiteUrl/.netlify/functions/generate-plan-background"
 $DelaySeconds = 5
 
@@ -72,7 +72,7 @@ for ($i = 0; $i -lt $personas.Count; $i++) {
     foreach ($key in $p.Keys) {
         $data[$key] = $p[$key]
     }
-    $data["contact"] = "test+$($p.name.ToLower())@alongsideai.ai"
+    $data["contact"] = "test+$($p.name.ToLower())@lanternplan.com"
     $data["_test"] = $true
 
     $payload = @{

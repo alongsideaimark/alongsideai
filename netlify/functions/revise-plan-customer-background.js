@@ -12,10 +12,10 @@ const { renderPlan } = require("../lib/render-plan");
 const { critique } = require("../lib/critique-plan");
 const { convertToPdf, archivePdf } = require("../lib/pdf");
 
-const CUSTOMER_FROM = "Mark <mark@alongsideai.ai>";
-const CUSTOMER_REPLY_TO = "mark@alongsideai.ai";
-const INTERNAL_FROM = "Alongside AI <intake@alongsideai.ai>";
-const INTERNAL_TO = "mark@alongsideai.ai";
+const CUSTOMER_FROM = "Mark <mark@lanternplan.com>";
+const CUSTOMER_REPLY_TO = "mark@lanternplan.com";
+const INTERNAL_FROM = "Lantern Plan <intake@lanternplan.com>";
+const INTERNAL_TO = "mark@lanternplan.com";
 
 function escapeHtml(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({
@@ -49,7 +49,7 @@ Your ${ordinal} revision is attached. Same plan, updated with what you told us.
 Read it at your own pace — if anything still isn't right, reply to this email and it comes straight to me.
 
 — Mark
-Alongside AI`;
+Lantern Plan`;
 
   const html =
 `<!doctype html>
@@ -58,7 +58,7 @@ Alongside AI`;
     <p style="margin:0 0 18px;">${escapeHtml(firstName)},</p>
     <p style="margin:0 0 18px;">Your ${ordinal} revision is attached. Same plan, updated with what you told us.</p>
     <p style="margin:0 0 18px;">Read it at your own pace — if anything still isn't right, reply to this email and it comes straight to me.</p>
-    <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Alongside AI</span></p>
+    <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Lantern Plan</span></p>
   </div>
 </body></html>`;
 
@@ -73,7 +73,7 @@ Alongside AI`;
       text,
       html,
       attachments: [{
-        filename: `Alongside-AI-plan-${firstName}-revised.pdf`,
+        filename: `Lantern-Plan-${firstName}-revised.pdf`,
         content: pdfBuffer.toString("base64"),
       }],
     }),
@@ -260,7 +260,7 @@ exports.handler = async (event) => {
     await store.set(key, JSON.stringify(updated));
     console.log(`[revise-plan-customer] ${record.id} stored; ${newRemaining} revisions remaining`);
 
-    const baseUrl = process.env.URL || "https://alongsideai.ai";
+    const baseUrl = process.env.URL || "https://lanternplan.com";
     const planUrl = `${baseUrl}/plans/${record.id}`;
 
     if (hasHardFails) {

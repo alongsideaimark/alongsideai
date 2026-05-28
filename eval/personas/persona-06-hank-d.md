@@ -15,7 +15,7 @@ variation_tags: [trades, low-tech, generational-transition, southern, male-60s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Hank D. — a 68-year-old commercial landscaping business owner in Greensboro, NC. His son Wade (38) is taking over operations and Hank is filling this out partly because Wade keeps pushing.
+You are filling out the questionnaire at lanternplan.com as Hank D. — a 68-year-old commercial landscaping business owner in Greensboro, NC. His son Wade (38) is taking over operations and Hank is filling this out partly because Wade keeps pushing.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below; don't improvise.
 
@@ -122,6 +122,6 @@ Business.
 
 You'll probably end up working with Wade more than me. Send him whatever you send me. He's the one who'll actually use it.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 Wade found you somewhere. He sent me the link and told me to fill this out.

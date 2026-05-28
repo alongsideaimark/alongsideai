@@ -6,8 +6,8 @@ const crypto = require("crypto");
 const { connectLambda, getStore } = require("@netlify/blobs");
 const { convertToPdf, archivePdf } = require("../lib/pdf");
 
-const FROM = "Mark <mark@alongsideai.ai>";
-const REPLY_TO = "mark@alongsideai.ai";
+const FROM = "Mark <mark@lanternplan.com>";
+const REPLY_TO = "mark@lanternplan.com";
 
 async function emailCustomer({ apiKey, firstName, toEmail, pdfBuffer, revisionUrl }) {
   const subject = `Your plan — ${firstName}`;
@@ -29,7 +29,7 @@ ${revisionUrl}
 You have two free revisions available for the next 14 days.
 
 — Mark
-Alongside AI`;
+Lantern Plan`;
 
   const html =
 `<!doctype html>
@@ -44,7 +44,7 @@ Alongside AI`;
       <a href="${revisionUrl}" style="display:inline-block;padding:14px 24px;background:#9E7B84;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Revise your plan</a>
     </p>
     <p style="margin:0 0 18px;color:#8A8780;font-size:14px;">Two free revisions available for the next 14 days.</p>
-    <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Alongside AI</span></p>
+    <p style="margin:32px 0 0;">— Mark<br/><span style="color:#7A8B6F;">Lantern Plan</span></p>
   </div>
 </body></html>`;
 
@@ -57,7 +57,7 @@ Alongside AI`;
     html,
     attachments: [
       {
-        filename: `Alongside-AI-plan-${firstName}.pdf`,
+        filename: `Lantern-Plan-${firstName}.pdf`,
         content: pdfBuffer.toString("base64"),
       },
     ],
@@ -110,7 +110,7 @@ exports.handler = async (event) => {
       process.env.URL ||
       process.env.DEPLOY_PRIME_URL ||
       process.env.DEPLOY_URL ||
-      "https://alongsideai.ai";
+      "https://lanternplan.com";
     const planUrl = `${baseUrl}/plans/${id}`;
     console.log("[approve-plan] converting to pdf:", planUrl);
     const pdf = await convertToPdf({ url: planUrl, apiKey: pdfshiftKey });

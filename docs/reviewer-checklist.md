@@ -11,7 +11,7 @@ The schema fields (`coverage_map`, `verification_log`, `existing_subscriptions_r
 Pull from the admin API. Replace `{ID}` with the plan ID from the notification email (or list with `?list=1`):
 
 ```
-GET https://alongsideai.ai/.netlify/functions/admin-plans?id={ID}
+GET https://lanternplan.com/.netlify/functions/admin-plans?id={ID}
 ```
 
 Bearer token in the `Authorization` header (your `ADMIN_API_KEY`).

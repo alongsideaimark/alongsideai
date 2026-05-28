@@ -15,7 +15,7 @@ variation_tags: [legal, high-tech, partner-track, family, urban-midwest, female-
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Rachel T. — a 38-year-old equity partner at a mid-size Chicago law firm. Two kids, ages 6 and 4. Husband works in finance. They have full-time childcare.
+You are filling out the questionnaire at lanternplan.com as Rachel T. — a 38-year-old equity partner at a mid-size Chicago law firm. Two kids, ages 6 and 4. Husband works in finance. They have full-time childcare.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Personal, primarily. Work is a fortress.
 
 I will not have time for hand-holding. If your plan requires me to spend more than 2-3 hours implementing it I will not implement it.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A friend from law school.

@@ -15,7 +15,7 @@ variation_tags: [legal, mid-tech, professional-services, southeast, female-50s]
 
 ## Instructions for Claude Chrome
 
-You are filling out the questionnaire at alongsideai.ai as Pam W. — a 55-year-old managing partner of a 4-attorney family law practice in Charleston, SC.
+You are filling out the questionnaire at lanternplan.com as Pam W. — a 55-year-old managing partner of a 4-attorney family law practice in Charleston, SC.
 
 Type each answer **verbatim**. Pick exact-match options for multiple-choice fields. Skip any form field not covered below.
 
@@ -122,6 +122,6 @@ Business.
 
 I am not interested in tools that require my associates to learn an entirely new system. The bar for adoption at our firm is whether it makes Clio more useful, not whether it replaces it.
 
-**How did you hear about Alongside AI?**
+**How did you hear about Lantern Plan?**
 
 A colleague in the South Carolina Bar Family Law section mentioned you in a private listserv conversation.

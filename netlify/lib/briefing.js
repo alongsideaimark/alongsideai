@@ -115,7 +115,7 @@ function textOrDash(s) {
 
 function buildAiBriefing(firstName, data) {
   const L = [];
-  L.push("=== ALONGSIDE AI BRIEFING (FOR AGENT INPUT) ===");
+  L.push("=== LANTERN PLAN BRIEFING (FOR AGENT INPUT) ===");
   L.push("");
 
   L.push("## Respondent");
