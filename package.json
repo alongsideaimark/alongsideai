@@ -6,6 +6,7 @@
     "test": "node netlify/lib/__tests__/parsePlanJson.test.js && node netlify/lib/__tests__/critique-plan.test.js"
   },
   "dependencies": {
-    "@netlify/blobs": "^8.0.0"
+    "@netlify/blobs": "^8.0.0",
+    "stripe": "^17.7.0"
   }
 }

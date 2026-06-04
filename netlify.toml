@@ -9,6 +9,18 @@
   status = 404
   force = true
 
+# Stripe Checkout: pretty URL so the pricing page can POST to /api/create-checkout
+[[redirects]]
+  from = "/api/create-checkout"
+  to = "/.netlify/functions/create-checkout"
+  status = 200
+
+# Stripe webhook: pretty URL for the Stripe dashboard endpoint config
+[[redirects]]
+  from = "/api/stripe-webhook"
+  to = "/.netlify/functions/stripe-webhook"
+  status = 200
+
 # Customer revision page: /revise/TOKEN serves the static HTML page.
 # The page itself calls the validation + revision functions via fetch.
 [[redirects]]

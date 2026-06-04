@@ -358,7 +358,7 @@
       which tools fit your situation, how to set them up,
       and what to skip. Written for you, delivered in minutes.
     </p>
-    <a class="btn btn-primary" href="/questionnaire/">Get your custom plan</a>
+    <button class="btn btn-primary js-checkout">Get your custom plan</button>
     <a class="example-link" href="/examples/">
       See what a real plan looks like
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -479,10 +479,10 @@
   <div class="wrap">
     <h2>Twenty minutes of questions. <em>A plan that does the rest.</em></h2>
     <p>Answer seven short sections about how you work. Your custom plan arrives by email in minutes.</p>
-    <a class="btn-cream" href="/questionnaire/">
+    <button class="btn-cream js-checkout">
       Get your custom plan &mdash; $79
       <svg width="14" height="14" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
+    </button>
     <p class="bottom-refund">14-day full refund. No forms, no hoops.</p>
   </div>
 </section>
@@ -497,5 +497,32 @@
   </div>
 </footer>
 
+<script>
+(function(){
+  var buttons = document.querySelectorAll('.js-checkout');
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btn.disabled = true;
+      btn.style.opacity = '.6';
+      fetch('/api/create-checkout', { method: 'POST' })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if (data.url) {
+            window.location.href = data.url;
+          } else {
+            alert('Something went wrong. Please try again.');
+            btn.disabled = false;
+            btn.style.opacity = '1';
+          }
+        })
+        .catch(function(){
+          alert('Something went wrong. Please try again.');
+          btn.disabled = false;
+          btn.style.opacity = '1';
+        });
+    });
+  });
+})();
+</script>
 </body>
 </html>
