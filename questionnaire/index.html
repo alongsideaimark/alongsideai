@@ -858,7 +858,7 @@ function renderIntro(){
         <div class="intro-bullet"><div class="n">—</div><div>No account to create. No password to remember.</div></div>
         <div class="intro-bullet"><div class="n">—</div><div>Skip anything that doesn't feel right. Only your first name and an email at the end are required.</div></div>
         <div class="intro-bullet"><div class="n">—</div><div>Your answers stay private. We use them only to write your plan.</div></div>
-        <div class="intro-bullet"><div class="n">—</div><div>$79 one-time, paid after you complete the questionnaire. We don't charge unless you choose to send your answers.</div></div>
+        <div class="intro-bullet"><div class="n">—</div><div>Your payment is confirmed. Now just answer the questions and we'll write your plan.</div></div>
       </div>
       <div class="card-footer">
         <button class="btn btn-primary" id="start-btn">
@@ -1096,6 +1096,15 @@ async function submitToNetlify(){
   });
 
   const finishSuccess = () => {
+    // Mark the payment token as used so it can't be reused.
+    if(paymentToken){
+      fetch("/api/validate-token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: paymentToken })
+      }).catch(function(e){ console.warn("[questionnaire] failed to mark token used:", e); });
+      sessionStorage.removeItem("lp-token");
+    }
     // Advance to the done screen first, then clear storage — otherwise next()'s save()
     // would immediately rewrite it and a page refresh would resume on the done screen
     // with stale answers from a submission that's already been sent.
@@ -1184,7 +1193,94 @@ function render(){
   updateProgress();
 }
 
-render();
+/* ---------- token gating ----------
+   The questionnaire requires a valid payment token (?token=cs_...) in the URL.
+   On load: validate with the server. If invalid or missing, show a paywall screen.
+   On submit: mark the token as used so it can't be reused.
+   The token and customer email (from Stripe) are stored in sessionStorage so
+   navigation within the wizard doesn't re-validate on every render.
+*/
+let paymentToken = null;
+let stripeEmail = null;
+
+function renderPaywall(reason){
+  progressWrap.style.display = "none";
+  const messages = {
+    missing: "This questionnaire requires a payment to access. Once you've paid, you'll be sent here automatically.",
+    not_found: "This link doesn't match a valid payment. If you've already paid, check the email you used — we sent you a link.",
+    already_used: "This payment link has already been used to submit a questionnaire. Each payment covers one plan.",
+    error: "We couldn't verify your payment right now. Please try again in a moment, or email mark@lanternplan.com for help."
+  };
+  const msg = messages[reason] || messages.error;
+  app.innerHTML = `
+    <div class="card intro-card view">
+      <div class="step-kicker">One more step</div>
+      <h1 class="section-title">You'll need to pay before filling this out.</h1>
+      <p class="section-intro">${escapeHtml(msg)}</p>
+      <div class="card-footer" style="margin-top:36px">
+        <a class="btn btn-primary" href="/pricing/">
+          See pricing &amp; pay
+          <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+(async function gateOnToken(){
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+
+  // Check sessionStorage first — avoids re-validating on every wizard step.
+  const cached = sessionStorage.getItem("lp-token");
+  if(cached){
+    try {
+      const c = JSON.parse(cached);
+      if(c.valid && c.token){
+        paymentToken = c.token;
+        stripeEmail = c.email || null;
+        if(stripeEmail && !state.answers.contact) {
+          state.answers.contact = stripeEmail;
+          save();
+        }
+        render();
+        return;
+      }
+    } catch(e){}
+  }
+
+  if(!token){
+    renderPaywall("missing");
+    return;
+  }
+
+  // Show a loading state while validating.
+  app.innerHTML = `
+    <div class="card intro-card view" style="text-align:center; padding:64px 32px;">
+      <p style="color:var(--charcoal-soft); font-size:17px;">Confirming your payment…</p>
+    </div>
+  `;
+
+  try {
+    const res = await fetch("/api/validate-token?token=" + encodeURIComponent(token));
+    const data = await res.json();
+    if(data.valid){
+      paymentToken = token;
+      stripeEmail = data.email || null;
+      sessionStorage.setItem("lp-token", JSON.stringify({ valid: true, token, email: stripeEmail }));
+      if(stripeEmail && !state.answers.contact){
+        state.answers.contact = stripeEmail;
+        save();
+      }
+      render();
+    } else {
+      renderPaywall(data.reason || "error");
+    }
+  } catch(err){
+    console.error("[questionnaire] token validation failed:", err);
+    renderPaywall("error");
+  }
+})();
 </script>
 </body>
 </html>

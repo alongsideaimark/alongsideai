@@ -15,6 +15,12 @@
   to = "/.netlify/functions/create-checkout"
   status = 200
 
+# Token validation: questionnaire checks payment tokens here
+[[redirects]]
+  from = "/api/validate-token"
+  to = "/.netlify/functions/validate-token"
+  status = 200
+
 # Stripe webhook: pretty URL for the Stripe dashboard endpoint config
 [[redirects]]
   from = "/api/stripe-webhook"
