@@ -17,6 +17,12 @@ node_modules/
 # Generated plan outputs from eval runs
 eval/results/
 
+# Claude Code agent worktrees — session scratch, never deploy
+.claude/worktrees/
+
+# Python bytecode cache from scripts/
+__pycache__/
+
 # OS junk
 .DS_Store
 Thumbs.db
