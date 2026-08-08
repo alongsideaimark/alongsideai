@@ -260,6 +260,21 @@ exports.handler = async (event) => {
       return { statusCode: 405, body: "method not allowed" };
     }
 
+    // Only internal callers (submission-created) may trigger generation —
+    // a direct public POST here would bypass the payment gate entirely.
+    // If RETRY_SECRET isn't configured we allow-with-warning rather than
+    // brick plan generation.
+    const internalSecret = process.env.RETRY_SECRET;
+    if (internalSecret) {
+      const provided = (event.headers && (event.headers["x-lp-internal"] || event.headers["X-Lp-Internal"])) || "";
+      if (provided !== internalSecret) {
+        console.warn("[generate-plan] rejected — missing or bad internal secret");
+        return { statusCode: 401, body: "unauthorized" };
+      }
+    } else {
+      console.warn("[generate-plan] RETRY_SECRET not set — internal-caller check skipped");
+    }
+
     // Netlify doesn't auto-initialize the Blobs environment for background
     // functions invoked programmatically via fetch (as opposed to direct HTTP
     // requests from a browser). This call wires it up manually.

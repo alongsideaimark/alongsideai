@@ -343,6 +343,7 @@
 -->
 <form name="questionnaire" netlify netlify-honeypot="bot-field" hidden>
   <input type="text" name="bot-field" />
+  <input type="text" name="payment_token" />
   <input type="text" name="name" />
   <input type="email" name="contact" />
   <input type="text" name="situation" />
@@ -1088,21 +1089,20 @@ async function submitToNetlify(){
   const btn = document.getElementById("next-btn");
   if(btn){ btn.disabled = true; btn.innerHTML = "Sending…"; }
 
-  // Build the data dictionary once — used for both paths.
+  // Build the data dictionary once — used for both paths. The payment token
+  // rides along so the server can verify and consume it — the server is the
+  // real gate; this page is just the front door.
   const flatData = {};
   Object.keys(state.answers).forEach(k => {
     const v = state.answers[k];
     flatData[k] = Array.isArray(v) ? v.join(", ") : (v == null ? "" : String(v));
   });
+  flatData.payment_token = paymentToken || "";
 
   const finishSuccess = () => {
-    // Mark the payment token as used so it can't be reused.
+    // The server consumed the payment token during submission; just drop
+    // the cached copy so a revisit re-checks with the server.
     if(paymentToken){
-      fetch("/api/validate-token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: paymentToken })
-      }).catch(function(e){ console.warn("[questionnaire] failed to mark token used:", e); });
       sessionStorage.removeItem("lp-token");
     }
     // Advance to the done screen first, then clear storage — otherwise next()'s save()
@@ -1128,6 +1128,13 @@ async function submitToNetlify(){
       body: JSON.stringify(flatData)
     });
     console.log("[questionnaire] primary submit status:", primaryRes.status);
+    if(primaryRes.status === 402 || primaryRes.status === 401){
+      // Payment problem — falling back to Netlify Forms won't help.
+      if(btn){ btn.disabled = false; btn.innerHTML = "Try again"; }
+      sessionStorage.removeItem("lp-token");
+      alert("We couldn't match this questionnaire to a payment. If you've already paid, open the link from your payment confirmation and try again — or email mark@lanternplan.com and we'll sort it out.");
+      return;
+    }
     if(!primaryRes.ok) throw new Error("Primary failed: " + primaryRes.status);
     const body = await primaryRes.text();
     let parsed;
@@ -1261,25 +1268,36 @@ function renderPaywall(reason){
     </div>
   `;
 
-  try {
-    const res = await fetch("/api/validate-token?token=" + encodeURIComponent(token));
-    const data = await res.json();
-    if(data.valid){
-      paymentToken = token;
-      stripeEmail = data.email || null;
-      sessionStorage.setItem("lp-token", JSON.stringify({ valid: true, token, email: stripeEmail }));
-      if(stripeEmail && !state.answers.contact){
-        state.answers.contact = stripeEmail;
-        save();
+  // Validate with retries. Right after checkout, Stripe's webhook may not
+  // have written the token yet (the server also asks Stripe directly, but
+  // both can lag for a few seconds) — so on "not_found"/"error" we wait and
+  // try again a few times before showing the paywall to someone who paid.
+  const delay = (ms) => new Promise(function(r){ setTimeout(r, ms); });
+  let lastReason = "error";
+  for(let attempt = 0; attempt < 4; attempt++){
+    if(attempt > 0) await delay(2500);
+    try {
+      const res = await fetch("/api/validate-token?token=" + encodeURIComponent(token));
+      const data = await res.json();
+      if(data.valid){
+        paymentToken = token;
+        stripeEmail = data.email || null;
+        sessionStorage.setItem("lp-token", JSON.stringify({ valid: true, token, email: stripeEmail }));
+        if(stripeEmail && !state.answers.contact){
+          state.answers.contact = stripeEmail;
+          save();
+        }
+        render();
+        return;
       }
-      render();
-    } else {
-      renderPaywall(data.reason || "error");
+      lastReason = data.reason || "error";
+      if(lastReason === "already_used" || lastReason === "missing") break;
+    } catch(err){
+      console.error("[questionnaire] token validation failed:", err);
+      lastReason = "error";
     }
-  } catch(err){
-    console.error("[questionnaire] token validation failed:", err);
-    renderPaywall("error");
   }
+  renderPaywall(lastReason);
 })();
 </script>
 </body>

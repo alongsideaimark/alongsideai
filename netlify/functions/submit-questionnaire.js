@@ -48,8 +48,19 @@ exports.handler = async (event) => {
 
   console.log("[submit-questionnaire] forwarding to submission-created for", data.name);
   const result = await submissionCreated.handler(wrappedEvent);
+
+  // Surface payment-gate rejections to the browser so the customer sees a
+  // real message instead of a fake success. Anything else stays a plain ok.
+  const status = result.statusCode || 200;
+  if (status === 402 || status === 401 || status === 503) {
+    return {
+      statusCode: status,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ok: false, error: status === 503 ? "verification_unavailable" : "payment_required" }),
+    };
+  }
   return {
-    statusCode: result.statusCode || 200,
+    statusCode: 200,
     body: JSON.stringify({ ok: true, forwarded: true }),
   };
 };

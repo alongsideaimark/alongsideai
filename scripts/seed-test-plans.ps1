@@ -6,6 +6,13 @@ $SiteUrl = if ($env:SITE_URL) { $env:SITE_URL } else { "https://lanternplan.com"
 $Endpoint = "$SiteUrl/.netlify/functions/generate-plan-background"
 $DelaySeconds = 5
 
+# generate-plan-background only accepts internal callers — the x-lp-internal
+# header must carry RETRY_SECRET or every request is rejected with 401.
+if (-not $env:RETRY_SECRET) {
+    Write-Host "RETRY_SECRET env var is required (generate-plan-background rejects requests without it)."
+    exit 1
+}
+
 # Build persona payloads inline (PowerShell hashtables).
 $personas = @(
   @{ name="Frank"; situation="business"; comfort="basics"; work="I own three commercial rental properties in Austin. I handle everything - leases, maintenance requests, rent collection, bookkeeping. I've got a part-time property manager but she mostly handles showings and tenant calls."; creates="Leases, maintenance work orders, rent invoices, monthly owner statements, bank reconciliations"; team="partner"; typical_week="Mondays I review the financials and pay bills. Tuesday through Thursday I'm usually visiting properties or meeting with contractors. Fridays I try to catch up on paperwork but it always spills into Saturday."; location_today="mix"; location_wanted="Anywhere - I want to be able to handle urgent stuff from my phone when I'm on a job site or traveling."; devices="iphone, mac, ipad"; subscriptions="accounting, storage"; subscriptions_other="AppFolio for property management"; data_lives="QuickBooks Desktop on my office iMac, leases in a filing cabinet, tenant contact info split between my phone and AppFolio. Some stuff is in Google Drive but it's a mess."; tool_hated="QuickBooks Desktop"; tool_hated_why="I can't access it unless I'm sitting at my desk. Entering a bill takes fifteen clicks. The interface looks like it was designed in 2003 because it was."; friction="Keeping track of lease expirations, matching deposits to invoices, chasing late rent, paper everywhere. I spend half of Friday just looking for documents."; manual_tasks="1) Matching deposits to invoices in QuickBooks. 2) Sending the same intake email to every new tenant. 3) Manually updating a spreadsheet of lease dates."; already_tried="Tried to move to QuickBooks Online two years ago but my accountant said it couldn't handle the property reports I need. AppFolio helps but the accounting side is limited."; given_up_on="Having a clean, organized file system. I've tried Google Drive, Dropbox, even those paper organizer systems. Nothing sticks longer than a month."; inbox="overwhelmed"; inbox_note="I can never find that one email from the contractor two weeks ago. I get 80+ emails a day and maybe 10 matter."; wish="I wish I could work from anywhere and not be tied to my office computer. And I wish rent collection was completely hands-off."; explain_once="How I price a lease. Which contractors I trust for different jobs. Which tenants are good about paying on time and which ones need a reminder call on the 3rd. The rules about security deposits in Texas."; success_6mo="I'm spending winters somewhere warm. My property manager handles the inbox. Rent collects itself. I check a dashboard once a week instead of opening QuickBooks every day."; priority="time"; tried_ai="little"; nervous="I'm worried about putting tenant information - social security numbers, bank details - into these things. My attorney would have my head."; cloud_comfort="familiar"; urgency="asap"; budget_posture="100_250" },
@@ -86,7 +93,7 @@ for ($i = 0; $i -lt $personas.Count; $i++) {
     Write-Host "$label Submitting $($p.name) ($($p.situation))..."
 
     try {
-        $response = Invoke-WebRequest -Uri $Endpoint -Method POST -ContentType "application/json" -Body ([System.Text.Encoding]::UTF8.GetBytes($json)) -UseBasicParsing
+        $response = Invoke-WebRequest -Uri $Endpoint -Method POST -ContentType "application/json" -Headers @{ "x-lp-internal" = $env:RETRY_SECRET } -Body ([System.Text.Encoding]::UTF8.GetBytes($json)) -UseBasicParsing
         Write-Host "$label   -> $($response.StatusCode) $($response.Content.Substring(0, [Math]::Min(120, $response.Content.Length)))"
     } catch {
         Write-Host "$label   -> FAILED: $($_.Exception.Message)"

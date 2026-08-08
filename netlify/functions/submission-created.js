@@ -8,6 +8,7 @@
 
 const crypto = require("crypto");
 const { connectLambda, getStore } = require("@netlify/blobs");
+const { lookupToken, consumeToken } = require("../lib/payment-token");
 
 const INTERNAL_TO = "mark@lanternplan.com";
 const INTERNAL_FROM = "Lantern Plan Intake <intake@lanternplan.com>";
@@ -166,7 +167,7 @@ function buildAutoReply(firstName, email) {
 
 Your answers are being read carefully right now — where your time goes, what you've already tried, what "working in six months" looks like for you. That's where the real plan comes from.
 
-You'll get your plan as a PDF in the next few minutes. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic — or if you'd be better off doing nothing at all — the plan will say that too.
+You'll get an email with a link to your plan in the next few minutes — you can read it right in your browser, and save it as a PDF from there if you'd like. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic — or if you'd be better off doing nothing at all — the plan will say that too.
 
 It's yours to keep either way.
 
@@ -182,7 +183,7 @@ Lantern Plan`;
   <div style="max-width:560px;margin:0 auto;font-size:16px;">
     <p style="margin:0 0 20px;">Thanks for sending that through. I'm Mark, the person behind Lantern Plan.</p>
     <p style="margin:0 0 20px;">Your answers are being read carefully right now &mdash; where your time goes, what you've already tried, what &ldquo;working in six months&rdquo; looks like for you. That's where the real plan comes from.</p>
-    <p style="margin:0 0 20px;">You'll get your plan as a PDF in the next few minutes. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic &mdash; or if you'd be better off doing nothing at all &mdash; the plan will say that too.</p>
+    <p style="margin:0 0 20px;">You'll get an email with a link to your plan in the next few minutes &mdash; you can read it right in your browser, and save it as a PDF from there if you'd like. It's written for your specific setup, not a template. It'll say plainly what I think would help, in what order, and what getting started looks like step by step. If something isn't realistic &mdash; or if you'd be better off doing nothing at all &mdash; the plan will say that too.</p>
     <p style="margin:0 0 20px;">It's yours to keep either way.</p>
     <p style="margin:0 0 20px;">If anything comes to mind after you read it &mdash; a question, something that doesn't fit, or a part you want to dig into &mdash; just reply to this email. It comes straight to me.</p>
     <p style="margin:32px 0 0;">&mdash; Mark<br/><span style="color:#7B9E87;">Lantern Plan</span></p>
@@ -463,10 +464,55 @@ exports.handler = async (event) => {
     const email = String(data.contact || "").trim();
     const firstName = String(data.name || "").trim().split(/\s+/)[0] || "there";
 
-    const submissionId = payload.id || null;
+    // ---- Payment gate (server-side) ----
+    // Every real submission must carry the Stripe checkout session id it paid
+    // with. Test submissions (seed scripts) authenticate with ADMIN_API_KEY
+    // instead. Without this check, a direct POST to the function endpoint
+    // would get a free plan — the browser-side gate alone proves nothing.
+    const paymentToken = String(data.payment_token || "").trim();
+    const isTest = data._test === true || data._test === "true";
+
+    if (isTest) {
+      const testKey = String(data._test_key || "");
+      const adminKey = process.env.ADMIN_API_KEY;
+      if (!adminKey || testKey !== adminKey) {
+        console.warn("[submission] test submission rejected — bad or missing _test_key");
+        return { statusCode: 401, body: "skipped: test submissions require a valid _test_key" };
+      }
+    }
+
+    let tokenStore = null;
+    let tokenRecord = null;
+    if (!isTest) {
+      if (!paymentToken) {
+        console.warn(`[submission] rejected — no payment token (name: ${firstName})`);
+        return { statusCode: 402, body: "skipped: payment_required" };
+      }
+      tokenStore = getStore("tokens");
+      const gate = await lookupToken(tokenStore, paymentToken);
+      if (gate.status === "error") {
+        console.error("[submission] token verification unavailable — asking client to retry");
+        return { statusCode: 503, body: "skipped: token_verification_unavailable" };
+      }
+      if (gate.status === "not_found") {
+        console.warn(`[submission] rejected — token not found / not paid (${paymentToken})`);
+        return { statusCode: 402, body: "skipped: payment_required" };
+      }
+      // "used" falls through to the idempotency check below: a used token with
+      // a matching idempotency record is the legitimate primary/fallback
+      // duplicate; a used token with no record is a replay — rejected there.
+      tokenRecord = gate.record;
+    }
+
+    // ---- Idempotency ----
+    // Real submissions key on the payment token: one payment, one plan, no
+    // matter which submit path (function or Netlify Forms fallback) ran first.
+    // Test submissions keep the old submission-id key.
     let idempotencyKey;
-    if (submissionId) {
-      idempotencyKey = `sub_${submissionId}`;
+    if (paymentToken) {
+      idempotencyKey = `plan_${paymentToken}`;
+    } else if (payload.id) {
+      idempotencyKey = `sub_${payload.id}`;
     } else {
       const minuteTs = Math.floor(new Date(payload.created_at || Date.now()).getTime() / 60000);
       const fallbackSeed = `${email}|${payload.form_name}|${minuteTs}`;
@@ -485,6 +531,13 @@ exports.handler = async (event) => {
       console.warn("[submission] idempotency read failed, proceeding anyway:", err.message);
     }
 
+    // A consumed token with no idempotency record means it was already spent
+    // on an earlier submission — reject the replay.
+    if (!isTest && tokenRecord && tokenRecord.used) {
+      console.warn(`[submission] rejected — token already used (${paymentToken})`);
+      return { statusCode: 402, body: "skipped: token_already_used" };
+    }
+
     try {
       await idempotencyStore.set(idempotencyKey, JSON.stringify({
         status: "processing",
@@ -492,6 +545,15 @@ exports.handler = async (event) => {
       }));
     } catch (err) {
       console.warn("[submission] idempotency write failed, proceeding anyway:", err.message);
+    }
+
+    // Consume the token now that this submission owns it.
+    if (!isTest && tokenStore) {
+      try {
+        await consumeToken(tokenStore, paymentToken, tokenRecord);
+      } catch (err) {
+        console.error("[submission] token consume failed, proceeding anyway:", err.message);
+      }
     }
 
     const apiKey = process.env.RESEND_API_KEY;
@@ -511,7 +573,6 @@ exports.handler = async (event) => {
 
     // Auto-reply to the submitter — only if we have a valid email.
     // Skip for test submissions so we don't spam during seed runs.
-    const isTest = data._test === true || data._test === "true";
     if (isTest) {
       console.log("[submission] test submission — skipping auto-reply");
     } else if (email && /^\S+@\S+\.\S+$/.test(email)) {
@@ -543,7 +604,12 @@ exports.handler = async (event) => {
         const triggerUrl = `${baseUrl}/.netlify/functions/generate-plan-background`;
         const triggerRes = await fetch(triggerUrl, {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          headers: {
+            "content-type": "application/json",
+            // Internal handshake — generate-plan-background rejects direct
+            // public POSTs so the paywall can't be bypassed at this layer.
+            "x-lp-internal": process.env.RETRY_SECRET || "",
+          },
           body: JSON.stringify({
             data,
             firstName,

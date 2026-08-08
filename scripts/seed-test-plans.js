@@ -741,6 +741,9 @@ async function submit(persona, index) {
     ...persona,
     contact: "mark@lanternplan.com",
     _test: true,
+    // Test submissions authenticate with the admin key — the payment gate
+    // in submission-created.js rejects unauthenticated _test payloads.
+    _test_key: process.env.ADMIN_API_KEY || "",
   };
 
   // Convert array fields to comma-separated strings (matching form submission format)
@@ -764,6 +767,10 @@ async function submit(persona, index) {
 }
 
 async function main() {
+  if (!process.env.ADMIN_API_KEY) {
+    console.error("ADMIN_API_KEY env var is required — test submissions authenticate with it.");
+    process.exit(1);
+  }
   console.log(`Seeding 25 test plans via ${ENDPOINT}`);
   console.log(`All submissions use _test: true (customer emails suppressed)\n`);
 
