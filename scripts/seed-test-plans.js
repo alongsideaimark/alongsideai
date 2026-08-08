@@ -771,17 +771,23 @@ async function main() {
     console.error("ADMIN_API_KEY env var is required — test submissions authenticate with it.");
     process.exit(1);
   }
-  console.log(`Seeding 25 test plans via ${ENDPOINT}`);
+  // Optional count argument: `node scripts/seed-test-plans.js 2` seeds just
+  // the first 2 personas — for model-upgrade validation without burning the
+  // full 25-persona batch.
+  const count = Math.min(parseInt(process.argv[2], 10) || PERSONAS.length, PERSONAS.length);
+  const personas = PERSONAS.slice(0, count);
+
+  console.log(`Seeding ${count} test plan(s) via ${ENDPOINT}`);
   console.log(`All submissions use _test: true (customer emails suppressed)\n`);
 
-  for (let i = 0; i < PERSONAS.length; i++) {
-    await submit(PERSONAS[i], i);
-    if (i < PERSONAS.length - 1) {
+  for (let i = 0; i < personas.length; i++) {
+    await submit(personas[i], i);
+    if (i < personas.length - 1) {
       await new Promise((r) => setTimeout(r, DELAY_BETWEEN_MS));
     }
   }
 
-  console.log("\nDone. 25 submissions queued for plan generation.");
+  console.log(`\nDone. ${count} submission(s) queued for plan generation.`);
   console.log("Plans will generate in the background over the next 15-75 minutes.");
   console.log("Check Netlify function logs to monitor progress.");
 }

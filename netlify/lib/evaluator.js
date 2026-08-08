@@ -7,8 +7,10 @@
 const https = require("https");
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-opus-4-7";
-const MAX_OUTPUT_TOKENS = 16000;
+const MODEL = "claude-opus-5";
+// Opus 5 thinks by default and thinking counts against max_tokens — keep
+// headroom above the structured evaluation output.
+const MAX_OUTPUT_TOKENS = 24000;
 const MAX_WEB_SEARCHES = 12;
 
 const SYSTEM_PROMPT = `You are an independent evaluator of AI-assistance plans written for non-technical people. Your role is to score plans rigorously and surface gaps the plan-writer missed.
@@ -277,7 +279,7 @@ ${JSON.stringify(plan, null, 2)}`;
     ],
     tools: [
       {
-        type: "web_search_20250305",
+        type: "web_search_20260209",
         name: "web_search",
         max_uses: MAX_WEB_SEARCHES,
       },

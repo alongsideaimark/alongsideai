@@ -6,16 +6,24 @@
 //
 // The search tool is server-side: Anthropic runs the searches on their end,
 // so we don't need a tool-use loop — it all happens inside one API call.
-// Downside: the call takes longer (2-3 minutes) because of the search round
-// trips. Our background function has a 15-min budget, plenty of room.
+// Downside: the call takes a while (a few minutes; Opus 5 thinks by default
+// and searches add round trips). Our background function has a 15-min budget.
+//
+// Model notes (Opus 5, upgraded 2026-08-08 from Opus 4.7 at the same price):
+// - Thinking is ON by default and counts against max_tokens — hence the
+//   larger MAX_OUTPUT_TOKENS. Thinking blocks are filtered out by
+//   collectText(); on the no-submit_plan retry we pass content back
+//   unchanged, which is required.
+// - Safety classifiers can return stop_reason "refusal" (HTTP 200, no plan).
+//   We fail fast into the dead-letter path so Mark gets a clear email.
 
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-opus-4-7";
-const MAX_OUTPUT_TOKENS = 24000;
+const MODEL = "claude-opus-5";
+const MAX_OUTPUT_TOKENS = 32000;
 const MAX_WEB_SEARCHES = 8;
 
 const { SUBMIT_PLAN_SCHEMA, SUBMIT_INSUFFICIENT_INPUT_SCHEMA, SUBMIT_REVISION_SCHEMA } = require("./plan-schema");
@@ -43,7 +51,7 @@ function callAnthropic(apiKey, body) {
         "content-type": "application/json",
         "content-length": Buffer.byteLength(payload),
       },
-      timeout: 10 * 60 * 1000,
+      timeout: 12 * 60 * 1000,
     }, (res) => {
       const chunks = [];
       res.on("data", (chunk) => chunks.push(chunk));
@@ -69,7 +77,7 @@ function callAnthropic(apiKey, body) {
     });
 
     req.on("timeout", () => {
-      req.destroy(new Error("Anthropic request timed out after 10 minutes"));
+      req.destroy(new Error("Anthropic request timed out after 12 minutes"));
     });
 
     req.write(payload);
@@ -206,7 +214,7 @@ ${briefing}`,
     ],
     tools: [
       {
-        type: "web_search_20250305",
+        type: "web_search_20260209",
         name: "web_search",
         max_uses: MAX_WEB_SEARCHES,
       },
@@ -227,6 +235,18 @@ ${briefing}`,
   };
 
   let json = await callAnthropicWithRetry(apiKey, body);
+
+  // Opus 5 safety classifiers can decline a request (HTTP 200, stop_reason
+  // "refusal", no plan). Retrying the same input won't help — route straight
+  // to the dead-letter path so Mark gets a clear email instead of a
+  // confusing "did not invoke submit_plan" error.
+  if (json.stop_reason === "refusal") {
+    const category = (json.stop_details && json.stop_details.category) || "unspecified";
+    throw new ClaudeUnavailableError(
+      new Error(`model declined this briefing (refusal, category: ${category}) — review the briefing content before retrying`),
+      1
+    );
+  }
 
   const searchCount = (json.content || []).filter(
     (b) => b.type === "server_tool_use" && b.name === "web_search"
@@ -356,6 +376,12 @@ ${JSON.stringify(currentPlan, null, 2)}`,
   };
 
   let json = await callAnthropicWithRetry(apiKey, body);
+
+  if (json.stop_reason === "refusal") {
+    const category = (json.stop_details && json.stop_details.category) || "unspecified";
+    throw new Error(`model declined this revision (refusal, category: ${category})`);
+  }
+
   const searchCount = (json.content || []).filter(
     (b) => b.type === "server_tool_use" && b.name === "web_search"
   ).length;
