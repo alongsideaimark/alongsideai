@@ -73,6 +73,16 @@ function checkRules(plan) {
     return { hardFails, softFails };
   }
 
+  // There is no implementation service. A plan that prices one is selling
+  // something that doesn't exist — block it before it reaches a customer.
+  if ((plan.numbers?.implementation_lines || []).length > 0 || (plan.numbers?.implementation_total || "").trim()) {
+    hardFails.push({
+      rule: "phantom_implementation",
+      path: "numbers.implementation_lines",
+      detail: "Plan includes implementation/setup pricing — that service doesn't exist; implementation_lines must be []",
+    });
+  }
+
   // --- Per-string checks (banned phrases, bracket placeholders) ---
   for (const { path, text } of walkStrings(plan)) {
     for (const phrase of BANNED_PHRASES) {

@@ -21,8 +21,6 @@ A few things to know:
 
 It's yours to keep, whether you decide to act on any of it or not. Every recommendation is grounded in what you wrote on the questionnaire; if something doesn't fit, trust your read over ours and skip it.
 
-If you'd like help setting any of this up, the implementation package is optional — details are in section 7 of the plan. Just reply to this email and we'll take it from there.
-
 If something in the plan is wrong — a tool you already use that we didn't account for, a budget that should be different, a detail you forgot to mention — you can revise it. Click the link below, tell us what to change, and we'll send you an updated plan:
 
 ${revisionUrl}
@@ -41,7 +39,6 @@ Lantern Plan`;
     <p style="margin:0 0 18px;">${firstName},</p>
     <p style="margin:0 0 18px;">Your plan's attached. Read it at your own pace — there's no rush.</p>
     <p style="margin:0 0 18px;">It's yours to keep, whether you decide to act on any of it or not. Every recommendation is grounded in what you wrote on the questionnaire; if something doesn't fit, trust your read over ours and skip it.</p>
-    <p style="margin:0 0 18px;">If you'd like help setting any of this up, the implementation package is optional — details are in section 7 of the plan. Just reply to this email and we'll take it from there.</p>
     <p style="margin:0 0 18px;">If something in the plan is wrong — a tool you already use that we didn't account for, a budget that should be different, a detail you forgot to mention — you can revise it:</p>
     <p style="margin:0 0 24px;">
       <a href="${revisionUrl}" style="display:inline-block;padding:14px 24px;background:#9E7B84;color:#FAF6F1;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Revise your plan</a>

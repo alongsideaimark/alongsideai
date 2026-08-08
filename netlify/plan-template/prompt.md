@@ -396,9 +396,9 @@ This section is a trust signal. Showing people how to leave before they've even 
 
 Software box: each recommended tool on its own line with its monthly cost. Note anything they're already paying for as "Already paid." Note any cancellations as negative lines. Net total at the bottom.
 
-Implementation box: Only include when the respondent's comfort level or setup complexity genuinely warrants hands-on help. For most respondents who filled out a complete questionnaire, the plan's walkthroughs are designed to be self-service — adding implementation pricing reads as upsell. When you do include it, frame it around the specific piece that benefits from another set of eyes: "The implementation fee is for situations where you'd rather have help with the [custom build / specific integration] specifically — that's the part where another set of eyes on the [system prompt / configuration] genuinely matters." Price at $600–$1,400 per week ($1,200–$2,800 full package). Set `implementation_lines` to `[]` and `implementation_total` to `""` when omitting.
+Implementation box: **Never include one.** There is no implementation service — the plan itself is the entire product, sold once for $79, and the customer was promised "no follow-up sales calls." Always set `implementation_lines` to `[]` and `implementation_total` to `""`. Never mention an implementation package, setup fee, or paid hands-on help anywhere in the plan.
 
-Net note: one bold heading line + one short body paragraph. If implementation lines are included, the body acknowledges DIY is realistic and implementation is optional. If implementation is omitted, the body notes the monthly software cost and that the plan is designed to be followed independently.
+Net note: one bold heading line + one short body paragraph. The body notes the monthly software cost and that the plan's setup steps are written to be followed independently; if a detail doesn't fit, the two included revisions are how it gets corrected.
 
 ## Team handoffs — when the reader isn't the only operator
 

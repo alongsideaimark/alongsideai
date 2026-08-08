@@ -120,11 +120,11 @@
         "Optional: **Otter.ai** on your iPhone. Try it on one non-sensitive meeting first."
       ]
     },
-    "checkin_note": "Give it a month. What stuck, what didn't, what felt awkward. If you want a 45-minute session to tune things up, it's included in the optional implementation package. If you went DIY, just reply to the email with what's not working."
+    "checkin_note": "Give it a month. What stuck, what didn't, what felt awkward. If something's not working, just reply to the email and say so — that's what the included revisions are for."
   },
   "numbers": {
     "title": "Less than a night out a month. *Help setting it up is optional.*",
-    "lede": "The plan you're reading is free. The only costs are the software subscriptions below. If you'd like us to set things up alongside you, the implementation package is optional.",
+    "lede": "The only ongoing costs are the software subscriptions below, paid directly to the tool makers, never to us.",
     "software_lines": [
       { "label": "Google Photos (200 GB)", "cost": "~$3/mo" },
       { "label": "1Password", "cost": "~$4/mo" },
@@ -135,13 +135,9 @@
       { "label": "Microsoft 365 / iCloud", "cost": "Already paid" }
     ],
     "software_total": "~$39–47/mo",
-    "implementation_lines": [
-      { "label": "Week 1 setup (alongside you)", "cost": "$1,400" },
-      { "label": "Week 2 setup + training", "cost": "$600" },
-      { "label": "30-day tune-up session", "cost": "Included" }
-    ],
-    "implementation_total": "$2,000",
-    "net_note_heading": "About $40 a month, DIY",
+    "implementation_lines": [],
+    "implementation_total": "",
+    "net_note_heading": "About $40 a month",
     "net_note_body": "Less than a night out, and the quiet benefits — knowing what's in the board packet, walking into the CPA's office with the right questions, not worrying about the next scam text — are the real return. Most people in your situation can do the setup themselves from this plan."
   }
 }
