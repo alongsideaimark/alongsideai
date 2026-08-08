@@ -2,6 +2,20 @@
   command = "npm test"
   publish = "."
 
+# The old domain still points at this site — permanently redirect every page
+# to lanternplan.com so search engines and old links converge on one domain.
+[[redirects]]
+  from = "https://alongsideai.ai/*"
+  to = "https://lanternplan.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.alongsideai.ai/*"
+  to = "https://lanternplan.com/:splat"
+  status = 301
+  force = true
+
 # Internal working notes for the AI assistant — not a public page.
 [[redirects]]
   from = "/CLAUDE.md"

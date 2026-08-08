@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lantern Plan — Logo Explorations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --sage:#7B9E87;
+    --sage-deep:#5F8A6E;
+    --gold:#D4A853;
+    --charcoal:#2C3330;
+    --charcoal-soft:#4A5550;
+    --cream:#FAF6F1;
+    --cream-dim:#EFE9DF;
+    --serif:"DM Serif Display", Georgia, serif;
+    --sans:"Nunito", system-ui, Arial, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--cream);
+    color:var(--charcoal);
+    font-family:var(--sans);
+    font-size:17px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:60px 40px 120px}
+  h1{
+    font-family:var(--serif); font-weight:400;
+    font-size:48px; line-height:1.05; letter-spacing:-.01em;
+    margin:0 0 12px;
+  }
+  .lede{
+    color:var(--charcoal-soft); font-size:18px; max-width:680px;
+    margin-bottom:16px;
+  }
+  .meta{
+    font-family:var(--mono); font-size:12px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--sage); margin-bottom:48px;
+  }
+  .section{
+    margin-top:72px;
+  }
+  .section-title{
+    font-family:var(--serif); font-size:30px; margin:0 0 6px;
+  }
+  .section-sub{
+    color:var(--charcoal-soft); font-size:15px; margin-bottom:32px;
+  }
+
+  /* panel: a single rendered context (cream or dark) */
+  .panel{
+    border-radius:18px;
+    padding:48px 40px;
+    margin-bottom:24px;
+    border:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+  }
+  .panel-cream{background:var(--cream);}
+  .panel-dark{background:var(--charcoal); border-color:transparent;}
+  .panel-label{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--charcoal-soft); margin-bottom:24px;
+  }
+  .panel-dark .panel-label{color:var(--cream-dim);}
+
+  /* logo at "nav" size (matches live site nav) */
+  .brand{display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:var(--charcoal);}
+  .panel-dark .brand{color:var(--cream);}
+  .brand-mark{width:34px;height:40px;flex-shrink:0}
+  .brand-lockup{display:inline-flex;align-items:baseline;gap:10px;white-space:nowrap}
+
+  /* Wordmark treatment A — editorial italic */
+  .word-italic .w1{font-family:var(--serif);font-size:28px;letter-spacing:-.01em;line-height:1;}
+  .word-italic .w2{font-family:var(--serif);font-style:italic;font-size:28px;letter-spacing:-.01em;line-height:1;color:var(--sage);}
+  .panel-dark .word-italic .w2{color:var(--sage);}
+
+  /* Wordmark treatment B — caps tag (mirrors current alongside AI pattern) */
+  .word-tag .w1{font-family:var(--serif);font-size:28px;letter-spacing:-.01em;line-height:1;}
+  .word-tag .w2{font-family:var(--sans);font-weight:700;font-size:13px;letter-spacing:.24em;line-height:1;color:var(--sage);text-transform:uppercase;}
+
+  /* Wordmark treatment C — equal weight, both serif roman */
+  .word-equal .w1, .word-equal .w2{font-family:var(--serif);font-size:28px;letter-spacing:-.01em;line-height:1;}
+  .word-equal .w2{color:var(--charcoal-soft);}
+  .panel-dark .word-equal .w2{color:var(--cream-dim);}
+
+  /* size variants */
+  .size-stack{display:flex;flex-direction:column;gap:36px;align-items:flex-start;}
+  .size-row{display:flex;align-items:center;gap:36px;flex-wrap:wrap}
+  .size-label{
+    font-family:var(--mono); font-size:11px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--charcoal-soft);
+    min-width:130px;
+  }
+  .panel-dark .size-label{color:var(--cream-dim);}
+
+  /* hero-size wordmark */
+  .hero-lockup{display:inline-flex;align-items:baseline;gap:18px;white-space:nowrap}
+  .hero-lockup .w1, .hero-lockup .w2{font-size:64px;line-height:1;letter-spacing:-.015em}
+  .hero-lockup.word-tag .w2{font-size:22px;letter-spacing:.24em;}
+  .hero-mark{width:64px;height:75px;flex-shrink:0}
+  .hero-brand{display:inline-flex;align-items:center;gap:22px}
+
+  /* favicon contexts */
+  .favicon-row{display:flex;gap:32px;align-items:flex-end;flex-wrap:wrap}
+  .favicon-cell{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .favicon-cell .px{font-family:var(--mono);font-size:10px;color:var(--charcoal-soft);letter-spacing:.16em;}
+  .panel-dark .favicon-cell .px{color:var(--cream-dim);}
+  .favicon-16{width:16px;height:18.6px}
+  .favicon-32{width:32px;height:37.3px}
+  .favicon-48{width:48px;height:56px}
+  .favicon-96{width:96px;height:112px}
+
+  /* social avatar (round) */
+  .avatar{
+    width:140px;height:140px;border-radius:50%;
+    background:var(--sage);
+    display:grid;place-items:center;
+    overflow:hidden;
+  }
+  .avatar svg{width:78px;height:91px}
+  .avatar-row{display:flex;gap:36px;align-items:center;flex-wrap:wrap}
+
+  /* "in nav" preview — actual nav-like bar */
+  .mock-nav{
+    background:color-mix(in oklab, var(--cream) 88%, transparent);
+    border-radius:14px;
+    border:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+    padding:22px 28px;
+    display:flex;align-items:center;gap:32px;
+  }
+  .panel-dark .mock-nav{
+    background:color-mix(in oklab, var(--charcoal) 92%, transparent);
+    border-color:color-mix(in oklab, var(--cream) 10%, transparent);
+  }
+  .mock-nav-spacer{flex:1}
+  .mock-nav-links{display:flex;gap:24px;color:var(--charcoal-soft);font-size:14px}
+  .panel-dark .mock-nav-links{color:var(--cream-dim);}
+  .mock-cta{
+    padding:9px 16px;border-radius:999px;background:var(--charcoal);color:var(--cream);
+    font-weight:600;font-size:13px;
+  }
+  .panel-dark .mock-cta{background:var(--cream);color:var(--charcoal);}
+
+  .divider{
+    height:1px;background:color-mix(in oklab, var(--charcoal) 12%, transparent);
+    margin:48px 0;border:0;
+  }
+
+  .vote-row{
+    margin-top:80px;padding:36px;border-radius:18px;
+    background:#fff;
+    border:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+  }
+  .vote-row h3{font-family:var(--serif);font-size:22px;margin:0 0 8px;font-weight:400;}
+  .vote-row p{color:var(--charcoal-soft);margin:0 0 14px;font-size:15px;}
+  .vote-row ul{margin:0;padding-left:20px;color:var(--charcoal-soft);font-size:15px;}
+  .vote-row li{margin-bottom:6px;}
+
+  .note{
+    background:color-mix(in oklab, var(--gold) 14%, var(--cream));
+    border-left:3px solid var(--gold);
+    padding:18px 22px;border-radius:0 10px 10px 0;
+    margin-top:24px;font-size:15px;color:var(--charcoal-soft);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta">Brand exploration · not live · for Mark's review</div>
+  <h1>Lantern Plan — logo directions</h1>
+  <p class="lede">Two directions, three wordmark treatments. Same craft level as the current mark (sage rounded square, cream + gold inside, simple geometry). Mark picks one. Nothing here touches the live site until you say so.</p>
+
+  <div class="note">
+    <strong>Quick note:</strong> The metaphor pivots from "two people side by side" (alongside) to "a steady small light to find your way" (lantern). It's a stronger fit for the product — the plan IS the lantern. Audience reads it as <em>warm, guiding, calm</em>, not <em>tech-y</em>.
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- DIRECTION A — WORDMARK ONLY                                -->
+  <!-- ========================================================= -->
+  <div class="section">
+    <h2 class="section-title">Direction A · Wordmark only</h2>
+    <p class="section-sub">No mark. Just type. Simpler, faster to ship, harder to use as a favicon or social avatar — you'd need a separate "L" monogram or punctuation mark for those.</p>
+
+    <!-- A — Cream panel -->
+    <div class="panel panel-cream">
+      <div class="panel-label">Cream background · three type treatments</div>
+
+      <div class="size-stack">
+
+        <div class="size-row">
+          <div class="size-label">Italic (editorial)</div>
+          <span class="brand-lockup word-italic"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+          <span class="brand-lockup word-italic" style="font-size:0"><span class="hero-lockup word-italic"><span class="w1">Lantern</span><span class="w2">Plan</span></span></span>
+        </div>
+
+        <div class="size-row">
+          <div class="size-label">Caps tag (current pattern)</div>
+          <span class="brand-lockup word-tag"><span class="w1">Lantern</span><span class="w2">PLAN</span></span>
+        </div>
+
+        <div class="size-row">
+          <div class="size-label">Equal weight (quiet)</div>
+          <span class="brand-lockup word-equal"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+        </div>
+
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="panel-label">At hero size (homepage)</div>
+      <div class="size-stack">
+        <span class="hero-lockup word-italic"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+        <span class="hero-lockup word-tag"><span class="w1">Lantern</span><span class="w2">PLAN</span></span>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="panel-label">In a nav bar (italic treatment shown)</div>
+      <div class="mock-nav">
+        <span class="brand-lockup word-italic"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+        <div class="mock-nav-spacer"></div>
+        <div class="mock-nav-links">How it works · Examples · Guides</div>
+        <a class="mock-cta">Get your plan</a>
+      </div>
+    </div>
+
+    <!-- A — Dark panel -->
+    <div class="panel panel-dark">
+      <div class="panel-label">Dark / charcoal background</div>
+
+      <div class="size-stack" style="color:var(--cream)">
+        <div class="size-row">
+          <div class="size-label">Italic (editorial)</div>
+          <span class="brand-lockup word-italic" style="color:var(--cream)"><span class="w1" style="color:var(--cream)">Lantern</span><span class="w2">Plan</span></span>
+        </div>
+        <div class="size-row">
+          <div class="size-label">Caps tag</div>
+          <span class="brand-lockup word-tag" style="color:var(--cream)"><span class="w1" style="color:var(--cream)">Lantern</span><span class="w2">PLAN</span></span>
+        </div>
+      </div>
+
+      <hr class="divider" style="background:color-mix(in oklab, var(--cream) 18%, transparent)"/>
+
+      <div class="panel-label">At hero size</div>
+      <div class="size-stack" style="color:var(--cream)">
+        <span class="hero-lockup word-italic" style="color:var(--cream)"><span class="w1" style="color:var(--cream)">Lantern</span><span class="w2">Plan</span></span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- DIRECTION B — WORDMARK + LANTERN MARK                      -->
+  <!-- ========================================================= -->
+  <div class="section">
+    <h2 class="section-title">Direction B · Wordmark + lantern mark</h2>
+    <p class="section-sub">Adds a small lantern icon — a rounded sage square with a cream lantern outline and a warm gold light inside. Drop-in replacement for the current logo-mark.svg. Works as favicon and round social avatar.</p>
+
+    <!-- B — Cream panel -->
+    <div class="panel panel-cream">
+      <div class="panel-label">Cream background · three type treatments</div>
+
+      <div class="size-stack">
+
+        <div class="size-row">
+          <div class="size-label">Italic (editorial)</div>
+          <a class="brand">
+            <img class="brand-mark" src="lantern-mark.svg" alt=""/>
+            <span class="brand-lockup word-italic"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+          </a>
+        </div>
+
+        <div class="size-row">
+          <div class="size-label">Caps tag (current pattern)</div>
+          <a class="brand">
+            <img class="brand-mark" src="lantern-mark.svg" alt=""/>
+            <span class="brand-lockup word-tag"><span class="w1">Lantern</span><span class="w2">PLAN</span></span>
+          </a>
+        </div>
+
+        <div class="size-row">
+          <div class="size-label">Equal weight (quiet)</div>
+          <a class="brand">
+            <img class="brand-mark" src="lantern-mark.svg" alt=""/>
+            <span class="brand-lockup word-equal"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+          </a>
+        </div>
+
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="panel-label">At hero size</div>
+      <div class="size-stack">
+        <div class="hero-brand">
+          <img class="hero-mark" src="lantern-mark.svg" alt=""/>
+          <span class="hero-lockup word-italic"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+        </div>
+        <div class="hero-brand">
+          <img class="hero-mark" src="lantern-mark.svg" alt=""/>
+          <span class="hero-lockup word-tag"><span class="w1">Lantern</span><span class="w2">PLAN</span></span>
+        </div>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="panel-label">In a nav bar (italic treatment shown — drop-in for the live site)</div>
+      <div class="mock-nav">
+        <a class="brand">
+          <img class="brand-mark" src="lantern-mark.svg" alt=""/>
+          <span class="brand-lockup word-italic"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+        </a>
+        <div class="mock-nav-spacer"></div>
+        <div class="mock-nav-links">How it works · Examples · Guides</div>
+        <a class="mock-cta">Get your plan</a>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="panel-label">Mark alone · favicon &amp; small-size legibility check</div>
+      <div class="favicon-row">
+        <div class="favicon-cell"><img class="favicon-16" src="lantern-mark.svg" alt=""/><div class="px">16 PX</div></div>
+        <div class="favicon-cell"><img class="favicon-32" src="lantern-mark.svg" alt=""/><div class="px">32 PX</div></div>
+        <div class="favicon-cell"><img class="favicon-48" src="lantern-mark.svg" alt=""/><div class="px">48 PX</div></div>
+        <div class="favicon-cell"><img class="favicon-96" src="lantern-mark.svg" alt=""/><div class="px">96 PX</div></div>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="panel-label">Social avatar (round crop)</div>
+      <div class="avatar-row">
+        <div class="avatar"><img src="lantern-mark.svg" alt=""/></div>
+        <div style="color:var(--charcoal-soft);font-size:14px;max-width:380px">
+          The lantern reads cleanly when the sage square is cropped to a circle — handle and base stay legible, the gold light is the focal point.
+        </div>
+      </div>
+    </div>
+
+    <!-- B — Dark panel -->
+    <div class="panel panel-dark">
+      <div class="panel-label">Dark / charcoal background</div>
+
+      <div class="size-stack">
+        <div class="size-row">
+          <div class="size-label">Italic (editorial)</div>
+          <a class="brand">
+            <img class="brand-mark" src="lantern-mark.svg" alt=""/>
+            <span class="brand-lockup word-italic" style="color:var(--cream)"><span class="w1" style="color:var(--cream)">Lantern</span><span class="w2">Plan</span></span>
+          </a>
+        </div>
+        <div class="size-row">
+          <div class="size-label">Caps tag</div>
+          <a class="brand">
+            <img class="brand-mark" src="lantern-mark.svg" alt=""/>
+            <span class="brand-lockup word-tag" style="color:var(--cream)"><span class="w1" style="color:var(--cream)">Lantern</span><span class="w2">PLAN</span></span>
+          </a>
+        </div>
+      </div>
+
+      <hr class="divider" style="background:color-mix(in oklab, var(--cream) 18%, transparent)"/>
+
+      <div class="panel-label">At hero size</div>
+      <div class="hero-brand">
+        <img class="hero-mark" src="lantern-mark.svg" alt=""/>
+        <span class="hero-lockup word-italic" style="color:var(--cream)"><span class="w1" style="color:var(--cream)">Lantern</span><span class="w2">Plan</span></span>
+      </div>
+    </div>
+
+
+    <!-- B — Outline variant -->
+    <div class="panel panel-cream">
+      <div class="panel-label">Alternative mark · outline only (no sage square)</div>
+      <p style="color:var(--charcoal-soft);font-size:14px;max-width:620px;margin:0 0 24px">
+        Quieter, more editorial — the mark "disappears" into the cream and the lantern itself is the focus. Use this if the sage square feels too "logo-y" against the warm editorial tone. Loses some impact at favicon size, though.
+      </p>
+      <div class="size-row">
+        <a class="brand">
+          <img class="brand-mark" src="lantern-mark-outline.svg" alt=""/>
+          <span class="brand-lockup word-italic"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+        </a>
+      </div>
+
+      <div class="favicon-row" style="margin-top:32px">
+        <div class="favicon-cell"><img class="favicon-32" src="lantern-mark-outline.svg" alt=""/><div class="px">32 PX</div></div>
+        <div class="favicon-cell"><img class="favicon-48" src="lantern-mark-outline.svg" alt=""/><div class="px">48 PX</div></div>
+        <div class="favicon-cell"><img class="favicon-96" src="lantern-mark-outline.svg" alt=""/><div class="px">96 PX</div></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================================= -->
+  <!-- DECISION HELPER                                            -->
+  <!-- ========================================================= -->
+  <div class="vote-row">
+    <h3>To pick, tell me three things:</h3>
+    <ul>
+      <li><strong>A or B</strong> — wordmark only, or wordmark + lantern mark?</li>
+      <li><strong>Wordmark treatment</strong> — italic, caps tag, or equal weight?</li>
+      <li><strong>If B</strong> — sage square mark, or outline-only mark?</li>
+    </ul>
+    <p style="margin-top:16px"><strong>My pick (for what it's worth):</strong> Direction B (sage square) with italic wordmark. It mirrors the current visual language closely enough that the rename doesn't feel like a totally different company, but the metaphor shift (alongside → lantern) reads cleanly. The italic "<em>Plan</em>" gives the lockup editorial gravity that the caps-tag treatment doesn't — and "Plan" isn't a descriptor like "AI" was, it's part of the name.</p>
+  </div>
+
+</div>
+</body>
+</html>

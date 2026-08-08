@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lantern Plan — pick a wordmark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --sage:#7B9E87;
+    --gold:#D4A853;
+    --charcoal:#2C3330;
+    --charcoal-soft:#4A5550;
+    --cream:#FAF6F1;
+    --serif:"DM Serif Display", Georgia, serif;
+    --sans:"Nunito", system-ui, Arial, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--cream); color:var(--charcoal);
+    font-family:var(--sans); font-size:17px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:60px 40px 120px}
+  .meta{
+    font-family:var(--mono); font-size:12px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--sage); margin-bottom:18px;
+  }
+  h1{
+    font-family:var(--serif); font-weight:400;
+    font-size:44px; line-height:1.05; letter-spacing:-.01em;
+    margin:0 0 14px;
+  }
+  .lede{color:var(--charcoal-soft); font-size:18px; max-width:680px; margin-bottom:48px;}
+
+  .option{
+    background:#fff;
+    border:1px solid color-mix(in oklab, var(--charcoal) 10%, transparent);
+    border-radius:18px;
+    padding:56px 48px;
+    margin-bottom:28px;
+  }
+  .option-label{
+    font-family:var(--mono); font-size:11px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--sage); margin-bottom:18px;
+  }
+  .option-title{
+    font-family:var(--serif); font-size:22px; font-weight:400;
+    margin:0 0 6px;
+  }
+  .option-sub{color:var(--charcoal-soft); font-size:15px; margin:0 0 40px; max-width:620px;}
+
+  /* the big lockups */
+  .lockup{display:inline-flex;align-items:baseline;gap:18px;white-space:nowrap;margin-bottom:30px;}
+  .lockup .mark{
+    width:60px;height:70px;flex-shrink:0;
+    align-self:center; transform:translateY(-2px);
+  }
+
+  /* A — caps tag */
+  .lockup.tag .w1{font-family:var(--serif);font-size:72px;line-height:1;letter-spacing:-.015em;}
+  .lockup.tag .w2{font-family:var(--sans);font-weight:700;font-size:24px;letter-spacing:.24em;line-height:1;color:var(--sage);text-transform:uppercase;}
+
+  /* B — italic */
+  .lockup.italic .w1{font-family:var(--serif);font-size:72px;line-height:1;letter-spacing:-.015em;}
+  .lockup.italic .w2{font-family:var(--serif);font-style:italic;font-size:72px;line-height:1;letter-spacing:-.015em;color:var(--sage);}
+
+  /* C — equal weight */
+  .lockup.equal .w1{font-family:var(--serif);font-size:72px;line-height:1;letter-spacing:-.015em;}
+  .lockup.equal .w2{font-family:var(--serif);font-size:72px;line-height:1;letter-spacing:-.015em;color:var(--charcoal-soft);}
+
+  /* nav-size shown next to hero-size */
+  .nav-row{
+    display:flex;align-items:center;gap:36px;flex-wrap:wrap;
+    padding-top:32px;
+    border-top:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+  }
+  .nav-row-label{
+    font-family:var(--mono); font-size:11px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--charcoal-soft); min-width:130px;
+  }
+  .nav-lockup{display:inline-flex;align-items:baseline;gap:10px;white-space:nowrap;align-items:center;}
+  .nav-lockup .mark{width:34px;height:40px;flex-shrink:0;}
+  .nav-lockup .word{display:inline-flex;align-items:baseline;gap:10px;}
+
+  .nav-lockup.tag .w1{font-family:var(--serif);font-size:28px;letter-spacing:-.01em;line-height:1;}
+  .nav-lockup.tag .w2{font-family:var(--sans);font-weight:700;font-size:13px;letter-spacing:.24em;line-height:1;color:var(--sage);text-transform:uppercase;}
+
+  .nav-lockup.italic .w1{font-family:var(--serif);font-size:28px;letter-spacing:-.01em;line-height:1;}
+  .nav-lockup.italic .w2{font-family:var(--serif);font-style:italic;font-size:28px;letter-spacing:-.01em;line-height:1;color:var(--sage);}
+
+  .nav-lockup.equal .w1{font-family:var(--serif);font-size:28px;letter-spacing:-.01em;line-height:1;}
+  .nav-lockup.equal .w2{font-family:var(--serif);font-size:28px;letter-spacing:-.01em;line-height:1;color:var(--charcoal-soft);}
+
+  .reasoning{
+    margin-top:28px;padding:18px 22px;
+    background:color-mix(in oklab, var(--sage) 8%, var(--cream));
+    border-left:3px solid var(--sage);
+    border-radius:0 10px 10px 0;
+    font-size:14px;color:var(--charcoal-soft);max-width:640px;
+  }
+  .reasoning strong{color:var(--charcoal);}
+
+  .recommend-badge{
+    display:inline-block;
+    margin-left:12px;
+    font-family:var(--mono); font-size:10px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--gold);
+    background:color-mix(in oklab, var(--gold) 14%, var(--cream));
+    padding:5px 10px; border-radius:999px; vertical-align:middle;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="meta">Wordmark · pick one</div>
+  <h1>Three wordmark treatments</h1>
+  <p class="lede">All three use the same lantern mark you picked. The only thing changing is how "Lantern Plan" is set in type. Each option shows hero size, then nav size for a real-world check.</p>
+
+  <!-- OPTION A: CAPS TAG -->
+  <div class="option">
+    <div class="option-label">Option A</div>
+    <h2 class="option-title">Caps tag — "Lantern PLAN"</h2>
+    <p class="option-sub">Mirrors the current "alongside AI" lockup. Maximum visual continuity with what you have today.</p>
+
+    <div class="lockup tag">
+      <img class="mark" src="lantern-mark.svg" alt=""/>
+      <span class="w1">Lantern</span><span class="w2">PLAN</span>
+    </div>
+
+    <div class="nav-row">
+      <div class="nav-row-label">At nav size</div>
+      <span class="nav-lockup tag">
+        <img class="mark" src="lantern-mark.svg" alt=""/>
+        <span class="word"><span class="w1">Lantern</span><span class="w2">PLAN</span></span>
+      </span>
+    </div>
+
+    <div class="reasoning">
+      <strong>The trade-off:</strong> "AI" was a descriptor (the thing the company is about), so caps-tag treatment fit. "Plan" is part of the actual name. Reading "Lantern PLAN" — your eye sees "Lantern" as the noun and "PLAN" as a label, which slightly de-emphasizes that the name is two equal words.
+    </div>
+  </div>
+
+  <!-- OPTION B: ITALIC -->
+  <div class="option">
+    <div class="option-label">Option B <span class="recommend-badge">My pick</span></div>
+    <h2 class="option-title">Italic — "Lantern <em style="font-family:var(--serif)">Plan</em>"</h2>
+    <p class="option-sub">Both words in DM Serif Display, "Plan" in italic sage. Editorial masthead feel.</p>
+
+    <div class="lockup italic">
+      <img class="mark" src="lantern-mark.svg" alt=""/>
+      <span class="w1">Lantern</span><span class="w2">Plan</span>
+    </div>
+
+    <div class="nav-row">
+      <div class="nav-row-label">At nav size</div>
+      <span class="nav-lockup italic">
+        <img class="mark" src="lantern-mark.svg" alt=""/>
+        <span class="word"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+      </span>
+    </div>
+
+    <div class="reasoning">
+      <strong>Why I like it:</strong> Both words read as equal partners in the name (which they are). The italic gives it the editorial gravity that matches your voice — think a small-press magazine masthead, not a tech startup. The sage color still ties it to the existing palette.
+    </div>
+  </div>
+
+  <!-- OPTION C: EQUAL WEIGHT -->
+  <div class="option">
+    <div class="option-label">Option C</div>
+    <h2 class="option-title">Equal weight — "Lantern Plan"</h2>
+    <p class="option-sub">Both words in DM Serif Display, "Plan" in softer charcoal. Quietest of the three.</p>
+
+    <div class="lockup equal">
+      <img class="mark" src="lantern-mark.svg" alt=""/>
+      <span class="w1">Lantern</span><span class="w2">Plan</span>
+    </div>
+
+    <div class="nav-row">
+      <div class="nav-row-label">At nav size</div>
+      <span class="nav-lockup equal">
+        <img class="mark" src="lantern-mark.svg" alt=""/>
+        <span class="word"><span class="w1">Lantern</span><span class="w2">Plan</span></span>
+      </span>
+    </div>
+
+    <div class="reasoning">
+      <strong>The trade-off:</strong> Most traditional, reads like a book title or imprint. Loses the sage accent that ties the wordmark visually to the lantern's gold light and the sage square mark. Quietest, maybe too quiet.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

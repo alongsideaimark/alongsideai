@@ -583,25 +583,15 @@
   .foot-bottom a{color:inherit; text-decoration:none}
   .tagline-foot{font-family:var(--serif); font-style:italic; font-size:16px; color:var(--gold-light)}
 
-  /* ---------- tweaks panel ---------- */
-  #tweaks{
-    position:fixed; right:22px; bottom:22px;
-    width:300px; background:var(--cream);
-    border:1px solid color-mix(in oklab, var(--charcoal) 14%, transparent);
-    border-radius:14px;
-    padding:18px 18px 16px;
-    box-shadow: 0 30px 60px -24px rgba(44,51,48,.35);
-    font-family:var(--sans); font-size:14px;
-    z-index:50;
-    display:none;
+  /* ---------- checkout-cancelled notice ---------- */
+  .cancel-notice{
+    background: color-mix(in oklab, var(--sage) 12%, var(--cream));
+    border-bottom:1px solid color-mix(in oklab, var(--charcoal) 8%, transparent);
+    padding:14px 24px;
+    text-align:center;
+    font-size:15px; color:var(--charcoal-soft);
   }
-  #tweaks.open{display:block}
-  #tweaks h5{margin:0 0 12px; font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--gray); font-weight:500}
-  #tweaks label{display:block; margin-bottom:14px}
-  #tweaks .lab{display:block; font-size:12px; color:var(--charcoal-soft); margin-bottom:6px; text-transform:uppercase; letter-spacing:.14em; font-family:var(--mono)}
-  #tweaks select, #tweaks input[type=range]{width:100%; font-family:var(--sans); font-size:14px; padding:8px 10px; border-radius:8px; border:1px solid color-mix(in oklab, var(--charcoal) 16%, transparent); background:var(--white); color:var(--charcoal)}
-  #tweaks .row{display:flex; gap:10px}
-  #tweaks .row > *{flex:1}
+  .cancel-notice a{color:var(--sage); font-weight:600; text-decoration:underline}
 
   /* hero variants */
   body[data-hero="editorial"] .hero-art-editorial{display:block}
@@ -624,7 +614,7 @@
 <!-- ============ NAV ============ -->
 <header class="nav">
   <div class="wrap nav-inner">
-    <a href="#" class="brand" aria-label="Lantern Plan">
+    <a href="/" class="brand" aria-label="Lantern Plan">
       <img class="brand-mark" src="assets/logo-mark.svg" alt=""/>
       <span class="brand-lockup"><span class="brand-word">Lantern</span><span class="brand-ai">PLAN</span></span>
     </a>
@@ -661,7 +651,7 @@
       </div>
       <p style="margin-top:14px; font-size:15px; color:var(--gray);">$79 one-time. No subscription, no follow-up sales calls.</p>
       <div class="hero-meta">
-        <div><strong>~20 min</strong>to answer at your own pace</div>
+        <div><strong>20–25 min</strong>to answer at your own pace</div>
         <div><strong>Minutes</strong>until your plan arrives</div>
         <div><strong>$79</strong>for a plan written for you</div>
       </div>
@@ -724,13 +714,13 @@
       <article class="how-item">
         <div class="num">01<span class="slash">/03</span></div>
         <h3>Answer a few questions</h3>
-        <p>Seven short sections about how you actually work. Plain English, no jargon, no account to create. Skip anything that doesn't feel right. Takes about 20 minutes.</p>
-        <div class="meta">~20 minutes · On your schedule</div>
+        <p>Seven short sections about how you actually work. Plain English, no jargon, no account to create. Skip anything that doesn't feel right. Takes 20 to 25 minutes.</p>
+        <div class="meta">20–25 minutes · On your schedule</div>
       </article>
       <article class="how-item">
         <div class="num">02<span class="slash">/03</span></div>
         <h3>Get your plan in minutes</h3>
-        <p>We read your answers, research the tools that fit your setup, and send back a custom plan as a PDF. What to use, how to set it up step by step, what to skip, and what it all costs. Written for you, not a template.</p>
+        <p>We read your answers, research the tools that fit your setup, and email you a custom plan — read it in your browser or save it as a PDF. What to use, how to set it up step by step, what to skip, and what it all costs. Written for you, not a template.</p>
         <div class="meta">$79 · Arrives by email</div>
       </article>
       <article class="how-item">
@@ -856,7 +846,7 @@
   <div class="wrap cta-inner">
     <div>
       <h2>No call. No commitment. <em>Just a plan made for you.</em></h2>
-      <p>Answer seven short sections of plain-English questions about how you work — around 20 minutes, at your own pace. Your custom plan arrives by email in minutes. $79, and it's yours to keep.</p>
+      <p>Answer seven short sections of plain-English questions about how you work — 20 to 25 minutes, at your own pace. Your custom plan arrives by email in minutes. $79, and it's yours to keep.</p>
       <a href="/pricing/" class="cta-btn">
         Start the questionnaire
         <svg width="14" height="14" viewBox="0 0 10 10" fill="none"><path d="M1 5h8m-3-3 3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -892,14 +882,14 @@
           <li><a href="#how">How it works</a></li>
           <li><a href="#outcomes">What changes</a></li>
           <li><a href="/pricing/">Pricing</a></li>
-          <li><a href="#start">Start the questionnaire</a></li>
+          <li><a href="/pricing/">Start the questionnaire</a></li>
         </ul>
       </div>
       <div>
         <h4>Get in touch</h4>
         <ul>
           <li><a href="mailto:mark@lanternplan.com">mark@lanternplan.com</a></li>
-          <li><a href="#start">Get your plan</a></li>
+          <li><a href="/pricing/">Get your plan</a></li>
         </ul>
       </div>
     </div>
@@ -910,70 +900,17 @@
   </div>
 </footer>
 
-<!-- ============ TWEAKS ============ -->
-<div id="tweaks" role="dialog" aria-label="Tweaks">
-  <h5>Tweaks</h5>
-  <label>
-    <span class="lab">Hero layout</span>
-    <select id="tw-hero">
-      <option value="editorial">Editorial — split w/ quote card</option>
-      <option value="bigtype">Big type — full-width headline</option>
-    </select>
-  </label>
-  <label>
-    <span class="lab">Accent color</span>
-    <select id="tw-accent">
-      <option value="soft">Soft — sage leads</option>
-      <option value="bold">Bold — gold leads</option>
-    </select>
-  </label>
-  <label>
-    <span class="lab">Body size (px)</span>
-    <input id="tw-size" type="range" min="16" max="20" step="1" value="18"/>
-  </label>
-</div>
-
 <script>
-  // Tweak defaults — merged + persisted by the host
-  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-    "hero": "editorial",
-    "accent": "soft",
-    "bodySize": 18
-  }/*EDITMODE-END*/;
-
-  const state = { ...TWEAK_DEFAULTS };
-  const body = document.body;
-  const panel = document.getElementById('tweaks');
-  const selHero = document.getElementById('tw-hero');
-  const selAccent = document.getElementById('tw-accent');
-  const sizeRange = document.getElementById('tw-size');
-
-  function apply(){
-    body.dataset.hero = state.hero;
-    body.dataset.accent = state.accent;
-    body.style.fontSize = state.bodySize + 'px';
-    selHero.value = state.hero;
-    selAccent.value = state.accent;
-    sizeRange.value = state.bodySize;
-  }
-  apply();
-
-  // Edit mode protocol
-  window.addEventListener('message', (e)=>{
-    const d = e.data || {};
-    if(d.type === '__activate_edit_mode'){ panel.classList.add('open') }
-    else if(d.type === '__deactivate_edit_mode'){ panel.classList.remove('open') }
-  });
-  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*') }catch(e){}
-
-  function push(patch){
-    Object.assign(state, patch);
-    apply();
-    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits: patch}, '*') }catch(e){}
-  }
-  selHero.addEventListener('change', e => push({ hero: e.target.value }));
-  selAccent.addEventListener('change', e => push({ accent: e.target.value }));
-  sizeRange.addEventListener('input', e => push({ bodySize: parseInt(e.target.value,10) }));
+  // If someone backs out of Stripe checkout, they land here with ?cancelled=1.
+  // Reassure them nothing was charged instead of showing an unchanged page.
+  (function(){
+    if(new URLSearchParams(window.location.search).get('cancelled') !== '1') return;
+    const notice = document.createElement('div');
+    notice.className = 'cancel-notice';
+    notice.innerHTML = 'No charge was made &mdash; you left before paying. Whenever you\'re ready, <a href="/pricing/">your plan is here</a>.';
+    document.body.insertBefore(notice, document.body.firstChild);
+    try{ history.replaceState(null, '', window.location.pathname); }catch(e){}
+  })();
 </script>
 </body>
 </html>

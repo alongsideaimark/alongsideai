@@ -336,7 +336,7 @@ exports.handler = async (event) => {
       const retrySecret = process.env.RETRY_SECRET;
       const baseUrl = process.env.URL || "https://lanternplan.com";
       const retryUrl = retrySecret
-        ? `${baseUrl}/.netlify/functions/retry-plan-background?id=${dlId}&secret=${retrySecret}`
+        ? `${baseUrl}/.netlify/functions/retry-plan?id=${dlId}&secret=${retrySecret}`
         : "(RETRY_SECRET not configured)";
 
       const dlStore = getStore("dead-letters");

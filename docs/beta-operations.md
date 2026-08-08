@@ -4,6 +4,17 @@ This is how the plan pipeline is operated during the beta phase. The reviewer lo
 
 If you're reading this and thinking "the prompt needs another rule" — read the guardrails section first. Almost certainly it doesn't.
 
+## How review actually works (decided 2026-08-08)
+
+The pipeline **auto-sends** any plan the critic doesn't hard-fail — that's what keeps the "your plan arrives in minutes" promise true. Human review is a **post-send spot-check**, not a pre-send gate:
+
+1. Every generated plan emails Mark a notification with the plan link, the critic's verdict, and any soft issues to check.
+2. Mark reads the plan against the 8-minute checklist (`docs/reviewer-checklist.md`) on his own schedule — same checklist, applied after the customer already has the plan.
+3. Errors found go in the reviewer log below. Customer-facing errors get fixed by sending the customer a corrected revision (the plan's revision mechanism works from our side too — or simply reply to their thread with the correction).
+4. Plans the critic **blocks** (hard fails) are the exception: those wait for Mark and only ship through the review bar at `/plans/:id`.
+
+The rest of this playbook — logs, triggers, templates — applies unchanged; only the timing of the human pass moved from before send to after.
+
 ---
 
 ## The reviewer log — capture this for every plan
