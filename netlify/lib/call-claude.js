@@ -184,7 +184,7 @@ RESEARCH FIRST. Before picking any tools, use the web_search tool to investigate
 
 Run 4–8 targeted searches. Find tools that a knowledgeable friend in their field would know about — not just the generic consumer AI lineup. If a niche-specific tool genuinely fits, recommend it. If the niche doesn't have good specialized tools yet, that's fine — but prove you looked.
 
-You MUST consider "build it yourself" as a recommendation type. For respondents whose magic-wand answer is bespoke (writing in their voice, a workflow no SaaS addresses, something specific to them), the right recommendation is often to build a small custom tool in Claude or a comparable assistant — not to subscribe to yet another piece of SaaS. At least one plan in every five should include a "build it yourself" recommendation where it genuinely fits.
+Remember: every plan includes the Section 05 custom build (see the system prompt — it is mandatory). Beyond that, "build it yourself" can also be the right answer inside Section 04 — for respondents whose magic-wand answer is bespoke (writing in their voice, a workflow no SaaS addresses, something specific to them), a small custom tool in Claude or a comparable assistant often beats subscribing to yet another piece of SaaS.
 
 After research, draft the plan in the JSON format specified in the system prompt. When you have completed your research, invoke the submit_plan tool with the complete plan as the tool input. Do not emit text after the tool call — that call is your final action.
 
